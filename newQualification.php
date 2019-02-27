@@ -1,9 +1,8 @@
-<?php // Save Edited Qualification
-  $sqlStatusSave = "";
+<?php // Save New Qualification
+  $sqlStatus = "";
 
   if(isset($_POST['formSubmit'])) { // chk if submitted
     // get form fields
-    $qID = $_POST['qualificationID'];
     $qName = $_POST['qualificationName'];
     $qMinScore = $_POST['qualificationMinScore'];
     $qMaxScore = $_POST['qualificationMaxScore'];
@@ -17,14 +16,14 @@
         die("Connection failed: " . $conn->connect_error);
     }
 
-    // gen update query
-    $sql = "UPDATE qualification SET qualificationName = '$qName', minimumScore = '$qMinScore', maximumScore = '$qMaxScore', resultCalcDescription = '$qResultCalc', resultCalcSubjectCount = '$qSubjectCount', gradeList = '$qGrades' WHERE qualificationID = '$qID'";
+    // gen save query
+    $sql = "INSERT INTO qualification (`qualificationName`, `minimumScore`, `maximumScore`, `resultCalcDescription`, `resultCalcSubjectCount`, `gradeList`) VALUES ('$qName', '$qMinScore', '$qMaxScore', '$qResultCalc', '$qSubjectCount', '$qGrades')";
 
     // execute query
     if ($conn->query($sql) === TRUE) {
-        $sqlStatusSave = "Qualification saved successfully";
+        $sqlStatus = "New Qualification created successfully";
     } else {
-        $sqlStatusSave = "Error: " . $sql . "<br>" . $conn->error;
+        $sqlStatus = "Error: " . $sql . "<br>" . $conn->error;
     }
 
     $conn->close(); // close db
@@ -32,42 +31,12 @@
   }
 ?>
 
-<?php // Load Qualifications
-  $sqlStatusLoad = "";
-
-  // init db
-  $conn = new mysqli('localhost', 'root', '', 'educreate');
-  if ($conn->connect_error) {
-      die("Connection failed: " . $conn->connect_error);
-  }
-
-  $sql = "SELECT * FROM qualification"; // gen load query
-
-  // execute query
-  $result = $conn->query($sql);
-
-  $qArray = array();
-  $count = 0;
-  if ($result->num_rows > 0) {
-    // output data to array
-    while($row = $result->fetch_assoc()) {
-        $qArray[$count] = $row;
-        $count++;
-    }
-    $sqlStatusLoad = $count . " Qualification(s) found.";
-  } else {
-      $sqlStatusLoad = "No Qualifications found.";
-  }
-
-  $conn->close(); // close db
-?>
-
 <!DOCTYPE html>
 <html lang="zxx">
 
 <head>
   <meta charset="utf-8">
-  <title>Educreate: Edit Qualification</title>
+  <title>Educreate: New Qualification</title>
 
   <!-- mobile responsive meta -->
   <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -230,10 +199,10 @@
     <div class="row">
       <div class="col-md-8">
         <ul class="list-inline custom-breadcrumb">
-          <li class="list-inline-item"><span class="h2 text-primary font-secondary">Edit Qualification</span></li>
+          <li class="list-inline-item"><span class="h2 text-primary font-secondary">New Qualification</span></li>
           <li class="list-inline-item text-white h3 font-secondary @@nasted"></li>
         </ul>
-        <p class="text-lighten">Edit an existing Qualification by selecting one and modifying its details.</p>
+        <p class="text-lighten">Create a new Qualification by entering the details below.</p>
       </div>
     </div>
   </div>
@@ -245,25 +214,36 @@
   <div class="container">
     <div class="row">
       <div class="col-lg-12">
-        <h2 class="section-title">Edit Qualification<span id="qualificationTitle"></span></h2>
+        <h2 class="section-title">New Qualification</h2>
       </div>
     </div>
-    <div id="editForm_space" class="row">
-      <div class="col-lg-6 mb-4 mb-lg-0" id="editForm_col1">
-        <p class="mb-5">Edit an exist Qualification by selecting one from the list below.</p>
-        <div class="dropdown view">
-          <button class="nav-link dropdown-toggle" href="#" id="selectDropdown" role="button" data-toggle="dropdown"
-          aria-haspopup="true" aria-expanded="false">
-          Select Qualification
-        </button>
-        <div class="dropdown-menu" aria-labelledby="selectDropdown" id="qSelectMenu">
-
+    <div class="row">
+      <div class="col-lg-6 mb-4 mb-lg-0">
+        <form action="#" method="post">
+          <input required type="text" class="form-control mb-3" id="qualificationName" name="qualificationName" placeholder="Qualification Name">
+          <input required type="number" min="0" class="form-control mb-3" id="qualificationMinScore" name="qualificationMinScore" placeholder="Minimum Score">
+          <input required type="number" min="0" class="form-control mb-3" id="qualificationMaxScore" name="qualificationMaxScore" placeholder="Maximum Score">
+          <p>Score Calculation:
+            <select class="nav-link" id="qualificationResultCalc" name="qualificationResultCalc">
+              <option value="avg_highest">Average of Highest Scores</option>
+              <option value="avg_lowest">Average of Lowest Scores</option>
+              <option value="sum_highest">Total of Highest Scores</option>
+              <option value="sum_lowest">Total of Lowest Scores</option>
+            </select>
+          </p>
+          <p>Number of Subjects Calculated: <input required type='number' min='1' class='mb-3 nav-link' id='subjectCount' name='subjectCount' placeholder='eg: 1, 2, 3'></p>
+        </div>
+        <div class="col-lg-6">
+          <textarea required type="text" class="form-control mb-3 noresize" id="qualificationGrades" name="qualificationGrades" placeholder="Possible Grades"></textarea>
+          <div>
+            <button type="submit" name="formSubmit" value="send" class="btn btn-primary">CREATE</button>
+            <button type="reset" class="btn btn-primary">RESET</button>
+          </form>
+        </div>
+        <div>
+          <?php echo $sqlStatus ?>
         </div>
       </div>
-    </div>
-    <div class="col-lg-6" id="editForm_col2">
-      <p><?php echo $sqlStatusSave ?></p>
-      <p><?php echo $sqlStatusLoad ?></p>
     </div>
   </div>
 </div>
@@ -337,163 +317,17 @@
 
     <!-- EX Script -->
     <script>
-    var qArray = <?php echo json_encode($qArray) ?>; // send php_array to js
-    window.onload = showLoadedQualifications();
+      function saveQualification() {
+        var qName = document.getElementById("qualificationName");
+        var qMinScore = document.getElementById("qualificationMinScore");
+        var qMaxScore = document.getElementById("qualificationMaxScore");
+        var qResultCalc = document.getElementById("qualificationResultCalc");
+        var qSubjectCount = document.getElementById("subjectCount");
+        var qGrades = document.getElementById("qualificationGrades");
 
-    function showLoadedQualifications() {
 
-      var qSelectMenu = document.getElementById("qSelectMenu");
-
-      if (qArray.length != 0) {
-        for(var i = 0; i < qArray.length; i++) {
-          // gen qualification list item
-          var qItem = document.createElement("a");
-          var textnode = document.createTextNode(qArray[i].qualificationID + " - " + qArray[i].qualificationName);
-          qItem.appendChild(textnode);
-          qItem.setAttribute("class", "dropdown-item");
-          qItem.setAttribute("onclick", "showCurrentEdit(" + qArray[i].qualificationID + ", " + "'" + qArray[i].qualificationName + "'" + ")");
-
-          // attach qItem to list
-          qSelectMenu.appendChild(qItem);
-        }
       }
-    }
+    </script>
 
-    function showCurrentEdit(qNum, qName) {
-      var qualificationTitle = document.getElementById("qualificationTitle");
-
-      var editForm_space = document.getElementById("editForm_space");
-      qualificationTitle.innerHTML = ": " + qName; // append to title
-
-      if(qNum != 0) {
-        qNum -= 1; // change qNum to array-index format
-      }
-
-      // generate form - DOM style
-      // clear space for form
-      while (editForm_space.firstChild) {
-        editForm_space.removeChild(editForm_space.firstChild);
-      }
-
-      // col 1
-
-      var editForm_col1 = document.createElement("div");
-      editForm_col1.setAttribute("class", "col-lg-6 mb-4 mb-lg-0");
-      editForm_col1.id = "editForm_col1";
-      editForm_space.appendChild(editForm_col1);
-
-      var editForm = document.createElement("form");
-      editForm.id = "editForm";
-      editForm.action = "#";
-      editForm.method = "post";
-      editForm_col1.appendChild(editForm);
-
-      var qID = document.createElement("input");
-      qID = initInputField(qID, "qualificationID", "hidden", "Qualification ID", qArray[qNum].qualificationID);
-      editForm.appendChild(qID);
-
-      var qName = document.createElement("input");
-      qName = initInputField(qName, "qualificationName", "text", "Qualification Name", qArray[qNum].qualificationName);
-      editForm.appendChild(qName);
-
-      var qMinScore = document.createElement("input");
-      qMinScore = initInputField(qMinScore, "qualificationMinScore", "number", "Minimum Score", qArray[qNum].minimumScore);
-      qMinScore.min = 0;
-      editForm.appendChild(qMinScore);
-
-      var qMaxScore = document.createElement("input");
-      qMaxScore = initInputField(qMaxScore, "qualificationMaxScore", "number", "Maximum Score", qArray[qNum].maximumScore);
-      qMaxScore.min = 0;
-      editForm.appendChild(qMaxScore);
-
-      var resultCalcP = document.createElement("p");
-      var resultCalcPText = document.createTextNode("Score Calculation: ");
-      resultCalcP.appendChild(resultCalcPText);
-      editForm.appendChild(resultCalcP);
-
-      var qResultCalc = document.createElement("select");
-      qResultCalc.setAttribute("class", "nav-link");
-      qResultCalc.id = "qualificationResultCalc";
-      qResultCalc.name = qResultCalc.id;
-      var resultCalcArray = new Array ();
-      resultCalcArray[0] = new Array ("avg_highest", "Average of Highest Scores");
-      resultCalcArray[1] = new Array ("avg_lowest", "Average of Lowest Scores");
-      resultCalcArray[2] = new Array ("sum_highest", "Sum of Highest Scores");
-      resultCalcArray[3] = new Array ("sum_lowest", "Sum of Lowest Scores");
-      for (var i = 0; i < resultCalcArray.length; i++) {
-        var resultCalcOption = document.createElement("option");
-        resultCalcOption.id = resultCalcArray[i][0];
-        resultCalcOption.value = resultCalcOption.id;
-        if(resultCalcOption.id == qArray[qNum].resultCalcDescription) {
-          resultCalcOption.selected = true;
-        }
-        var resultCalcOptionText = document.createTextNode(resultCalcArray[i][1]);
-        resultCalcOption.appendChild(resultCalcOptionText);
-        qResultCalc.appendChild(resultCalcOption);
-      }
-      resultCalcP.appendChild(qResultCalc);
-
-      var subjectCountP = document.createElement("p");
-      var subjectCountPText = document.createTextNode("Number of Subjects Calculated: ");
-      subjectCountP.appendChild(subjectCountPText);
-      editForm.appendChild(subjectCountP);
-
-      var qSubjectCount = document.createElement("input");
-      qSubjectCount = initInputField(qSubjectCount, "subjectCount", "number", "eg: 1, 2, 3", qArray[qNum].resultCalcSubjectCount);
-      qSubjectCount.min = 1;
-      qSubjectCount.setAttribute("class", "mb-3 nav-link");
-      subjectCountP.appendChild(qSubjectCount);
-
-      // col 2
-
-      var editForm_col2 = document.createElement("div");
-      editForm_col2.setAttribute("class", "col-lg-6");
-      editForm_col2.id = "editForm_col2";
-      editForm_space.appendChild(editForm_col2);
-
-      var qGrades = document.createElement("textarea");
-      qGrades.required = true;
-      qGrades.setAttribute("class", "form-control mb-3 noresize");
-      qGrades.id = "qualificationGrades";
-      qGrades.name = qGrades.id;
-      qGrades.value = qArray[qNum].gradeList;
-      qGrades.setAttribute("form", "editForm");
-      editForm_col2.appendChild(qGrades);
-
-      var formSubmit = document.createElement("button");
-      var formSubmitText = document.createTextNode("SAVE");
-      formSubmit.appendChild(formSubmitText);
-      formSubmit.setAttribute("class", "btn btn-primary");
-      formSubmit.type = "submit";
-      formSubmit.name = "formSubmit";
-      formSubmit.value = "send";
-      formSubmit.setAttribute("form", "editForm");
-      editForm_col2.appendChild(formSubmit);
-
-      editForm_col2.appendChild(document.createTextNode(" "));
-
-      var formCancelA = document.createElement("a");
-      formCancelA.setAttribute("href", "editQualification.php");
-      var formCancel = document.createElement("button");
-      var formCancelText = document.createTextNode("CANCEL");
-      formCancel.appendChild(formCancelText);
-      formCancel.setAttribute("class", "btn btn-primary");
-      formCancel.type = "button";
-      formCancelA.appendChild(formCancel);
-      editForm_col2.appendChild(formCancelA);
-    }
-
-    function initInputField(inputField, id, type, placeholder, value) {
-      inputField.required = true;
-      inputField.setAttribute("class", "form-control mb-3");
-
-      inputField.id = id;
-      inputField.name = id;
-      inputField.type = type;
-      inputField.placeholder = placeholder;
-      inputField.value = value;
-      return inputField;
-    }
-  </script>
-</body>
-</html>
+  </body>
+  </html>
