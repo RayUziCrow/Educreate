@@ -1,28 +1,10 @@
-<?php // Save New University
+<?php // chk if uni is saved
+  session_start();
   $sqlStatus = "";
 
-  if(isset($_POST['formSubmit'])) { // chk if submitted
-    // get form fields
-    $uName = $_POST['uniName'];
-    $uAdmin = $_POST['uniAdmin'];
-
-    // init db
-    $conn = new mysqli('localhost', 'root', '', 'educreate');
-    if ($conn->connect_error) {
-        die("Connection failed: " . $conn->connect_error);
-    }
-
-    // gen save query
-    $sql = "INSERT INTO university (`universityName`, `universityAdmin`) VALUES ('$uName', (SELECT `username` FROM user WHERE `username` = '$uAdmin'))";
-
-    // execute query
-    if ($conn->query($sql) === TRUE) {
-        $sqlStatus = "New University registered successfully";
-    } else {
-        $sqlStatus = "Error: " . $sql . "<br>" . $conn->error;
-    }
-
-    $conn->close(); // close db
+  if(isset($_SESSION['formSubmit'])) { // chk if submitted
+    $sqlStatus = $_SESSION['sqlStatus'];
+    session_unset();
   }
 ?>
 
@@ -207,11 +189,11 @@
     </div>
     <div class="row">
       <div class="col-lg-7 mb-4 mb-lg-0">
-        <form action="#" method="post">
+        <form action="registerUni_formsubmit.php" method="post">
           <input required type="text" class="form-control mb-3" id="uniName" name="uniName" placeholder="University Name">
           <input required type="text" class="form-control mb-3" id="uniAdmin" name="uniAdmin" placeholder="University Admin">
 
-          <button type="submit" name="formSubmit" value="send" class="btn btn-primary">REGISTER</button>
+          <button type="submit" class="btn btn-primary">REGISTER</button>
           <button type="reset" class="btn btn-primary">RESET</button>
         </form>
       </div>
@@ -284,9 +266,6 @@
 <script src="plugins/venobox/venobox.min.js"></script>
 <!-- mixitup filter -->
 <script src="plugins/mixitup/mixitup.min.js"></script>
-<!-- google map -->
-<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCcABaamniA6OL5YvYSpB3pFMNrXwXnLwU&libraries=places"></script>
-<script src="plugins/google-map/gmap.js"></script>
 
 <!-- Main Script -->
 <script src="js/script.js"></script>
