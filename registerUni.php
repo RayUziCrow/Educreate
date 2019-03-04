@@ -1,9 +1,19 @@
+<?php // chk if uni is saved
+  session_start();
+  $sqlStatus = "";
+
+  if(isset($_SESSION['formSubmit'])) { // chk if submitted
+    $sqlStatus = $_SESSION['sqlStatus'];
+    session_unset();
+  }
+?>
+
 <!DOCTYPE html>
 <html lang="zxx">
 
 <head>
   <meta charset="utf-8">
-  <title>Educreate: Edit Qualification</title>
+  <title>Educreate: Register University</title>
 
   <!-- mobile responsive meta -->
   <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -29,13 +39,6 @@
   <!--Favicon-->
   <link rel="shortcut icon" href="images/favicon.ico" type="image/x-icon">
   <link rel="icon" href="images/favicon.ico" type="image/x-icon">
-
-  <!--EX Styles-->
-  <style>
-    .noresize {
-      resize: none;
-    }
-  </style>
 
 </head>
 
@@ -76,7 +79,7 @@
             <li class="nav-item @@home">
               <a class="nav-link" href="masterDashboard.html">MASTER DASHBOARD</a>
             </li>
-            <li class="nav-item dropdown view active">
+            <li class="nav-item dropdown view">
               <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown"
                 aria-haspopup="true" aria-expanded="false">
                 Qualifications
@@ -86,7 +89,7 @@
                 <a class="dropdown-item" href="editQualification.php">Edit Qualification</a>
               </div>
             </li>
-            <li class="nav-item @@contact">
+            <li class="nav-item active">
               <a class="nav-link" href="registerUni.html">REGISTER UNIVERSITY</a>
             </li>
           </ul>
@@ -166,47 +169,38 @@
     <div class="row">
       <div class="col-md-8">
         <ul class="list-inline custom-breadcrumb">
-          <li class="list-inline-item"><span class="h2 text-primary font-secondary">Edit Qualification</span></li>
+          <li class="list-inline-item"><span class="h2 text-primary font-secondary">Register University</span></li>
           <li class="list-inline-item text-white h3 font-secondary @@nasted"></li>
         </ul>
-        <p class="text-lighten">Edit an existing Qualification by selecting one and modifying its details.</p>
+        <p class="text-lighten">Enter the name of the University, and assign an existing University Admin to manage it.</p>
       </div>
     </div>
   </div>
 </section>
 <!-- /page title -->
 
-<!-- Qualification Form -->
+<!-- University Form -->
 <section class="section bg-gray">
   <div class="container">
     <div class="row">
       <div class="col-lg-12">
-        <h2 class="section-title">Edit Qualification</h2>
+        <h2 class="section-title">Register University</h2>
       </div>
     </div>
     <div class="row">
       <div class="col-lg-7 mb-4 mb-lg-0">
-        <form action="#">
-          <input required type="text" disabled class="form-control mb-3" id="qualificationName" name="qualificationName" placeholder="Qualification Name">
-          <input required type="text" disabled class="form-control mb-3" id="qualificationMinScore" name="qualificationMinScore" placeholder="Minimum Score">
-          <input required type="text" disabled class="form-control mb-3" id="qualificationMaxScore" name="qualificationMaxScore" placeholder="Maximum Score">
-          <textarea required type="text" disabled class="form-control mb-3 noresize" id="qualificationDesc" name="qualificationDesc" placeholder="Description"></textarea>
-          <textarea required type="text" disabled class="form-control mb-3 noresize" id="qualificationGrades" name="qualificationGrades" placeholder="Possible Grades"></textarea>
-          <button type="submit" value="send" class="btn btn-primary" style="display: none">SAVE</button>
-          <button type="reset" value="send" class="btn btn-primary" style="display: none">RESET</button>
+        <form action="registerUni_formsubmit.php" method="post">
+          <input required type="text" class="form-control mb-3" id="uniName" name="uniName" placeholder="University Name">
+          <input required type="text" class="form-control mb-3" id="uniAdmin" name="uniAdmin" placeholder="University Admin">
+
+          <button type="submit" class="btn btn-primary">REGISTER</button>
+          <button type="reset" class="btn btn-primary">RESET</button>
         </form>
       </div>
       <div class="col-lg-5">
-        <p class="mb-5">Edit an exist Qualification by selecting one from the list below.</p>
-        <div class="dropdown view">
-          <button class="nav-link dropdown-toggle" href="#" id="selectDropdown" role="button" data-toggle="dropdown"
-            aria-haspopup="true" aria-expanded="false">
-            Select Qualification
-          </button>
-          <div class="dropdown-menu" aria-labelledby="selectDropdown">
-            <a class="dropdown-item" href="#">Q1</a>
-            <a class="dropdown-item" href="#">Q2</a>
-          </div>
+        <p class="mb-5">Enter the name of the University, and assign an existing University Admin to manage it.</p>
+        <div>
+          <?php echo $sqlStatus ?>
         </div>
       </div>
     </div>
@@ -272,16 +266,9 @@
 <script src="plugins/venobox/venobox.min.js"></script>
 <!-- mixitup filter -->
 <script src="plugins/mixitup/mixitup.min.js"></script>
-<!-- google map -->
-<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCcABaamniA6OL5YvYSpB3pFMNrXwXnLwU&libraries=places"></script>
-<script src="plugins/google-map/gmap.js"></script>
 
 <!-- Main Script -->
 <script src="js/script.js"></script>
 
-<!-- EX Script -->
-<script>
-
-</script>
 </body>
 </html>
