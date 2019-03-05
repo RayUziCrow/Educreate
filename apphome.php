@@ -165,16 +165,14 @@ and Password='".md5($password)."' and applicant.Username = '$username'";
     $result = mysqli_query($con,$query);
     $rows = mysqli_num_rows($result);
         if($rows==1){
-        $_SESSION['username'] = $username; ?>
+        $_SESSION['username'] = $username;
             // Redirect user to helpinghandproviderprofile.php
-            <script type="text/javascript">
-    window.location="apphome.php";
-    </script> <?php
+        header("Location: helpinghandproviderprofile.php");
          }else{
-?> <div class='container'>
+echo "<div class='form'>
 <h3>Login failed. Invalid User or incorrect password</h3>
-<br/>Click here to <a href='login.php'>Retry</as></div>
-<?php  }
+<br/>Click here to <a href='login.php'>Retry</a></div>";
+    }
     }else{
 ?>
 <!-- Modal -->
@@ -197,11 +195,10 @@ and Password='".md5($password)."' and applicant.Username = '$username'";
                         <input type="password" class="form-control mb-3" name="password" placeholder="Password">
                     </div>
                     <div class="col-12">
-                        <button type="submit" class="btn btn-primary">LOGIN</button>
+                        <input type="submit" class="btn btn-primary">LOGIN</button>
                     </div>
                 </form>
-                <?php } ?>
-
+                  <?php } ?>
             </div>
         </div>
     </div>
@@ -211,19 +208,49 @@ and Password='".md5($password)."' and applicant.Username = '$username'";
 <!-- hero slider -->
 <section class="hero-section overlay bg-cover" data-background="images/banner/banner-1.jpg">
   <div class="container">
-    <div class="hero-slider">
-      <!-- slider item -->
-      <div class="hero-slider-item">
-        <div class="row">
-          <div class="col-md-8">
-            <h1 class="text-white" data-animation-out="fadeOutRight" data-delay-out="5" data-duration-in=".3" data-animation-in="fadeInLeft" data-delay-in=".1">
-              Your bright future is our mission</h1>
-            <p class="text-muted mb-4" data-animation-out="fadeOutRight" data-delay-out="5" data-duration-in=".3" data-animation-in="fadeInLeft" data-delay-in=".4">Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
-
-              </p>
-            <a href="contact.html" class="btn btn-primary" data-animation-out="fadeOutRight" data-delay-out="5" data-duration-in=".3" data-animation-in="fadeInLeft" data-delay-in=".7">Apply now</a>
-          </div>
+    <div class="list-group">
+      <a href="#" class="list-group-item list-group-item-action flex-column align-items-start">
+        <div class="d-flex w-70 justify-content-between">
+          <h5 class="mb-1">Bachelor's Degree In Finance</h5>
+          <small>3 days ago</small>
         </div>
+        <p class="mb-1">Donec id elit non mi porta gravida at eget metus. Maecenas sed diam eget risus varius blandit.</p>
+        <small>Donec id elit non mi porta.</small>
+      </a>
+      <a href="#" class="list-group-item list-group-item-action flex-column align-items-start">
+        <div class="d-flex w-70 justify-content-between">
+          <h5 class="mb-1">Diploma In Business Studies</h5>
+          <small class="mb-1">3 days ago</small>
+        </div>
+        <p class="mb-1">Donec id elit non mi porta gravida at eget metus. Maecenas sed diam eget risus varius blandit.</p>
+        <small class="mb-1">Donec id elit non mi porta.</small>
+      </a>
+      <a href="#" class="list-group-item list-group-item-action flex-column align-items-start">
+        <div class="d-flex w-70 justify-content-between">
+          <h5 class="mb-1">Degree In Psychology</h5>
+          <small class="mb-1">3 days ago</small>
+        </div>
+        <p class="mb-1">Donec id elit non mi porta gravida at eget metus. Maecenas sed diam eget risus varius blandit.</p>
+        <small class="mb-1">Donec id elit non mi porta.</small>
+      </a>
+      <a href="#" class="list-group-item list-group-item-action flex-column align-items-start">
+        <div class="d-flex w-70 justify-content-between">
+          <h5 class="mb-1">Degree In Psychology</h5>
+          <small class="mb-1">3 days ago</small>
+        </div>
+        <p class="mb-1">Donec id elit non mi porta gravida at eget metus. Maecenas sed diam eget risus varius blandit.</p>
+        <small class="mb-1">Donec id elit non mi porta.</small>
+      </a>
+      <a href="#" class="list-group-item list-group-item-action flex-column align-items-start">
+        <div class="d-flex w-70 justify-content-between">
+          <h5 class="mb-1">Degree In Psychology</h5>
+          <small class="mb-1">3 days ago</small>
+        </div>
+        <p class="mb-1">Donec id elit non mi porta gravida at eget metus. Maecenas sed diam eget risus varius blandit.</p>
+        <small class="mb-1">Donec id elit non mi porta.</small>
+      </a>
+    </div>
+
       </div>
       <!-- slider item -->
 
