@@ -163,9 +163,6 @@
             <div class="modal-body">
                 <form action="#" class="row">
                     <div class="col-12">
-                        <input type="text" class="form-control mb-3" id="loginPhone" name="loginPhone" placeholder="Phone">
-                    </div>
-                    <div class="col-12">
                         <input type="text" class="form-control mb-3" id="loginName" name="loginName" placeholder="Name">
                     </div>
                     <div class="col-12">
