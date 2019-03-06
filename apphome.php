@@ -3,7 +3,7 @@
 
 <head>
   <meta charset="utf-8">
-  <title>Educreate: Register</title>
+  <title>Educreate: Home</title>
 
   <!-- mobile responsive meta -->
   <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -33,8 +33,9 @@
 </head>
 
 <body>
-
-
+  <?php
+session_start();
+  ?>
 <!-- header -->
 <header class="fixed-top header">
   <!-- top header -->
@@ -56,7 +57,7 @@
             <li class="list-inline-item"><a class="text-uppercase text-color p-sm-2 py-2 px-0 d-inline-block" href="research.html">research</a></li>
             <li class="list-inline-item"><a class="text-uppercase text-color p-sm-2 py-2 px-0 d-inline-block" href="scholarship.html">SCHOLARSHIP</a></li>
             <li class="list-inline-item"><a class="text-uppercase text-color p-sm-2 py-2 px-0 d-inline-block" href="#" data-toggle="modal" data-target="#loginModal">login</a></li>
-            <li class="list-inline-item"><a class="text-uppercase text-color p-sm-2 py-2 px-0 d-inline-block" href="#" data-toggle="modal" data-target="#signupModal">register</a></li>
+
           </ul>
         </div>
       </div>
@@ -74,7 +75,7 @@
 
         <div class="collapse navbar-collapse" id="navigation">
           <ul class="navbar-nav ml-auto text-center">
-            <li class="nav-item @@home">
+            <li class="nav-item active">
               <a class="nav-link" href="index.html">Home</a>
             </li>
             <li class="nav-item @@about">
@@ -106,7 +107,7 @@
                 <a class="dropdown-item" href="blog-single.html">Blog Details</a>
               </div>
             </li>
-            <li class="nav-item active">
+            <li class="nav-item @@contact">
               <a class="nav-link" href="contact.html">CONTACT</a>
             </li>
           </ul>
@@ -128,28 +129,52 @@
             </div>
             <div class="modal-body">
                 <div class="login">
-                    <form action="#" class="row">
+
+                    <form name="login" class="form-horizontal" role="form"
+    method="post" action="">
                         <div class="col-12">
-                            <input type="text" class="form-control mb-3" id="signupPhone" name="signupPhone" placeholder="Phone">
+                            <input type="text" class="form-control mb-3" id="username" name="username" placeholder="Username">
                         </div>
                         <div class="col-12">
-                            <input type="text" class="form-control mb-3" id="signupName" name="signupName" placeholder="Name">
-                        </div>
-                        <div class="col-12">
-                            <input type="email" class="form-control mb-3" id="signupEmail" name="signupEmail" placeholder="Email">
-                        </div>
-                        <div class="col-12">
-                            <input type="password" class="form-control mb-3" id="signupPassword" name="signupPassword" placeholder="Password">
+                            <input type="password" class="form-control mb-3" id="password" name="password" placeholder="Password">
                         </div>
                         <div class="col-12">
                             <button type="submit" class="btn btn-primary">SIGN UP</button>
                         </div>
                     </form>
+
                 </div>
             </div>
         </div>
     </div>
 </div>
+<!-- Modal -->
+<?php
+require('Connections/Myconnection.php');
+// If form submitted, insert values into the database.
+if (isset($_POST['username'])){
+        // removes backslashes
+    $username = stripslashes($_REQUEST['username']);
+        //escapes special characters in a string
+    $username = mysqli_real_escape_string($con,$username);
+    $password = stripslashes($_REQUEST['password']);
+    $password = mysqli_real_escape_string($con,$password);
+    //Checking is user existing in the database or not
+    $query = "SELECT * FROM user,applicant WHERE user.Username='$username'
+and Password='".md5($password)."' and applicant.Username = '$username'";
+    $result = mysqli_query($con,$query);
+    $rows = mysqli_num_rows($result);
+        if($rows==1){
+        $_SESSION['username'] = $username;
+            // Redirect user to helpinghandproviderprofile.php
+        header("Location: helpinghandproviderprofile.php");
+         }else{
+echo "<div class='form'>
+<h3>Login failed. Invalid User or incorrect password</h3>
+<br/>Click here to <a href='login.php'>Retry</a></div>";
+    }
+    }else{
+?>
 <!-- Modal -->
 <div class="modal fade" id="loginModal" tabindex="-1" role="dialog" aria-hidden="true">
     <div class="modal-dialog modal-lg" role="document">
@@ -161,135 +186,145 @@
                 </button>
             </div>
             <div class="modal-body">
-                <form action="#" class="row">
+              <form name="login" class="form-horizontal" role="form"
+    method="post" action="">
                     <div class="col-12">
-                        <input type="text" class="form-control mb-3" id="loginName" name="loginName" placeholder="Name">
+                        <input type="text" class="form-control mb-3" name="username" placeholder="Username">
                     </div>
                     <div class="col-12">
-                        <input type="password" class="form-control mb-3" id="loginPassword" name="loginPassword" placeholder="Password">
+                        <input type="password" class="form-control mb-3" name="password" placeholder="Password">
                     </div>
                     <div class="col-12">
-                        <button type="submit" class="btn btn-primary">LOGIN</button>
+                        <input type="submit" class="btn btn-primary">LOGIN</button>
                     </div>
                 </form>
+                  <?php } ?>
             </div>
         </div>
     </div>
 </div>
 
-<!-- page title -->
-<section class="page-title-section overlay" data-background="images/backgrounds/page-title.jpg">
+
+<!-- hero slider -->
+<section class="hero-section overlay bg-cover" data-background="images/banner/banner-1.jpg">
   <div class="container">
-    <div class="row">
-      <div class="col-md-8">
-        <ul class="list-inline custom-breadcrumb">
-          <li class="list-inline-item"><a class="h2 text-primary font-secondary" href="@@page-link">Sign up</a></li>
-          <li class="list-inline-item text-white h3 font-secondary @@nasted"></li>
-        </ul>
-        <p class="text-lighten">Sign up and start applying for Programmes.</p>
-      </div>
+    <div class="list-group">
+      <a href="#" class="list-group-item list-group-item-action flex-column align-items-start">
+        <div class="d-flex w-70 justify-content-between">
+          <h5 class="mb-1">Bachelor's Degree In Finance</h5>
+          <small>3 days ago</small>
+        </div>
+        <p class="mb-1">Donec id elit non mi porta gravida at eget metus. Maecenas sed diam eget risus varius blandit.</p>
+        <small>Donec id elit non mi porta.</small>
+      </a>
+      <a href="#" class="list-group-item list-group-item-action flex-column align-items-start">
+        <div class="d-flex w-70 justify-content-between">
+          <h5 class="mb-1">Diploma In Business Studies</h5>
+          <small class="mb-1">3 days ago</small>
+        </div>
+        <p class="mb-1">Donec id elit non mi porta gravida at eget metus. Maecenas sed diam eget risus varius blandit.</p>
+        <small class="mb-1">Donec id elit non mi porta.</small>
+      </a>
+      <a href="#" class="list-group-item list-group-item-action flex-column align-items-start">
+        <div class="d-flex w-70 justify-content-between">
+          <h5 class="mb-1">Degree In Psychology</h5>
+          <small class="mb-1">3 days ago</small>
+        </div>
+        <p class="mb-1">Donec id elit non mi porta gravida at eget metus. Maecenas sed diam eget risus varius blandit.</p>
+        <small class="mb-1">Donec id elit non mi porta.</small>
+      </a>
+      <a href="#" class="list-group-item list-group-item-action flex-column align-items-start">
+        <div class="d-flex w-70 justify-content-between">
+          <h5 class="mb-1">Degree In Psychology</h5>
+          <small class="mb-1">3 days ago</small>
+        </div>
+        <p class="mb-1">Donec id elit non mi porta gravida at eget metus. Maecenas sed diam eget risus varius blandit.</p>
+        <small class="mb-1">Donec id elit non mi porta.</small>
+      </a>
+      <a href="#" class="list-group-item list-group-item-action flex-column align-items-start">
+        <div class="d-flex w-70 justify-content-between">
+          <h5 class="mb-1">Degree In Psychology</h5>
+          <small class="mb-1">3 days ago</small>
+        </div>
+        <p class="mb-1">Donec id elit non mi porta gravida at eget metus. Maecenas sed diam eget risus varius blandit.</p>
+        <small class="mb-1">Donec id elit non mi porta.</small>
+      </a>
     </div>
-  </div>
+
+      </div>
+      <!-- slider item -->
+
+      <!-- slider item -->
+
 </section>
-<!-- /page title -->
+<!-- /hero slider -->
 
-<!-- php -->
+<!-- banner-feature -->
 
-<?php
-require('Connections/Myconnection.php');
-// If form submitted, insert values into the database.
-if (isset($_REQUEST['Username'])){
-        // removes backslashes
-    $username = stripslashes($_REQUEST['Username']);
-        //escapes special characters in a string
-    $username = mysqli_real_escape_string($con,$username);
-    $password = stripslashes($_REQUEST['Password']);
-    $password = mysqli_real_escape_string($con,$password);
-    $name = stripslashes($_REQUEST['Name']);
-    $name = mysqli_real_escape_string($con,$name);
-    $email = stripslashes($_REQUEST['Email']);
-    $email = mysqli_real_escape_string($con,$email);
-    $idtype = stripslashes($_REQUEST['IDType']);
-    $idtype = mysqli_real_escape_string($con,$idtype);
-    $idnumber = stripslashes($_REQUEST['IDNumber']);
-    $idnumber = mysqli_real_escape_string($con,$idnumber);
-    $mobileno = stripslashes($_REQUEST['MobileNo']);
-    $mobileno = mysqli_real_escape_string($con,$mobileno);
-    $dateofbirth = stripslashes($_REQUEST['DateOfBirth']);
-    $dateofbirth = mysqli_real_escape_string($con,$dateofbirth);
+<!-- /banner-feature -->
+
+<!-- about us -->
+
+<!-- /about us -->
+
+<!-- courses -->
+
+    <!-- course list -->
+
+  <!-- course item -->
+
+<!-- /cta -->
+
+<!-- success story -->
+
+<!-- /success story -->
+
+<!-- events -->
+
+        <!-- location -->
+
+  <!-- event -->
+
+        <!-- location -->
+
+  <!-- event -->
+
+        <!-- location -->
+
+    <!-- mobile see all button -->
+
+<!-- /events -->
+
+<!-- teachers -->
+
+      <!-- teacher -->
+
+      <!-- teacher -->
 
 
-    //Insert parameters into User table.
-        $query = "INSERT into `User` (Username, Password, Name, Email)
-        VALUES ('$username', '".md5($password)."', '$name', '$email')";
+      <!-- teacher -->
 
+<!-- /teachers -->
 
-        $result = mysqli_query($con,$query);
-        if($result === TRUE){
-            //If input data type equals true, insert parameters into Applicant table
-        $query1 = "INSERT into `Applicant` (Username, IDType, IDNumber, MobileNo, DateOfBirth) VALUES ('$username', '$idtype', '$idnumber',
-          '$mobileno' , '$dateofbirth')";
-        $result = mysqli_query($con,$query1);
-            echo "<div class='form'>
-<h3>Successful.</h3>
-<br/>Click here to <a href='helpinghandlogin.php'>Login</a></div>";
-        }}else{
-?>
+<!-- blog -->
 
-<!-- php -->
+  <!-- blog post -->
 
-<!-- contact -->
-<section class="section bg-gray">
-  <div class="container">
-    <div class="row">
-      <div class="col-lg-12">
-        <h2 class="section-title">Sign up</h2>
-      </div>
-    </div>
-    <div class="row">
-      <div class="col-lg-7 mb-4 mb-lg-0">
-        <form name="registerapplicant" class="form-horizontal" role="form"
-        method="post" action="">
-            <div class="col-12">
-                <input type="text" class="form-control mb-3" id="signupUsername" name="Username" placeholder="Username">
-            </div>
-            <div class="col-12">
-                <input type="password" class="form-control mb-3" id="signupPassword" name="Password" placeholder="Password">
-            </div>
-            <div class="col-12">
-                <input type="text" class="form-control mb-3" id="signupName" name="Name" placeholder="Name">
-            </div>
-            <div class="col-12">
-                <input type="email" class="form-control mb-3" id="signupEmail" name="Email" placeholder="Email">
-            </div>
-            <div class="col-12">
-                <input type="text" class="form-control mb-3" id="signupPhone" name="MobileNo" placeholder="Phone">
-            </div>
-            <div class="col-12">
-                <input type="datetime" class="form-control mb-3" id="signupDOB" name="DateOfBirth" placeholder="Date Of Birth">
-            </div>
-            <div class="col-12">
-                <input type="text" class="form-control mb-3" id="signupIDType" name="IDType" placeholder="ID Type">
-            </div>
-            <div class="col-12">
-                <input type="text" class="form-control mb-3" id="signupIDNum" name="IDNumber" placeholder="ID Number">
-            </div>
-            <div class="col-12">
-                <button type="submit" class="btn btn-primary">SIGN UP</button>
-            </div>
-        </form>
-      </div>
-      <div class="col-lg-5">
-        <p class="mb-5">Create a new Qualification by entering the details.</p>
-      </div>
-    </div>
-  </div>
-</section>
-<?php } ?>
-<!-- /contact -->
+        <!-- post meta -->
+
+          <!-- post date -->
+
+          <!-- author -->
+
+  <!-- blog post -->
+
+  <!-- blog post -->
+
+<!-- /blog -->
 
 <!-- footer -->
 <footer>
+  <!-- newsletter -->
 
   <!-- footer content -->
   <div class="footer bg-footer section border-bottom">
@@ -299,7 +334,7 @@ if (isset($_REQUEST['Username'])){
           <!-- logo -->
           <a class="logo-footer" href="index.html"><img class="img-fluid mb-4" src="images/logo.png" alt="logo"></a>
           <ul class="list-unstyled">
-            <li class="mb-2">23621 15 Mile Rd #C104, Clinton MI, 48035, New York, USA</li>
+            <li class="mb-2">No. 15, Jalan Sri Semantan 1, Off Jalan Semantan, Bukit Damansara 50490 Kuala Lumpur</li>
             <li class="mb-2">+1 (2) 345 6789</li>
             <li class="mb-2">+1 (2) 345 6789</li>
             <li class="mb-2">contact@yourdomain.com</li>
