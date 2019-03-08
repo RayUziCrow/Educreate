@@ -172,7 +172,7 @@
           <li class="list-inline-item"><span class="h2 text-primary font-secondary">Register University</span></li>
           <li class="list-inline-item text-white h3 font-secondary @@nasted"></li>
         </ul>
-        <p class="text-lighten">Enter the name of the University, and assign an existing University Admin to manage it.</p>
+        <p class="text-lighten">Enter the name of the University, and assign a University Admin to manage it.</p>
       </div>
     </div>
   </div>
@@ -191,14 +191,17 @@
       <div class="col-lg-7 mb-4 mb-lg-0">
         <form action="registerUni_formsubmit.php" method="post">
           <input required type="text" class="form-control mb-3" id="uniName" name="uniName" placeholder="University Name">
-          <input required type="text" class="form-control mb-3" id="uniAdmin" name="uniAdmin" placeholder="University Admin">
-
+          <p>University Admin:</p>
+          <input required type="text" class="form-control mb-3" id="uniAdmin_username" name="uniAdmin_username" placeholder="Username">
+          <input required type="password" class="form-control mb-3" id="uniAdmin_password" name="uniAdmin_password" placeholder="Password">
+          <input required type="text" class="form-control mb-3" id="uniAdmin_name" name="uniAdmin_name" placeholder="Name">
+          <input required type="email" class="form-control mb-3" id="uniAdmin_email" name="uniAdmin_email" placeholder="Email">
           <button type="submit" class="btn btn-primary">REGISTER</button>
           <button type="reset" class="btn btn-primary">RESET</button>
         </form>
       </div>
       <div class="col-lg-5">
-        <p class="mb-5">Enter the name of the University, and assign an existing University Admin to manage it.</p>
+        <p class="mb-5">Enter the name of the University, and assign a University Admin to manage it.</p>
         <div>
           <?php echo $sqlStatus ?>
         </div>

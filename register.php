@@ -272,7 +272,7 @@ window.location="apphome.php";
                 <br/>
             </div>
             <div class="col-12">
-                <input type="password" class="form-control mb-3" id="ConfirmPassword"  name="ConfirmPassword" placeholder="Password" onblur="">
+                <input type="password" class="form-control mb-3" id="ConfirmPassword"  name="ConfirmPassword" placeholder="Confirm Password" onblur="">
             </div>
             <div class="col-12">
                 <input type="text" class="form-control mb-3" id="FullName"  name="Name" placeholder="Name">
