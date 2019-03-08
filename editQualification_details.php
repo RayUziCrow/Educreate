@@ -1,11 +1,43 @@
-<?php // chk if qualification is saved
+<?php
 session_start();
 $sqlStatus = "";
 
-if(isset($_SESSION['formSubmit'])) { // chk if submitted
-  $sqlStatus = $_SESSION['sqlStatus'];
+$selectedQ = -1;
+if(isset($_POST['selectedQ'])) { // chk if submitted
+  $selectedQ = $_POST['selectedQ'];
+}
+if(isset($_SESSION['formSubmit'])) {
+  if($_SESSION['formSubmit'] == "fail") {
+    $sqlStatus = $_SESSION['sqlStatus'];
+  }
   session_unset();
 }
+
+// init db
+$conn = new mysqli('localhost', 'root', '', 'educreate');
+if ($conn->connect_error) {
+  die("Connection failed: " . $conn->connect_error);
+}
+
+// dummy data (online)
+// $selectedQ = 1;
+
+$sql = "SELECT * FROM qualification WHERE qualificationID = '$selectedQ' LIMIT 1"; // gen load q query
+
+// execute query
+$result = $conn->query($sql);
+
+if ($result->num_rows > 0) {
+  // output data to var
+  $foundQ = $result->fetch_assoc();
+} else {
+
+}
+
+// dummy data (offline)
+// $foundQ = array("qualificationID" => 1, "qualificationName" => "DummyQ", "minimumScore" => 0, "maximumScore" => 100, "resultCalcDescription" => "avg_highest", "resultCalcSubjectCount" => 3);
+
+$conn->close(); // close db
 ?>
 
 <!DOCTYPE html>
@@ -13,7 +45,7 @@ if(isset($_SESSION['formSubmit'])) { // chk if submitted
 
 <head>
   <meta charset="utf-8">
-  <title>Educreate: New Qualification</title>
+  <title>Educreate: Edit Qualification</title>
 
   <!-- mobile responsive meta -->
   <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -84,7 +116,7 @@ if(isset($_SESSION['formSubmit'])) { // chk if submitted
               <a class="nav-link" href="index.html">Home</a>
             </li>
             <li class="nav-item @@home">
-              <a class="nav-link" href="masterDashboard.html">MASTER DASHBOARD</a>
+              <a class="nav-link" href="masterDashboard.php">MASTER DASHBOARD</a>
             </li>
             <li class="nav-item dropdown view active">
               <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown"
@@ -176,10 +208,10 @@ if(isset($_SESSION['formSubmit'])) { // chk if submitted
     <div class="row">
       <div class="col-md-8">
         <ul class="list-inline custom-breadcrumb">
-          <li class="list-inline-item"><span class="h2 text-primary font-secondary">New Qualification</span></li>
+          <li class="list-inline-item"><span class="h2 text-primary font-secondary">Edit Qualification</span></li>
           <li class="list-inline-item text-white h3 font-secondary @@nasted"></li>
         </ul>
-        <p class="text-lighten">Create a new Qualification by entering the details below.</p>
+        <p class="text-lighten">Edit an existing Qualification by modifying the details below.</p>
       </div>
     </div>
   </div>
@@ -191,15 +223,17 @@ if(isset($_SESSION['formSubmit'])) { // chk if submitted
   <div class="container">
     <div class="row">
       <div class="col-lg-12">
-        <h2 class="section-title">New Qualification</h2>
+        <h2 class="section-title">Edit Qualification<span id="qualificationTitle"></span></h2>
       </div>
     </div>
     <div class="row">
       <div class="col-lg-6 mb-4 mb-lg-0">
-        <form action="newQualification_formsubmit.php" method="post">
+        <form action="editQualification_formsubmit.php" method="post" onsubmit="chkScoreChanged()">
+          <input type="hidden" id="qualificationID" name="qualificationID">
           <input required type="text" class="form-control mb-3" id="qualificationName" name="qualificationName" placeholder="Qualification Name">
           <input required type="number" min="0" class="form-control mb-3" id="qualificationMinScore" name="qualificationMinScore" placeholder="Minimum Score">
           <input required type="number" min="0" class="form-control mb-3" id="qualificationMaxScore" name="qualificationMaxScore" placeholder="Maximum Score">
+          <input type="hidden" id="scoreChanged" name="scoreChanged" value="false">
           <p>Score Calculation:
             <select class="nav-link" id="qualificationResultCalc" name="qualificationResultCalc">
               <option value="avg_highest">Average of Highest Scores</option>
@@ -210,7 +244,7 @@ if(isset($_SESSION['formSubmit'])) { // chk if submitted
           </p>
           <p>Number of Subjects Calculated: <input required type='number' min='1' class='mb-3 nav-link' id='subjectCount' name='subjectCount' placeholder='eg: 1, 2, 3'></p>
           <div>
-            <button type="submit" class="btn btn-primary">CREATE</button>
+            <button type="submit" class="btn btn-primary">SAVE</button>
             <button type="reset" class="btn btn-primary">RESET</button>
           </div>
         </form>
@@ -284,24 +318,45 @@ if(isset($_SESSION['formSubmit'])) { // chk if submitted
     <script src="plugins/venobox/venobox.min.js"></script>
     <!-- mixitup filter -->
     <script src="plugins/mixitup/mixitup.min.js"></script>
-    <!-- google map -->
-    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCcABaamniA6OL5YvYSpB3pFMNrXwXnLwU&libraries=places"></script>
-    <script src="plugins/google-map/gmap.js"></script>
 
     <!-- Main Script -->
     <script src="js/script.js"></script>
 
     <!-- EX Script -->
     <script>
-    // function saveQualification() {
-    //   var qName = document.getElementById("qualificationName");
-    //   var qMinScore = document.getElementById("qualificationMinScore");
-    //   var qMaxScore = document.getElementById("qualificationMaxScore");
-    //   var qResultCalc = document.getElementById("qualificationResultCalc");
-    //   var qSubjectCount = document.getElementById("subjectCount");
-    //
-    //
-    // }
+    var foundQ = <?php echo json_encode($foundQ) ?>;
+    window.onload = loadQualification();
+
+    function loadQualification() {
+      // get form fields
+      var qTitle = document.getElementById("qualificationTitle");
+      var qID = document.getElementById("qualificationID");
+      var qName = document.getElementById("qualificationName");
+      var qMinScore = document.getElementById("qualificationMinScore");
+      var qMaxScore = document.getElementById("qualificationMaxScore");
+      var qResultCalc = document.getElementById("qualificationResultCalc");
+      var qSubjectCount = document.getElementById("subjectCount");
+
+      // fill fields
+      qTitle.innerHTML = ": " + foundQ.qualificationName;
+      qID.value = foundQ.qualificationID;
+      qName.value = foundQ.qualificationName;
+      qMinScore.value = foundQ.minimumScore;
+      qMaxScore.value = foundQ.maximumScore;
+      qResultCalc.value = foundQ.resultCalcDescription;
+      qSubjectCount.value = foundQ.resultCalcSubjectCount;
+    }
+
+    function chkScoreChanged() {
+      // get score fields
+      var qMinScore = document.getElementById("qualificationMinScore");
+      var qMaxScore = document.getElementById("qualificationMaxScore");
+
+      var scoreChanged = document.getElementById("scoreChanged");
+      if(qMinScore.value != foundQ.minimumScore || qMaxScore != foundQ.maximumScore) {
+        scoreChanged.value = "true";
+      }
+    }
     </script>
 
   </body>

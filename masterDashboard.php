@@ -1,3 +1,12 @@
+<?php
+session_start();
+$sqlStatus = "";
+
+if(isset($_SESSION['formSubmit'])) { // chk if submitted
+  $sqlStatus = $_SESSION['sqlStatus'];
+  session_unset();
+}
+?>
 <!DOCTYPE html>
 <html lang="zxx">
 
@@ -67,7 +76,7 @@
               <a class="nav-link" href="index.html">Home</a>
             </li>
             <li class="nav-item active">
-              <a class="nav-link" href="masterDashboard.html">MASTER DASHBOARD</a>
+              <a class="nav-link" href="masterDashboard.php">MASTER DASHBOARD</a>
             </li>
             <li class="nav-item dropdown view">
               <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown"
@@ -317,12 +326,17 @@
 <script src="plugins/venobox/venobox.min.js"></script>
 <!-- mixitup filter -->
 <script src="plugins/mixitup/mixitup.min.js"></script>
-<!-- google map -->
-<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCcABaamniA6OL5YvYSpB3pFMNrXwXnLwU&libraries=places"></script>
-<script src="plugins/google-map/gmap.js"></script>
 
 <!-- Main Script -->
 <script src="js/script.js"></script>
+
+<!-- EX Script -->
+<script>
+  var sqlStatus = <?php echo $sqlStatus ?>;
+  if(sqlStatus != "") {
+    alert(sqlStatus);
+  }  
+</script>
 
 </body>
 </html>
