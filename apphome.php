@@ -33,8 +33,25 @@
 </head>
 
 <body>
-  <?php
-session_start();
+  <?php require_once('Connections/Myconnection.php');
+  //include auth.php file on all secure pages
+include("auth.php");
+
+  $username = $_SESSION['Username'];
+  // Check connection
+  if (mysqli_connect_errno())
+    {
+    echo "Failed to connect to MySQL: " . mysqli_connect_error();
+    }
+
+  //To retrieve user attributes
+  $sql = "SELECT * FROM user WHERE Username = '$username'";
+
+  $result = $con->query($sql);
+
+  $con->close();
+
+
   ?>
 <!-- header -->
 <header class="fixed-top header">
@@ -43,20 +60,23 @@ session_start();
     <div class="container">
       <div class="row no-gutters">
         <div class="col-lg-4 text-center text-lg-left">
-          <a class="text-color mr-3" href="callto:+443003030266"><strong>CALL</strong> +44 300 303 0266</a>
+
           <ul class="list-inline d-inline">
-            <li class="list-inline-item mx-0"><a class="d-inline-block p-2 text-color" href="#"><i class="ti-facebook"></i></a></li>
-            <li class="list-inline-item mx-0"><a class="d-inline-block p-2 text-color" href="#"><i class="ti-twitter-alt"></i></a></li>
-            <li class="list-inline-item mx-0"><a class="d-inline-block p-2 text-color" href="#"><i class="ti-linkedin"></i></a></li>
-            <li class="list-inline-item mx-0"><a class="d-inline-block p-2 text-color" href="#"><i class="ti-instagram"></i></a></li>
+            <?php if ($result->num_rows > 0) {
+
+while($row = $result->fetch_assoc()) {
+
+   ?>
+            <li class="list-inline-item"><a class="text-uppercase text-color p-sm-2 py-2 px-0 d-inline-block" href="#"><?php echo $row['Username'];?></a></li>
+            <li class="list-inline-item"><a class="text-uppercase text-color p-sm-2 py-2 px-0 d-inline-block" href="#"><?php echo $row['Name']; }}?></a></li>
           </ul>
         </div>
         <div class="col-lg-8 text-center text-lg-right">
           <ul class="list-inline">
-            <li class="list-inline-item"><a class="text-uppercase text-color p-sm-2 py-2 px-0 d-inline-block" href="notice.html">notice</a></li>
-            <li class="list-inline-item"><a class="text-uppercase text-color p-sm-2 py-2 px-0 d-inline-block" href="research.html">research</a></li>
-            <li class="list-inline-item"><a class="text-uppercase text-color p-sm-2 py-2 px-0 d-inline-block" href="scholarship.html">SCHOLARSHIP</a></li>
-            <li class="list-inline-item"><a class="text-uppercase text-color p-sm-2 py-2 px-0 d-inline-block" href="#" data-toggle="modal" data-target="#loginModal">login</a></li>
+            <li class="list-inline-item"><a class="text-uppercase text-color p-sm-2 py-2 px-0 d-inline-block" href="notice.html"></li>
+            <li class="list-inline-item"><a class="text-uppercase text-color p-sm-2 py-2 px-0 d-inline-block" href="research.html"></li>
+            <li class="list-inline-item"><a class="text-uppercase text-color p-sm-2 py-2 px-0 d-inline-block" href="scholarship.html"></li>
+            <li class="list-inline-item"><a class="text-uppercase text-color p-sm-2 py-2 px-0 d-inline-block" href="logout.php">Logout</a></li>
 
           </ul>
         </div>
@@ -64,10 +84,11 @@ session_start();
     </div>
   </div>
   <!-- navbar -->
+
   <div class="navigation w-100">
     <div class="container">
       <nav class="navbar navbar-expand-lg navbar-light p-0">
-        <a class="navbar-brand" href="index.html"><img src="images/logo.png" alt="logo"></a>
+        <a class="navbar-brand" href="apphome.php"><img src="images/logo.png" alt="logo"></a>
         <button class="navbar-toggler rounded-0" type="button" data-toggle="collapse" data-target="#navigation"
           aria-controls="navigation" aria-expanded="false" aria-label="Toggle navigation">
           <span class="navbar-toggler-icon"></span>
@@ -75,8 +96,8 @@ session_start();
 
         <div class="collapse navbar-collapse" id="navigation">
           <ul class="navbar-nav ml-auto text-center">
-            <li class="nav-item active">
-              <a class="nav-link" href="index.html">Home</a>
+            <li class="nav-item">
+              <a class="nav-link" href="">Set up your obtained qualification</a>
             </li>
             <li class="nav-item @@about">
               <a class="nav-link" href="about.html">About</a>
@@ -87,35 +108,12 @@ session_start();
             <li class="nav-item @@events">
               <a class="nav-link" href="events.html">EVENTS</a>
             </li>
-            <li class="nav-item @@blog">
-              <a class="nav-link" href="blog.html">BLOG</a>
-            </li>
-            <li class="nav-item dropdown view">
-              <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown"
-                aria-haspopup="true" aria-expanded="false">
-                Pages
-              </a>
-              <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                <a class="dropdown-item" href="teacher.html">Teacher</a>
-                <a class="dropdown-item" href="teacher-single.html">Teacher Single</a>
-                <a class="dropdown-item" href="notice.html">Notice</a>
-                <a class="dropdown-item" href="notice-single.html">Notice Details</a>
-                <a class="dropdown-item" href="research.html">Research</a>
-                <a class="dropdown-item" href="scholarship.html">Scholarship</a>
-                <a class="dropdown-item" href="course-single.html">Course Details</a>
-                <a class="dropdown-item" href="event-single.html">Event Details</a>
-                <a class="dropdown-item" href="blog-single.html">Blog Details</a>
-              </div>
-            </li>
-            <li class="nav-item @@contact">
-              <a class="nav-link" href="contact.html">CONTACT</a>
-            </li>
           </ul>
         </div>
       </nav>
     </div>
   </div>
-</header>
+  </header>
 <!-- /header -->
 <!-- Modal -->
 <div class="modal fade" id="signupModal" tabindex="-1" role="dialog" aria-hidden="true">
@@ -133,7 +131,7 @@ session_start();
                     <form name="login" class="form-horizontal" role="form"
     method="post" action="">
                         <div class="col-12">
-                            <input type="text" class="form-control mb-3" id="username" name="username" placeholder="Username">
+                            <input type="text" class="form-control mb-3" id="Username" name="Username" placeholder="Username">
                         </div>
                         <div class="col-12">
                             <input type="password" class="form-control mb-3" id="password" name="password" placeholder="Password">
@@ -152,9 +150,9 @@ session_start();
 <?php
 require('Connections/Myconnection.php');
 // If form submitted, insert values into the database.
-if (isset($_POST['username'])){
+if (isset($_POST['Username'])){
         // removes backslashes
-    $username = stripslashes($_REQUEST['username']);
+    $username = stripslashes($_REQUEST['Username']);
         //escapes special characters in a string
     $username = mysqli_real_escape_string($con,$username);
     $password = stripslashes($_REQUEST['password']);
@@ -165,13 +163,13 @@ and Password='".md5($password)."' and applicant.Username = '$username'";
     $result = mysqli_query($con,$query);
     $rows = mysqli_num_rows($result);
         if($rows==1){
-        $_SESSION['username'] = $username;
+        $_SESSION['Username'] = $username;
             // Redirect user to helpinghandproviderprofile.php
         header("Location: helpinghandproviderprofile.php");
          }else{
 echo "<div class='form'>
 <h3>Login failed. Invalid User or incorrect password</h3>
-<br/>Click here to <a href='login.php'>Retry</a></div>";
+<br/>Click here to <a href='apphome.php'>Retry</a></div>";
     }
     }else{
 ?>
@@ -332,7 +330,7 @@ echo "<div class='form'>
       <div class="row">
         <div class="col-lg-4 col-sm-8 mb-5 mb-lg-0">
           <!-- logo -->
-          <a class="logo-footer" href="index.html"><img class="img-fluid mb-4" src="images/logo.png" alt="logo"></a>
+          <a class="logo-footer" href="index.php"><img class="img-fluid mb-4" src="images/logo.png" alt="logo"></a>
           <ul class="list-unstyled">
             <li class="mb-2">No. 15, Jalan Sri Semantan 1, Off Jalan Semantan, Bukit Damansara 50490 Kuala Lumpur</li>
             <li class="mb-2">+1 (2) 345 6789</li>

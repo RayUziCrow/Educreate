@@ -3,7 +3,7 @@
 
 <head>
   <meta charset="utf-8">
-  <title>Educreate: Register</title>
+  <title>Educreate: Home</title>
 
   <!-- mobile responsive meta -->
   <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -23,11 +23,8 @@
   <!-- venobox popup -->
   <link rel="stylesheet" href="plugins/venobox/venobox.css">
 
-
-
   <!-- Main Stylesheet -->
   <link href="css/style.css" rel="stylesheet">
-
 
   <!--Favicon-->
   <link rel="shortcut icon" href="images/favicon.ico" type="image/x-icon">
@@ -36,9 +33,9 @@
 </head>
 
 <body>
-<?php session_start(); ?>
-
-
+  <?php
+session_start();
+  ?>
 <!-- header -->
 <header class="fixed-top header">
   <!-- top header -->
@@ -56,6 +53,10 @@
         </div>
         <div class="col-lg-8 text-center text-lg-right">
           <ul class="list-inline">
+            <li class="list-inline-item"><a class="text-uppercase text-color p-sm-2 py-2 px-0 d-inline-block" href="notice.html">notice</a></li>
+            <li class="list-inline-item"><a class="text-uppercase text-color p-sm-2 py-2 px-0 d-inline-block" href="research.html">research</a></li>
+            <li class="list-inline-item"><a class="text-uppercase text-color p-sm-2 py-2 px-0 d-inline-block" href="register.php">signup</a></li>
+            <li class="list-inline-item"><a class="text-uppercase text-color p-sm-2 py-2 px-0 d-inline-block" href="#" data-toggle="modal" data-target="#loginModal">login</a></li>
 
           </ul>
         </div>
@@ -74,7 +75,7 @@
 
         <div class="collapse navbar-collapse" id="navigation">
           <ul class="navbar-nav ml-auto text-center">
-            <li class="nav-item @@home">
+            <li class="nav-item active">
               <a class="nav-link" href="index.php">Home</a>
             </li>
             <li class="nav-item @@about">
@@ -106,7 +107,7 @@
                 <a class="dropdown-item" href="blog-single.html">Blog Details</a>
               </div>
             </li>
-            <li class="nav-item active">
+            <li class="nav-item @@contact">
               <a class="nav-link" href="contact.html">CONTACT</a>
             </li>
           </ul>
@@ -128,28 +129,55 @@
             </div>
             <div class="modal-body">
                 <div class="login">
-                    <form action="#" class="row">
+
+                    <form name="login" class="form-horizontal" role="form"
+    method="post" action="">
                         <div class="col-12">
-                            <input type="text" class="form-control mb-3" id="signupPhone" name="signupPhone" placeholder="Phone">
+                            <input type="text" class="form-control mb-3" id="username" name="username" placeholder="Username">
                         </div>
                         <div class="col-12">
-                            <input type="text" class="form-control mb-3" id="signupName" name="signupName" placeholder="Name">
-                        </div>
-                        <div class="col-12">
-                            <input type="email" class="form-control mb-3" id="signupEmail" name="signupEmail" placeholder="Email">
-                        </div>
-                        <div class="col-12">
-                            <input type="password" class="form-control mb-3" id="signupPassword" name="signupPassword" placeholder="Password">
+                            <input type="password" class="form-control mb-3" id="password" name="password" placeholder="Password">
                         </div>
                         <div class="col-12">
                             <button type="submit" class="btn btn-primary">SIGN UP</button>
                         </div>
                     </form>
+
                 </div>
             </div>
         </div>
     </div>
 </div>
+<!-- Modal -->
+<?php
+require('Connections/Myconnection.php');
+
+// If form submitted, insert values into the database.
+if (isset($_POST['Username'])){
+        // removes backslashes
+    $username = stripslashes($_REQUEST['Username']);
+        //escapes special characters in a string
+    $username = mysqli_real_escape_string($con,$username);
+    $password = stripslashes($_REQUEST['Password']);
+    $password = mysqli_real_escape_string($con,$password);
+    //Checking is user existing in the database or not
+    $query = "SELECT * FROM user,applicant WHERE user.Username='$username'
+and Password='".md5($password)."' and applicant.Username = '$username'";
+    $result = mysqli_query($con,$query);
+    $rows = mysqli_num_rows($result);
+        if($rows==1){
+        $_SESSION['Username'] = $username; ?>
+            // Redirect user to helpinghandproviderprofile.php
+            <script type="text/javascript">
+    window.location="apphome.php";
+    </script> <?php
+         }else{
+?> <div class='container'>
+<h3>Login failed. Invalid User or incorrect password</h3>
+<br/>Click here to <a href='index.php'>Retry</as></div>
+<?php  }
+    }else{
+?>
 <!-- Modal -->
 <div class="modal fade" id="loginModal" tabindex="-1" role="dialog" aria-hidden="true">
     <div class="modal-dialog modal-lg" role="document">
@@ -161,160 +189,116 @@
                 </button>
             </div>
             <div class="modal-body">
-                <form action="#" class="row">
+              <form name="login" class="form-horizontal" role="form"
+    method="post" action="">
                     <div class="col-12">
-                        <input type="text" class="form-control mb-3" id="loginName" name="loginName" placeholder="Name">
+                        <input type="text" class="form-control mb-3" name="Username" placeholder="Username">
                     </div>
                     <div class="col-12">
-                        <input type="password" class="form-control mb-3" id="loginPassword" name="loginPassword" placeholder="Password">
+                        <input type="password" class="form-control mb-3" name="Password" placeholder="Password">
                     </div>
                     <div class="col-12">
                         <button type="submit" class="btn btn-primary">LOGIN</button>
                     </div>
                 </form>
+                <?php } ?>
+
             </div>
         </div>
     </div>
 </div>
 
-<!-- page title -->
-<section class="page-title-section overlay" data-background="images/backgrounds/page-title.jpg">
+
+<!-- hero slider -->
+<section class="hero-section overlay bg-cover" data-background="images/banner/banner-1.jpg">
   <div class="container">
-    <div class="row">
-      <div class="col-md-8">
-        <ul class="list-inline custom-breadcrumb">
-          <li class="list-inline-item"><a class="h2 text-primary font-secondary" href="@@page-link">Sign up</a></li>
-          <li class="list-inline-item text-white h3 font-secondary @@nasted"></li>
-        </ul>
-        <p class="text-lighten">Sign up and start applying for Programmes.</p>
+    <div class="hero-slider">
+      <!-- slider item -->
+      <div class="hero-slider-item">
+        <div class="row">
+          <div class="col-md-8">
+            <h1 class="text-white" data-animation-out="fadeOutRight" data-delay-out="5" data-duration-in=".3" data-animation-in="fadeInLeft" data-delay-in=".1">
+              Your bright future is our mission</h1>
+            <p class="text-muted mb-4" data-animation-out="fadeOutRight" data-delay-out="5" data-duration-in=".3" data-animation-in="fadeInLeft" data-delay-in=".4">Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
+
+              </p>
+            <a href="contact.html" class="btn btn-primary" data-animation-out="fadeOutRight" data-delay-out="5" data-duration-in=".3" data-animation-in="fadeInLeft" data-delay-in=".7" data-toggle="modal" data-target="#loginModal">Apply now</a>
+          </div>
+        </div>
       </div>
-    </div>
-  </div>
+      <!-- slider item -->
+
+      <!-- slider item -->
+
 </section>
-<!-- /page title -->
+<!-- /hero slider -->
 
-<!-- php -->
+<!-- banner-feature -->
 
-<?php
-require('Connections/Myconnection.php');
+<!-- /banner-feature -->
 
-// If form submitted, insert values into the database.
-if (isset($_REQUEST['Username'])){
-        // removes backslashes
-    $username = stripslashes($_REQUEST['Username']);
-        //escapes special characters in a string
-    $username = mysqli_real_escape_string($con,$username);
-    $password = stripslashes($_REQUEST['Password']);
-    $password = mysqli_real_escape_string($con,$password);
-    $name = stripslashes($_REQUEST['Name']);
-    $name = mysqli_real_escape_string($con,$name);
-    $email = stripslashes($_REQUEST['Email']);
-    $email = mysqli_real_escape_string($con,$email);
-    $idtype = stripslashes($_REQUEST['IDType']);
-    $idtype = mysqli_real_escape_string($con,$idtype);
-    $idnumber = stripslashes($_REQUEST['IDNumber']);
-    $idnumber = mysqli_real_escape_string($con,$idnumber);
-    $mobileno = stripslashes($_REQUEST['MobileNo']);
-    $mobileno = mysqli_real_escape_string($con,$mobileno);
-    $dateofbirth = stripslashes($_REQUEST['DateOfBirth']);
-    $dateofbirth = mysqli_real_escape_string($con,$dateofbirth);
+<!-- about us -->
+
+<!-- /about us -->
+
+<!-- courses -->
+
+    <!-- course list -->
+
+  <!-- course item -->
+
+<!-- /cta -->
+
+<!-- success story -->
+
+<!-- /success story -->
+
+<!-- events -->
+
+        <!-- location -->
+
+  <!-- event -->
+
+        <!-- location -->
+
+  <!-- event -->
+
+        <!-- location -->
+
+    <!-- mobile see all button -->
+
+<!-- /events -->
+
+<!-- teachers -->
+
+      <!-- teacher -->
+
+      <!-- teacher -->
 
 
-    //Insert parameters into User table.
-        $query = "INSERT into `user` (Username, Password, Name, Email)
-        VALUES ('$username', '".md5($password)."', '$name', '$email')";
+      <!-- teacher -->
 
+<!-- /teachers -->
 
-        $result = mysqli_query($con,$query);
-        if($result === TRUE){
-            //If input data type equals true, insert parameters into Applicant table
-        $query1 = "INSERT into `applicant` (Username, IDType, IDNumber, MobileNo, DateOfBirth) VALUES ('$username', '$idtype', '$idnumber',
-          '$mobileno' , '$dateofbirth')";
-        $result = mysqli_query($con,$query1);
+<!-- blog -->
 
-        $_SESSION['Username'] = $username;
-        $_SESSION['Name'] = $name;
+  <!-- blog post -->
 
-        ?>
-        <script type="text/javascript">
-window.location="apphome.php";
-</script>
-<?php
-}else{
-?> <div class='container'>
-<h3>Registration Failed</h3>
-<br/>Click here to <a href='register.php'>Retry</as></div>
-<?php  }}else{
-?>
+        <!-- post meta -->
 
-<!-- php -->
+          <!-- post date -->
 
-<!-- contact -->
-<section class="section bg-gray">
-  <div class="container">
-    <div class="row">
-      <div class="col-lg-12">
-        <h2 class="section-title">Sign up</h2>
-      </div>
-    </div>
-    <div class="row">
-      <div class="col-lg-7 mb-4 mb-lg-0">
-        <form name="registerapplicant" class="form-horizontal" role="form"
-        method="post" action="" onsubmit="return check()">
-            <div class="col-12">
-                <input type="text" class="form-control mb-3" id="Username" name="Username" placeholder="Username" onblur="">
+          <!-- author -->
 
-                <br/>
-            </div>
-            <div class="col-12">
-                <input type="password" class="form-control mb-3" id="Password"  name="Password" placeholder="Password" onblur="">
-                <span id="errorpass"> </span>
-                <br/>
-            </div>
-            <div class="col-12">
-                <input type="password" class="form-control mb-3" id="ConfirmPassword"  name="ConfirmPassword" placeholder="Password" onblur="">
-            </div>
-            <div class="col-12">
-                <input type="text" class="form-control mb-3" id="FullName"  name="Name" placeholder="Name">
-            </div>
-            <div class="col-12">
-                <input type="email" class="form-control mb-3" id="Email"  name="Email" placeholder="Email">
-            </div>
-            <div class="col-12">
-                <input type="text" class="form-control mb-3" id="MobileNo"  name="MobileNo" placeholder="Phone">
-            </div>
-            <div class="col-12">
-                <input type="date" class="form-control mb-3" id="DateOfBirth" name="DateOfBirth" placeholder="Date Of Birth">
-            </div>
-            <div class="col-12">
-              <p>ID Type :
-              <select name="IDType" id="IDType">
-                <option value="">select IDtype</option>
-                <option value="MYKAD">Mykad</option>
-                <option value="PASSPORT">Passport</option>
-              </select></p>
-            </div>
+  <!-- blog post -->
 
-            <div class="col-12">
-                <input type="text" class="form-control mb-3" id="IDNumber"  name="IDNumber" placeholder="ID Number">
-            </div>
-            <div class="col-12">
-                <button type="submit" class="btn btn-primary">SIGN UP</button>
-            </div>
-        </form>
-      </div>
-      <div class="col-lg-5">
-        <p class="mb-5"><span id="errorname"></span></br></br><p class="mb-5"><span id="errorpassword"></span></p>
-      </br></br><p class="mb-5"><span id="errorconfirmpass"></span></p>
-      </div>
-    </div>
-  </div>
-</section>
-<?php } ?>
-<!-- /contact -->
+  <!-- blog post -->
+
+<!-- /blog -->
 
 <!-- footer -->
 <footer>
+  <!-- newsletter -->
 
   <!-- footer content -->
   <div class="footer bg-footer section border-bottom">
@@ -322,9 +306,9 @@ window.location="apphome.php";
       <div class="row">
         <div class="col-lg-4 col-sm-8 mb-5 mb-lg-0">
           <!-- logo -->
-          <a class="logo-footer" href="index.html"><img class="img-fluid mb-4" src="images/logo.png" alt="logo"></a>
+          <a class="logo-footer" href="index.php"><img class="img-fluid mb-4" src="images/logo.png" alt="logo"></a>
           <ul class="list-unstyled">
-            <li class="mb-2">23621 15 Mile Rd #C104, Clinton MI, 48035, New York, USA</li>
+            <li class="mb-2">No. 15, Jalan Sri Semantan 1, Off Jalan Semantan, Bukit Damansara 50490 Kuala Lumpur</li>
             <li class="mb-2">+1 (2) 345 6789</li>
             <li class="mb-2">+1 (2) 345 6789</li>
             <li class="mb-2">contact@yourdomain.com</li>
@@ -399,80 +383,6 @@ window.location="apphome.php";
 </footer>
 <!-- /footer -->
 
-<!-- javascript -->
-<script>
-
-   function check()
-   {
-     var uname = document.getElementById('Username').value.trim();
-     var pword = document.getElementById('Password').value.trim();
-     var matchingpword = document.getElementById('ConfirmPassword').value.trim();
-     var fname = document.getElementById('FullName').value.trim();
-     var email = document.getElementById('Email').value.trim();
-     var dob = document.getElementById('DateOfBirth').value.trim();
-     var idtype = document.getElementById('IDType').value.trim();
-     var idnum = document.getElementById('IDNumber').value.trim();
-
-        if(uname == "")
-        {
-           //document.getElementById('errorname').innerHTML="invalid Username";
-           alert("Please enter a valid username");
-           return false;
-        }
-        if(pword ==null || pword =="")
-        {
-          //document.getElementById('errorpassword').innerHTML="invalid password";
-          alert("Please enter a valid password");
-          return false;
-        }
-        if(pword.length < 8)
-        {
-          alert("Password invalid. Please enter more than 8 characters");
-          return false;
-        }
-        if(matchingpword != pword)
-        {
-          //document.getElementById('errorconfirmpass').innerHTML="passwords do not match";
-          alert("Passwords do not match");
-          return false;
-        }
-        if(fname == "")
-        {
-           alert("Please enter a full name");
-           return false;
-        }
-        if(email == "")
-        {
-           alert("Your email is required");
-           return false;
-        }
-        if(dob == null)
-        {
-          alert("Please enter your date of birth")
-          return false;
-        }
-        if(idtype == "")
-        {
-          alert("Please select ID type")
-          return false;
-        }
-        if(idnum == "")
-        {
-          alert("Please enter ID number");
-          return false;
-        }
-        else
-        {
-          alert("Registration successful");
-          return true;
-        }
-   }
- </script>
-
-
-
-<!-- /javascript -->
-
 <!-- jQuery -->
 <script src="plugins/jQuery/jquery.min.js"></script>
 <!-- Bootstrap JS -->
@@ -491,8 +401,6 @@ window.location="apphome.php";
 
 <!-- Main Script -->
 <script src="js/script.js"></script>
-
-
 
 </body>
 </html>
