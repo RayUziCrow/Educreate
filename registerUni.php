@@ -65,7 +65,7 @@
   <div class="navigation w-100">
     <div class="container">
       <nav class="navbar navbar-expand-lg navbar-light p-0">
-        <a class="navbar-brand" href="index.html"><img src="images/logo.png" alt="logo"></a>
+        <a class="navbar-brand" href="index.php"><img src="images/logo.png" alt="logo"></a>
         <button class="navbar-toggler rounded-0" type="button" data-toggle="collapse" data-target="#navigation"
           aria-controls="navigation" aria-expanded="false" aria-label="Toggle navigation">
           <span class="navbar-toggler-icon"></span>
@@ -74,10 +74,10 @@
         <div class="collapse navbar-collapse" id="navigation">
           <ul class="navbar-nav ml-auto text-center">
             <li class="nav-item @@home">
-              <a class="nav-link" href="index.html">Home</a>
+              <a class="nav-link" href="index.php">Home</a>
             </li>
             <li class="nav-item @@home">
-              <a class="nav-link" href="masterDashboard.html">MASTER DASHBOARD</a>
+              <a class="nav-link" href="masterDashboard.php">MASTER DASHBOARD</a>
             </li>
             <li class="nav-item dropdown view">
               <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown"
@@ -85,12 +85,12 @@
                 Qualifications
               </a>
               <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                <a class="dropdown-item" href="newQualification.html">New Qualification</a>
+                <a class="dropdown-item" href="newQualification.php">New Qualification</a>
                 <a class="dropdown-item" href="editQualification.php">Edit Qualification</a>
               </div>
             </li>
             <li class="nav-item active">
-              <a class="nav-link" href="registerUni.html">REGISTER UNIVERSITY</a>
+              <a class="nav-link" href="registerUni.php">REGISTER UNIVERSITY</a>
             </li>
           </ul>
         </div>
@@ -220,7 +220,7 @@
       <div class="row">
         <div class="col-lg-4 col-sm-8 mb-5 mb-lg-0">
           <!-- logo -->
-          <a class="logo-footer" href="index.html"><img class="img-fluid mb-4" src="images/logo.png" alt="logo"></a>
+          <a class="logo-footer" href="index.php"><img class="img-fluid mb-4" src="images/logo.png" alt="logo"></a>
           <ul class="list-unstyled">
             <li class="mb-2">No. 15, Jalan Sri Semantan 1, Off Jalan Semantan, Bukit Damansara 50490 Kuala Lumpur</li>
             <li class="mb-2">Ridge Hon Fay (B1600595) <a href="mailto:rayuzicrow@gmail.com">rayuzicrow@gmail.com</a></li>
