@@ -3,7 +3,7 @@
 
 <head>
   <meta charset="utf-8">
-  <title>Educreate: Home</title>
+  <title>Educreate: Applicant Profile</title>
 
   <!-- mobile responsive meta -->
   <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -33,23 +33,23 @@
 </head>
 
 <body>
-  <?php require_once('Connections/Myconnection.php');
+  <?php
+
+  $conn = new mysqli('localhost', 'root', '', 'educreate');
+    if ($conn->connect_error) {
+        die("Connection failed: " . $conn->connect_error);
+    }
   //include auth.php file on all secure pages
 include("auth.php");
 
   $username = $_SESSION['Username'];
-  // Check connection
-  if (mysqli_connect_errno())
-    {
-    echo "Failed to connect to MySQL: " . mysqli_connect_error();
-    }
 
   //To retrieve user attributes
   $sql = "SELECT * FROM user WHERE Username = '$username'";
 
-  $result = $con->query($sql);
+  $result = $conn->query($sql);
 
-  $con->close();
+  $conn->close();
 
 
   ?>
@@ -73,9 +73,7 @@ while($row = $result->fetch_assoc()) {
         </div>
         <div class="col-lg-8 text-center text-lg-right">
           <ul class="list-inline">
-            <li class="list-inline-item"><a class="text-uppercase text-color p-sm-2 py-2 px-0 d-inline-block" href="notice.html"></li>
-            <li class="list-inline-item"><a class="text-uppercase text-color p-sm-2 py-2 px-0 d-inline-block" href="research.html"></li>
-            <li class="list-inline-item"><a class="text-uppercase text-color p-sm-2 py-2 px-0 d-inline-block" href="scholarship.html"></li>
+
             <li class="list-inline-item"><a class="text-uppercase text-color p-sm-2 py-2 px-0 d-inline-block" href="logout.php">Logout</a></li>
 
           </ul>
@@ -147,32 +145,7 @@ while($row = $result->fetch_assoc()) {
     </div>
 </div>
 <!-- Modal -->
-<?php
-require('Connections/Myconnection.php');
-// If form submitted, insert values into the database.
-if (isset($_POST['Username'])){
-        // removes backslashes
-    $username = stripslashes($_REQUEST['Username']);
-        //escapes special characters in a string
-    $username = mysqli_real_escape_string($con,$username);
-    $password = stripslashes($_REQUEST['password']);
-    $password = mysqli_real_escape_string($con,$password);
-    //Checking is user existing in the database or not
-    $query = "SELECT * FROM user,applicant WHERE user.Username='$username'
-and Password='".md5($password)."' and applicant.Username = '$username'";
-    $result = mysqli_query($con,$query);
-    $rows = mysqli_num_rows($result);
-        if($rows==1){
-        $_SESSION['Username'] = $username;
-            // Redirect user to helpinghandproviderprofile.php
-        header("Location: helpinghandproviderprofile.php");
-         }else{
-echo "<div class='form'>
-<h3>Login failed. Invalid User or incorrect password</h3>
-<br/>Click here to <a href='apphome.php'>Retry</a></div>";
-    }
-    }else{
-?>
+
 <!-- Modal -->
 <div class="modal fade" id="loginModal" tabindex="-1" role="dialog" aria-hidden="true">
     <div class="modal-dialog modal-lg" role="document">
@@ -196,7 +169,7 @@ echo "<div class='form'>
                         <input type="submit" class="btn btn-primary">LOGIN</button>
                     </div>
                 </form>
-                  <?php } ?>
+                  
             </div>
         </div>
     </div>
@@ -333,53 +306,13 @@ echo "<div class='form'>
           <a class="logo-footer" href="index.php"><img class="img-fluid mb-4" src="images/logo.png" alt="logo"></a>
           <ul class="list-unstyled">
             <li class="mb-2">No. 15, Jalan Sri Semantan 1, Off Jalan Semantan, Bukit Damansara 50490 Kuala Lumpur</li>
-            <li class="mb-2">+1 (2) 345 6789</li>
-            <li class="mb-2">+1 (2) 345 6789</li>
-            <li class="mb-2">contact@yourdomain.com</li>
-          </ul>
-        </div>
-        <!-- company -->
-        <div class="col-lg-2 col-md-3 col-sm-4 col-6 mb-5 mb-md-0">
-          <h4 class="text-white mb-5">COMPANY</h4>
-          <ul class="list-unstyled">
-            <li class="mb-3"><a class="text-color" href="about.html">About Us</a></li>
-            <li class="mb-3"><a class="text-color" href="teacher.html">Our Teacher</a></li>
-            <li class="mb-3"><a class="text-color" href="contact.html">Contact</a></li>
-            <li class="mb-3"><a class="text-color" href="blog.html">Blog</a></li>
-          </ul>
-        </div>
-        <!-- links -->
-        <div class="col-lg-2 col-md-3 col-sm-4 col-6 mb-5 mb-md-0">
-          <h4 class="text-white mb-5">LINKS</h4>
-          <ul class="list-unstyled">
-            <li class="mb-3"><a class="text-color" href="courses.html">Courses</a></li>
-            <li class="mb-3"><a class="text-color" href="event.html">Events</a></li>
-            <li class="mb-3"><a class="text-color" href="gallary.html">Gallary</a></li>
-            <li class="mb-3"><a class="text-color" href="faqs.html">FAQs</a></li>
-          </ul>
-        </div>
-        <!-- support -->
-        <div class="col-lg-2 col-md-3 col-sm-4 col-6 mb-5 mb-md-0">
-          <h4 class="text-white mb-5">SUPPORT</h4>
-          <ul class="list-unstyled">
-            <li class="mb-3"><a class="text-color" href="#">Forums</a></li>
-            <li class="mb-3"><a class="text-color" href="#">Documentation</a></li>
-            <li class="mb-3"><a class="text-color" href="#">Language</a></li>
-            <li class="mb-3"><a class="text-color" href="#">Release Status</a></li>
-          </ul>
-        </div>
-        <!-- support -->
-        <div class="col-lg-2 col-md-3 col-sm-4 col-6 mb-5 mb-md-0">
-          <h4 class="text-white mb-5">RECOMMEND</h4>
-          <ul class="list-unstyled">
-            <li class="mb-3"><a class="text-color" href="#">WordPress</a></li>
-            <li class="mb-3"><a class="text-color" href="#">LearnPress</a></li>
-            <li class="mb-3"><a class="text-color" href="#">WooCommerce</a></li>
-            <li class="mb-3"><a class="text-color" href="#">bbPress</a></li>
-          </ul>
+            <li class="mb-2">Ridge Hon Fay (B1600595) <a href="mailto:rayuzicrow@gmail.com">rayuzicrow@gmail.com</a></li>
+            <li class="mb-2">Muhamad Muqriz (B1800732) <a href="mailto:muqrizx@gmail.com">muqrizx@gmail.com<a/></li>
+            </ul>
+          </div>
+
         </div>
       </div>
-    </div>
   </div>
   <!-- copyright -->
   <div class="copyright py-4 bg-footer">
@@ -419,9 +352,6 @@ echo "<div class='form'>
 <script src="plugins/venobox/venobox.min.js"></script>
 <!-- mixitup filter -->
 <script src="plugins/mixitup/mixitup.min.js"></script>
-<!-- google map -->
-<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCcABaamniA6OL5YvYSpB3pFMNrXwXnLwU&libraries=places"></script>
-<script src="plugins/google-map/gmap.js"></script>
 
 <!-- Main Script -->
 <script src="js/script.js"></script>

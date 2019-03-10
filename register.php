@@ -196,28 +196,31 @@
 <!-- php -->
 
 <?php
-require('Connections/Myconnection.php');
+  $conn = new mysqli('localhost', 'root', '', 'educreate');
+    if ($conn->connect_error) {
+        die("Connection failed: " . $conn->connect_error);
+    }
 
 // If form submitted, insert values into the database.
 if (isset($_REQUEST['Username'])){
         // removes backslashes
     $username = stripslashes($_REQUEST['Username']);
         //escapes special characters in a string
-    $username = mysqli_real_escape_string($con,$username);
+    $username = mysqli_real_escape_string($conn,$username);
     $password = stripslashes($_REQUEST['Password']);
-    $password = mysqli_real_escape_string($con,$password);
+    $password = mysqli_real_escape_string($conn,$password);
     $name = stripslashes($_REQUEST['Name']);
-    $name = mysqli_real_escape_string($con,$name);
+    $name = mysqli_real_escape_string($conn,$name);
     $email = stripslashes($_REQUEST['Email']);
-    $email = mysqli_real_escape_string($con,$email);
+    $email = mysqli_real_escape_string($conn,$email);
     $idtype = stripslashes($_REQUEST['IDType']);
-    $idtype = mysqli_real_escape_string($con,$idtype);
+    $idtype = mysqli_real_escape_string($conn,$idtype);
     $idnumber = stripslashes($_REQUEST['IDNumber']);
-    $idnumber = mysqli_real_escape_string($con,$idnumber);
+    $idnumber = mysqli_real_escape_string($conn,$idnumber);
     $mobileno = stripslashes($_REQUEST['MobileNo']);
-    $mobileno = mysqli_real_escape_string($con,$mobileno);
+    $mobileno = mysqli_real_escape_string($conn,$mobileno);
     $dateofbirth = stripslashes($_REQUEST['DateOfBirth']);
-    $dateofbirth = mysqli_real_escape_string($con,$dateofbirth);
+    $dateofbirth = mysqli_real_escape_string($conn,$dateofbirth);
 
 
     //Insert parameters into User table.
@@ -225,12 +228,12 @@ if (isset($_REQUEST['Username'])){
         VALUES ('$username', '".md5($password)."', '$name', '$email')";
 
 
-        $result = mysqli_query($con,$query);
+        $result = mysqli_query($conn,$query);
         if($result === TRUE){
             //If input data type equals true, insert parameters into Applicant table
         $query1 = "INSERT into `applicant` (Username, IDType, IDNumber, MobileNo, DateOfBirth) VALUES ('$username', '$idtype', '$idnumber',
           '$mobileno' , '$dateofbirth')";
-        $result = mysqli_query($con,$query1);
+        $result = mysqli_query($conn,$query1);
 
         $_SESSION['Username'] = $username;
         $_SESSION['Name'] = $name;
@@ -238,6 +241,7 @@ if (isset($_REQUEST['Username'])){
         ?>
         <script type="text/javascript">
 window.location="apphome.php";
+alert('Registration successful')
 </script>
 <?php
 }else{
@@ -272,7 +276,7 @@ window.location="apphome.php";
                 <br/>
             </div>
             <div class="col-12">
-                <input type="password" class="form-control mb-3" id="ConfirmPassword"  name="ConfirmPassword" placeholder="Password" onblur="">
+                <input type="password" class="form-control mb-3" id="ConfirmPassword"  name="ConfirmPassword" placeholder="Confirm Password" onblur="">
             </div>
             <div class="col-12">
                 <input type="text" class="form-control mb-3" id="FullName"  name="Name" placeholder="Name">
@@ -463,7 +467,7 @@ window.location="apphome.php";
         }
         else
         {
-          alert("Registration successful");
+          
           return true;
         }
    }
