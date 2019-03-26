@@ -5,10 +5,12 @@ session_start();
 $selectedQ = -1;
 if(isset($_SESSION['selectedQ'])) { // chk if submitted
   $selectedQ = $_SESSION['selectedQ'];
+  unset($_SESSION['selectedQ']);
   if(isset($_SESSION['formSubmit'])) {
     $sqlStatus = $_SESSION['sqlStatus'];
+    unset($_SESSION['sqlStatus']);
+    unset($_SESSION['formSubmit']);
   }
-  session_unset();
 }
 
 // init db

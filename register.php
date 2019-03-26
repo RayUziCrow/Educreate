@@ -46,16 +46,15 @@
     <div class="container">
       <div class="row no-gutters">
         <div class="col-lg-4 text-center text-lg-left">
-          <a class="text-color mr-3" href="callto:+443003030266"><strong>CALL</strong> +44 300 303 0266</a>
           <ul class="list-inline d-inline">
-            <li class="list-inline-item mx-0"><a class="d-inline-block p-2 text-color" href="#"><i class="ti-facebook"></i></a></li>
-            <li class="list-inline-item mx-0"><a class="d-inline-block p-2 text-color" href="#"><i class="ti-twitter-alt"></i></a></li>
-            <li class="list-inline-item mx-0"><a class="d-inline-block p-2 text-color" href="#"><i class="ti-linkedin"></i></a></li>
-            <li class="list-inline-item mx-0"><a class="d-inline-block p-2 text-color" href="#"><i class="ti-instagram"></i></a></li>
+            <li class="list-inline-item mx-0"><a class="d-inline-block p-2 text-color" href="#">Not Logged In</a></li>
           </ul>
         </div>
         <div class="col-lg-8 text-center text-lg-right">
           <ul class="list-inline">
+
+            <li class="list-inline-item"><a class="text-uppercase text-color p-sm-2 py-2 px-0 d-inline-block" href="register.php">signup</a></li>
+            <li class="list-inline-item"><a class="text-uppercase text-color p-sm-2 py-2 px-0 d-inline-block" href="#">login</a></li>
 
           </ul>
         </div>
@@ -74,7 +73,7 @@
 
         <div class="collapse navbar-collapse" id="navigation">
           <ul class="navbar-nav ml-auto text-center">
-            <li class="nav-item @@home">
+            <li class="nav-item active">
               <a class="nav-link" href="index.php">Home</a>
             </li>
             <li class="nav-item @@about">
@@ -86,27 +85,7 @@
             <li class="nav-item @@events">
               <a class="nav-link" href="events.html">EVENTS</a>
             </li>
-            <li class="nav-item @@blog">
-              <a class="nav-link" href="blog.html">BLOG</a>
-            </li>
-            <li class="nav-item dropdown view">
-              <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown"
-                aria-haspopup="true" aria-expanded="false">
-                Pages
-              </a>
-              <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                <a class="dropdown-item" href="teacher.html">Teacher</a>
-                <a class="dropdown-item" href="teacher-single.html">Teacher Single</a>
-                <a class="dropdown-item" href="notice.html">Notice</a>
-                <a class="dropdown-item" href="notice-single.html">Notice Details</a>
-                <a class="dropdown-item" href="research.html">Research</a>
-                <a class="dropdown-item" href="scholarship.html">Scholarship</a>
-                <a class="dropdown-item" href="course-single.html">Course Details</a>
-                <a class="dropdown-item" href="event-single.html">Event Details</a>
-                <a class="dropdown-item" href="blog-single.html">Blog Details</a>
-              </div>
-            </li>
-            <li class="nav-item active">
+            <li class="nav-item @@contact">
               <a class="nav-link" href="contact.html">CONTACT</a>
             </li>
           </ul>
@@ -183,7 +162,7 @@
     <div class="row">
       <div class="col-md-8">
         <ul class="list-inline custom-breadcrumb">
-          <li class="list-inline-item"><a class="h2 text-primary font-secondary" href="@@page-link">Sign up</a></li>
+          <li class="list-inline-item"><span class="h2 text-primary font-secondary">Sign up</span></li>
           <li class="list-inline-item text-white h3 font-secondary @@nasted"></li>
         </ul>
         <p class="text-lighten">Sign up and start applying for Programmes.</p>
@@ -284,6 +263,7 @@ window.location="apphome.php";
                 <input type="text" class="form-control mb-3" id="MobileNo"  name="MobileNo" placeholder="Phone">
             </div>
             <div class="col-12">
+              <p>Date of Birth:</p>
                 <input type="date" class="form-control mb-3" id="DateOfBirth" name="DateOfBirth" placeholder="Date Of Birth">
             </div>
             <div class="col-12">
@@ -423,7 +403,7 @@ window.location="apphome.php";
         }
         else
         {
-          alert("Registration successful");
+          //alert("Registration successful");
           return true;
         }
    }

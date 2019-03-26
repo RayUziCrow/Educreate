@@ -1,19 +1,45 @@
-<?php // chk if uni is saved
-  session_start();
-  $sqlStatus = "";
+<?php
+session_start();
 
-  if(isset($_SESSION['formSubmit'])) { // chk if submitted
-    $sqlStatus = $_SESSION['sqlStatus'];
-    unset($_SESSION['sqlStatus']);
-  }
+$sqlStatus = "";
+if(isset($_SESSION['formSubmit'])) { // chk if submitted
+  $sqlStatus = $_SESSION['sqlStatus'];
+  unset($_SESSION['sqlStatus']);
+}
+
+require_once('Connections/Myconnection.php');
+
+//include auth.php file on all secure pages
+include("auth.php");
+
+$username = $_SESSION['username'];
+$name = $_SESSION['name'];
+// $name = "NO_NAME";
+// Check connection
+if (mysqli_connect_errno())
+{
+  echo "Failed to connect to MySQL: " . mysqli_connect_error();
+}
+
+//To retrieve user attributes
+$sql = "SELECT * FROM user WHERE Username = '$username'";
+
+$result = $con->query($sql); // execute query
+
+// if ($result->num_rows > 0) {
+//   while($row = $result->fetch_assoc()) {
+//     $name = $row['Name'];
+//   }
+// }
+
+$con->close();
 ?>
-
 <!DOCTYPE html>
 <html lang="zxx">
 
 <head>
   <meta charset="utf-8">
-  <title>Educreate: Register University</title>
+  <title>Educreate: University Dashboard</title>
 
   <!-- mobile responsive meta -->
   <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -52,11 +78,18 @@
     <div class="container">
       <div class="row no-gutters">
         <div class="col-lg-4 text-center text-lg-left">
-          <span class="text-color mr-3"><strong>MASTER ADMIN</strong></span>
 
+          <ul class="list-inline d-inline">
+            <li class="list-inline-item"><a class="text-uppercase text-color p-sm-2 py-2 px-0 d-inline-block" href="#"><?php echo $username ?></a></li>
+            <li class="list-inline-item"><a class="text-uppercase text-color p-sm-2 py-2 px-0 d-inline-block" href="#"><?php echo $name ?></a></li>
+          </ul>
         </div>
         <div class="col-lg-8 text-center text-lg-right">
+          <ul class="list-inline">
 
+            <li class="list-inline-item"><a class="text-uppercase text-color p-sm-2 py-2 px-0 d-inline-block" href="logout.php">Logout</a></li>
+
+          </ul>
         </div>
       </div>
     </div>
@@ -76,21 +109,11 @@
             <li class="nav-item @@home">
               <a class="nav-link" href="index.php">Home</a>
             </li>
-            <li class="nav-item @@home">
-              <a class="nav-link" href="masterDashboard.php">MASTER DASHBOARD</a>
-            </li>
-            <li class="nav-item dropdown view">
-              <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown"
-                aria-haspopup="true" aria-expanded="false">
-                Qualifications
-              </a>
-              <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                <a class="dropdown-item" href="newQualification.php">New Qualification</a>
-                <a class="dropdown-item" href="editQualification.php">Edit Qualification</a>
-              </div>
-            </li>
             <li class="nav-item active">
-              <a class="nav-link" href="registerUni.php">REGISTER UNIVERSITY</a>
+              <a class="nav-link" href="unihome.php">UNIVERSITY DASHBOARD</a>
+            </li>
+            <li class="nav-item @@contact">
+              <a class="nav-link" href="newProgramme.php">ADD PROGRAMME</a>
             </li>
           </ul>
         </div>
@@ -162,6 +185,54 @@
         </div>
     </div>
 </div>
+<!-- Modal -->
+<div class="modal fade" id="qualificationModal" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content rounded-0 border-0 p-4">
+            <div class="modal-header border-0">
+                <h3>Manage Qualifications</h3>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="manageQualifications">
+                  <div class="row justify-content-center">
+                    <!-- course item -->
+                    <div class="col-lg-4 col-sm-6 mb-5">
+                      <div class="card p-0 border-primary rounded-0 hover-shadow">
+
+                        <div class="card-body">
+
+                          <a href="newQualification.php">
+                            <h4 class="card-title">New Qualification</h4>
+                          </a>
+                          <p class="card-text mb-4"> Record a new Qualification.</p>
+                          <a href="newQualification.php" class="btn btn-primary btn-sm">Create</a>
+                        </div>
+                      </div>
+                    </div>
+                    <!-- course item -->
+                    <div class="col-lg-4 col-sm-6 mb-5">
+                      <div class="card p-0 border-primary rounded-0 hover-shadow">
+
+                        <div class="card-body">
+
+                          <a href="editQualification.php">
+                            <h4 class="card-title">Edit Qualification</h4>
+                          </a>
+                          <p class="card-text mb-4"> Edit an existing Qualification.</p>
+                          <a href="editQualification.php" class="btn btn-primary btn-sm">Edit</a>
+                        </div>
+                      </div>
+                    </div>
+
+                  </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 
 <!-- page title -->
 <section class="page-title-section overlay" data-background="images/backgrounds/page-title.jpg">
@@ -169,47 +240,106 @@
     <div class="row">
       <div class="col-md-8">
         <ul class="list-inline custom-breadcrumb">
-          <li class="list-inline-item"><span class="h2 text-primary font-secondary">Register University</span></li>
-          <li class="list-inline-item text-white h3 font-secondary @@nasted"></li>
+          <li class="list-inline-item"><span class="h2 text-primary font-secondary">University Dashboard</span></li>
+          <li class="list-inline-item text-white h3 font-secondary "></li>
         </ul>
-        <p class="text-lighten">Enter the name of the University, and assign a University Admin to manage it.</p>
+        <p class="text-lighten">Add a Programme to the University, or review Applications for existing Programmes.</p>
       </div>
     </div>
   </div>
 </section>
 <!-- /page title -->
 
-<!-- University Form -->
-<section class="section bg-gray">
+<!-- courses -->
+<section class="section">
   <div class="container">
-    <div class="row">
-      <div class="col-lg-12">
-        <h2 class="section-title">Register University</h2>
-      </div>
-    </div>
-    <div class="row">
-      <div class="col-lg-7 mb-4 mb-lg-0">
-        <form action="registerUni_formsubmit.php" method="post">
-          <input required type="text" class="form-control mb-3" id="uniName" name="uniName" placeholder="University Name">
-          <p>University Admin:</p>
-          <input required type="text" class="form-control mb-3" id="uniAdmin_username" name="uniAdmin_username" placeholder="Username">
-          <input required type="password" class="form-control mb-3" id="uniAdmin_password" name="uniAdmin_password" placeholder="Password">
-          <input required type="text" class="form-control mb-3" id="uniAdmin_name" name="uniAdmin_name" placeholder="Name">
-          <input required type="email" class="form-control mb-3" id="uniAdmin_email" name="uniAdmin_email" placeholder="Email">
-          <button type="submit" class="btn btn-primary">REGISTER</button>
-          <button type="reset" class="btn btn-primary">RESET</button>
-        </form>
-      </div>
-      <div class="col-lg-5">
-        <p class="mb-5">Enter the name of the University, and assign a University Admin to manage it.</p>
-        <div>
-          <?php echo $sqlStatus ?>
-        </div>
+    <!-- course list -->
+<div class="row justify-content-center">
+  <!-- course item -->
+  <div class="col-lg-4 col-sm-6 mb-5">
+    <div class="card p-0 border-primary rounded-0 hover-shadow">
+
+      <div class="card-body">
+
+        <a data-toggle="modal" data-target="#qualificationModal">
+          <h4 class="card-title">Add Programme</h4>
+        </a>
+        <p class="card-text mb-4"> Add a new Programme into the University.</p>
+        <a href="#" data-toggle="modal" data-target="#qualificationModal" class="btn btn-primary btn-sm">Add</a>
       </div>
     </div>
   </div>
+  <!-- course item -->
+  <div class="col-lg-4 col-sm-6 mb-5">
+    <div class="card p-0 border-primary rounded-0 hover-shadow">
+
+      <div class="card-body">
+
+        <a href="registerUni.php">
+          <h4 class="card-title">Review Applications</h4>
+        </a>
+        <p class="card-text mb-4"> Review Applications for existing Programmes.</p>
+        <a href="registerUni.php" class="btn btn-primary btn-sm">Review</a>
+      </div>
+    </div>
+  </div>
+
+</div>
+<!-- /course list -->
+<div class="row justify-content-center">
+  <div>
+    <h2 class="section-title">Programmes</h2>
+  </div>
+</div>
+<div class="row justify-content-center">
+  <div class="list-group">
+    <a href="#" class="list-group-item list-group-item-action flex-column align-items-start">
+      <div class="d-flex w-70 justify-content-between">
+        <h5 class="mb-1">Bachelor's Degree In Finance</h5>
+        <small>3 days ago</small>
+      </div>
+      <p class="mb-1">Donec id elit non mi porta gravida at eget metus. Maecenas sed diam eget risus varius blandit.</p>
+      <small>Donec id elit non mi porta.</small>
+    </a>
+    <a href="#" class="list-group-item list-group-item-action flex-column align-items-start">
+      <div class="d-flex w-70 justify-content-between">
+        <h5 class="mb-1">Diploma In Business Studies</h5>
+        <small class="mb-1">3 days ago</small>
+      </div>
+      <p class="mb-1">Donec id elit non mi porta gravida at eget metus. Maecenas sed diam eget risus varius blandit.</p>
+      <small class="mb-1">Donec id elit non mi porta.</small>
+    </a>
+    <a href="#" class="list-group-item list-group-item-action flex-column align-items-start">
+      <div class="d-flex w-70 justify-content-between">
+        <h5 class="mb-1">Degree In Psychology</h5>
+        <small class="mb-1">3 days ago</small>
+      </div>
+      <p class="mb-1">Donec id elit non mi porta gravida at eget metus. Maecenas sed diam eget risus varius blandit.</p>
+      <small class="mb-1">Donec id elit non mi porta.</small>
+    </a>
+    <a href="#" class="list-group-item list-group-item-action flex-column align-items-start">
+      <div class="d-flex w-70 justify-content-between">
+        <h5 class="mb-1">Degree In Psychology</h5>
+        <small class="mb-1">3 days ago</small>
+      </div>
+      <p class="mb-1">Donec id elit non mi porta gravida at eget metus. Maecenas sed diam eget risus varius blandit.</p>
+      <small class="mb-1">Donec id elit non mi porta.</small>
+    </a>
+    <a href="#" class="list-group-item list-group-item-action flex-column align-items-start">
+      <div class="d-flex w-70 justify-content-between">
+        <h5 class="mb-1">Degree In Psychology</h5>
+        <small class="mb-1">3 days ago</small>
+      </div>
+      <p class="mb-1">Donec id elit non mi porta gravida at eget metus. Maecenas sed diam eget risus varius blandit.</p>
+      <small class="mb-1">Donec id elit non mi porta.</small>
+    </a>
+  </div>
+</div>
+    <!-- course list -->
+
+  </div>
 </section>
-<!-- /contact -->
+<!-- /courses -->
 
 <!-- footer -->
 <footer>
@@ -225,11 +355,11 @@
             <li class="mb-2">No. 15, Jalan Sri Semantan 1, Off Jalan Semantan, Bukit Damansara 50490 Kuala Lumpur</li>
             <li class="mb-2">Ridge Hon Fay (B1600595) <a href="mailto:rayuzicrow@gmail.com">rayuzicrow@gmail.com</a></li>
             <li class="mb-2">Muhamad Muqriz (B1800732) <a href="mailto:muqrizx@gmail.com">muqrizx@gmail.com<a/></li>
-          </ul>
-        </div>
+            </ul>
+          </div>
 
+        </div>
       </div>
-    </div>
   </div>
   <!-- copyright -->
   <div class="copyright py-4 bg-footer">
@@ -241,7 +371,7 @@
               var CurrentYear = new Date().getFullYear()
               document.write(CurrentYear)
             </script>
-            © Theme By <a href="https://themefisher.com">themefisher.com</a></p> . All Rights Reserved.
+            © Theme By <a href="https://themefisher.com">themefisher.com</a></p> . All Rights Reserved.<p/>
         </div>
         <div class="col-sm-5 text-sm-right text-center">
           <ul class="list-inline">
@@ -272,6 +402,14 @@
 
 <!-- Main Script -->
 <script src="js/script.js"></script>
+
+<!-- EX Script -->
+<script>
+  var sqlStatus = "<?php echo $sqlStatus ?>";
+  if(sqlStatus != "") {
+    alert(sqlStatus);
+  }
+</script>
 
 </body>
 </html>
