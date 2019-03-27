@@ -1,3 +1,33 @@
+<?php require_once('Connections/Myconnection.php');
+
+session_start();
+
+//include auth.php file on all secure pages
+include("auth.php");
+
+$username = $_SESSION['username'];
+$name = $_SESSION['name'];
+// $name = "NO_NAME";
+// Check connection
+if (mysqli_connect_errno())
+{
+  echo "Failed to connect to MySQL: " . mysqli_connect_error();
+}
+
+//To retrieve user attributes
+$sql = "SELECT * FROM user WHERE Username = '$username'";
+
+$result = $con->query($sql); // execute query
+
+// if ($result->num_rows > 0) {
+//   while($row = $result->fetch_assoc()) {
+//     $name = $row['Name'];
+//   }
+// }
+
+$con->close();
+?>
+
 <!DOCTYPE html>
 <html lang="zxx">
 
@@ -33,61 +63,36 @@
 </head>
 
 <body>
-  <?php require_once('Connections/Myconnection.php');
-  //include auth.php file on all secure pages
-include("auth.php");
+  <!-- header -->
+  <header class="fixed-top header">
+    <!-- top header -->
+    <div class="top-header py-2 bg-white">
+      <div class="container">
+        <div class="row no-gutters">
+          <div class="col-lg-4 text-center text-lg-left">
 
-  $username = $_SESSION['Username'];
-  // Check connection
-  if (mysqli_connect_errno())
-    {
-    echo "Failed to connect to MySQL: " . mysqli_connect_error();
-    }
+            <ul class="list-inline d-inline">
+              <li class="list-inline-item"><a class="text-uppercase text-color p-sm-2 py-2 px-0 d-inline-block" href="#"><?php echo $username ?></a></li>
+              <li class="list-inline-item"><a class="text-uppercase text-color p-sm-2 py-2 px-0 d-inline-block" href="#"><?php echo $name ?></a></li>
+            </ul>
+          </div>
+          <div class="col-lg-8 text-center text-lg-right">
+            <ul class="list-inline">
 
-  //To retrieve user attributes
-  $sql = "SELECT * FROM user WHERE Username = '$username'";
+              <li class="list-inline-item"><a class="text-uppercase text-color p-sm-2 py-2 px-0 d-inline-block" href="logout.php">Logout</a></li>
 
-  $result = $con->query($sql);
-
-  $con->close();
-
-
-  ?>
-<!-- header -->
-<header class="fixed-top header">
-  <!-- top header -->
-  <div class="top-header py-2 bg-white">
-    <div class="container">
-      <div class="row no-gutters">
-        <div class="col-lg-4 text-center text-lg-left">
-
-          <ul class="list-inline d-inline">
-            <?php if ($result->num_rows > 0) {
-
-while($row = $result->fetch_assoc()) {
-
-   ?>
-            <li class="list-inline-item"><a class="text-uppercase text-color p-sm-2 py-2 px-0 d-inline-block" href="#"><?php echo $row['Username'];?></a></li>
-            <li class="list-inline-item"><a class="text-uppercase text-color p-sm-2 py-2 px-0 d-inline-block" href="#"><?php echo $row['Name']; }}?></a></li>
-          </ul>
-        </div>
-        <div class="col-lg-8 text-center text-lg-right">
-          <ul class="list-inline">
-
-            <li class="list-inline-item"><a class="text-uppercase text-color p-sm-2 py-2 px-0 d-inline-block" href="logout.php">Logout</a></li>
-
-          </ul>
+            </ul>
+          </div>
         </div>
       </div>
     </div>
-  </div>
-  <!-- navbar -->
+    <!-- navbar -->
 
-  <div class="navigation w-100">
-    <div class="container">
-      <nav class="navbar navbar-expand-lg navbar-light p-0">
-        <a class="navbar-brand" href="apphome.php"><img src="images/logo.png" alt="logo"></a>
-        <button class="navbar-toggler rounded-0" type="button" data-toggle="collapse" data-target="#navigation"
+    <div class="navigation w-100">
+      <div class="container">
+        <nav class="navbar navbar-expand-lg navbar-light p-0">
+          <a class="navbar-brand" href="apphome.php"><img src="images/logo.png" alt="logo"></a>
+          <button class="navbar-toggler rounded-0" type="button" data-toggle="collapse" data-target="#navigation"
           aria-controls="navigation" aria-expanded="false" aria-label="Toggle navigation">
           <span class="navbar-toggler-icon"></span>
         </button>
@@ -95,7 +100,7 @@ while($row = $result->fetch_assoc()) {
         <div class="collapse navbar-collapse" id="navigation">
           <ul class="navbar-nav ml-auto text-center">
             <li class="nav-item">
-              <a class="nav-link" href="">Set up your obtained qualification</a>
+              <a class="nav-link" href="">Set Up Obtained Qualifications</a>
             </li>
             <li class="nav-item @@about">
               <a class="nav-link" href="about.html">About</a>
@@ -111,93 +116,66 @@ while($row = $result->fetch_assoc()) {
       </nav>
     </div>
   </div>
-  </header>
+</header>
 <!-- /header -->
 <!-- Modal -->
 <div class="modal fade" id="signupModal" tabindex="-1" role="dialog" aria-hidden="true">
-    <div class="modal-dialog modal-lg" role="document">
-        <div class="modal-content rounded-0 border-0 p-4">
-            <div class="modal-header border-0">
-                <h3>Register</h3>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <div class="modal-body">
-                <div class="login">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content rounded-0 border-0 p-4">
+      <div class="modal-header border-0">
+        <h3>Register</h3>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="login">
 
-                    <form name="login" class="form-horizontal" role="form"
-    method="post" action="">
-                        <div class="col-12">
-                            <input type="text" class="form-control mb-3" id="Username" name="Username" placeholder="Username">
-                        </div>
-                        <div class="col-12">
-                            <input type="password" class="form-control mb-3" id="password" name="password" placeholder="Password">
-                        </div>
-                        <div class="col-12">
-                            <button type="submit" class="btn btn-primary">SIGN UP</button>
-                        </div>
-                    </form>
+          <form name="login" class="form-horizontal" role="form"
+          method="post" action="">
+          <div class="col-12">
+            <input type="text" class="form-control mb-3" id="Username" name="Username" placeholder="Username">
+          </div>
+          <div class="col-12">
+            <input type="password" class="form-control mb-3" id="password" name="password" placeholder="Password">
+          </div>
+          <div class="col-12">
+            <button type="submit" class="btn btn-primary">SIGN UP</button>
+          </div>
+        </form>
 
-                </div>
-            </div>
-        </div>
+      </div>
     </div>
+  </div>
+</div>
 </div>
 <!-- Modal -->
-<?php
-require('Connections/Myconnection.php');
-// If form submitted, insert values into the database.
-if (isset($_POST['Username'])){
-        // removes backslashes
-    $username = stripslashes($_REQUEST['Username']);
-        //escapes special characters in a string
-    $username = mysqli_real_escape_string($con,$username);
-    $password = stripslashes($_REQUEST['password']);
-    $password = mysqli_real_escape_string($con,$password);
-    //Checking is user existing in the database or not
-    $query = "SELECT * FROM user,applicant WHERE user.Username='$username'
-and Password='".md5($password)."' and applicant.Username = '$username'";
-    $result = mysqli_query($con,$query);
-    $rows = mysqli_num_rows($result);
-        if($rows==1){
-        $_SESSION['Username'] = $username;
-            // Redirect user to helpinghandproviderprofile.php
-        header("Location: helpinghandproviderprofile.php");
-         }else{
-echo "<div class='form'>
-<h3>Login failed. Invalid User or incorrect password</h3>
-<br/>Click here to <a href='apphome.php'>Retry</a></div>";
-    }
-    }else{
-?>
 <!-- Modal -->
 <div class="modal fade" id="loginModal" tabindex="-1" role="dialog" aria-hidden="true">
-    <div class="modal-dialog modal-lg" role="document">
-        <div class="modal-content rounded-0 border-0 p-4">
-            <div class="modal-header border-0">
-                <h3>Login</h3>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <div class="modal-body">
-              <form name="login" class="form-horizontal" role="form"
-    method="post" action="">
-                    <div class="col-12">
-                        <input type="text" class="form-control mb-3" name="username" placeholder="Username">
-                    </div>
-                    <div class="col-12">
-                        <input type="password" class="form-control mb-3" name="password" placeholder="Password">
-                    </div>
-                    <div class="col-12">
-                        <input type="submit" class="btn btn-primary">LOGIN</button>
-                    </div>
-                </form>
-                  <?php } ?>
-            </div>
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content rounded-0 border-0 p-4">
+      <div class="modal-header border-0">
+        <h3>Login</h3>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form name="login" class="form-horizontal" role="form"
+        method="post" action="">
+        <div class="col-12">
+          <input type="text" class="form-control mb-3" name="username" placeholder="Username">
         </div>
+        <div class="col-12">
+          <input type="password" class="form-control mb-3" name="password" placeholder="Password">
+        </div>
+        <div class="col-12">
+          <input type="submit" class="btn btn-primary">LOGIN</button>
+        </div>
+      </form>
     </div>
+  </div>
+</div>
 </div>
 
 
@@ -247,10 +225,10 @@ echo "<div class='form'>
       </a>
     </div>
 
-      </div>
-      <!-- slider item -->
+  </div>
+  <!-- slider item -->
 
-      <!-- slider item -->
+  <!-- slider item -->
 
 </section>
 <!-- /hero slider -->
@@ -265,9 +243,9 @@ echo "<div class='form'>
 
 <!-- courses -->
 
-    <!-- course list -->
+<!-- course list -->
 
-  <!-- course item -->
+<!-- course item -->
 
 <!-- /cta -->
 
@@ -277,44 +255,44 @@ echo "<div class='form'>
 
 <!-- events -->
 
-        <!-- location -->
+<!-- location -->
 
-  <!-- event -->
+<!-- event -->
 
-        <!-- location -->
+<!-- location -->
 
-  <!-- event -->
+<!-- event -->
 
-        <!-- location -->
+<!-- location -->
 
-    <!-- mobile see all button -->
+<!-- mobile see all button -->
 
 <!-- /events -->
 
 <!-- teachers -->
 
-      <!-- teacher -->
+<!-- teacher -->
 
-      <!-- teacher -->
+<!-- teacher -->
 
 
-      <!-- teacher -->
+<!-- teacher -->
 
 <!-- /teachers -->
 
 <!-- blog -->
 
-  <!-- blog post -->
+<!-- blog post -->
 
-        <!-- post meta -->
+<!-- post meta -->
 
-          <!-- post date -->
+<!-- post date -->
 
-          <!-- author -->
+<!-- author -->
 
-  <!-- blog post -->
+<!-- blog post -->
 
-  <!-- blog post -->
+<!-- blog post -->
 
 <!-- /blog -->
 
@@ -338,48 +316,48 @@ echo "<div class='form'>
 
         </div>
       </div>
-  </div>
-  <!-- copyright -->
-  <div class="copyright py-4 bg-footer">
-    <div class="container">
-      <div class="row">
-        <div class="col-sm-7 text-sm-left text-center">
-          <p class="mb-0">Copyright
-            <script>
+    </div>
+    <!-- copyright -->
+    <div class="copyright py-4 bg-footer">
+      <div class="container">
+        <div class="row">
+          <div class="col-sm-7 text-sm-left text-center">
+            <p class="mb-0">Copyright
+              <script>
               var CurrentYear = new Date().getFullYear()
               document.write(CurrentYear)
-            </script>
-            © Theme By <a href="https://themefisher.com">themefisher.com</a></p> . All Rights Reserved.
-        </div>
-        <div class="col-sm-5 text-sm-right text-center">
-          <ul class="list-inline">
-            <li class="list-inline-item"><a class="d-inline-block p-2" href="https://www.facebook.com/themefisher"><i class="ti-facebook text-primary"></i></a></li>
-            <li class="list-inline-item"><a class="d-inline-block p-2" href="https://www.twitter.com/themefisher"><i class="ti-twitter-alt text-primary"></i></a></li>
-            <li class="list-inline-item"><a class="d-inline-block p-2" href="#"><i class="ti-instagram text-primary"></i></a></li>
-            <li class="list-inline-item"><a class="d-inline-block p-2" href="https://dribbble.com/themefisher"><i class="ti-dribbble text-primary"></i></a></li>
-          </ul>
+              </script>
+              © Theme By <a href="https://themefisher.com">themefisher.com</a></p> . All Rights Reserved.
+            </div>
+            <div class="col-sm-5 text-sm-right text-center">
+              <ul class="list-inline">
+                <li class="list-inline-item"><a class="d-inline-block p-2" href="https://www.facebook.com/themefisher"><i class="ti-facebook text-primary"></i></a></li>
+                <li class="list-inline-item"><a class="d-inline-block p-2" href="https://www.twitter.com/themefisher"><i class="ti-twitter-alt text-primary"></i></a></li>
+                <li class="list-inline-item"><a class="d-inline-block p-2" href="#"><i class="ti-instagram text-primary"></i></a></li>
+                <li class="list-inline-item"><a class="d-inline-block p-2" href="https://dribbble.com/themefisher"><i class="ti-dribbble text-primary"></i></a></li>
+              </ul>
+            </div>
+          </div>
         </div>
       </div>
-    </div>
-  </div>
-</footer>
-<!-- /footer -->
+    </footer>
+    <!-- /footer -->
 
-<!-- jQuery -->
-<script src="plugins/jQuery/jquery.min.js"></script>
-<!-- Bootstrap JS -->
-<script src="plugins/bootstrap/bootstrap.min.js"></script>
-<!-- slick slider -->
-<script src="plugins/slick/slick.min.js"></script>
-<!-- aos -->
-<script src="plugins/aos/aos.js"></script>
-<!-- venobox popup -->
-<script src="plugins/venobox/venobox.min.js"></script>
-<!-- mixitup filter -->
-<script src="plugins/mixitup/mixitup.min.js"></script>
+    <!-- jQuery -->
+    <script src="plugins/jQuery/jquery.min.js"></script>
+    <!-- Bootstrap JS -->
+    <script src="plugins/bootstrap/bootstrap.min.js"></script>
+    <!-- slick slider -->
+    <script src="plugins/slick/slick.min.js"></script>
+    <!-- aos -->
+    <script src="plugins/aos/aos.js"></script>
+    <!-- venobox popup -->
+    <script src="plugins/venobox/venobox.min.js"></script>
+    <!-- mixitup filter -->
+    <script src="plugins/mixitup/mixitup.min.js"></script>
 
-<!-- Main Script -->
-<script src="js/script.js"></script>
+    <!-- Main Script -->
+    <script src="js/script.js"></script>
 
-</body>
-</html>
+  </body>
+  </html>

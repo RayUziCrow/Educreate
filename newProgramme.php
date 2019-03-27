@@ -1,4 +1,4 @@
-<?php // chk if qualification is saved
+<?php // chk if programme is saved
 session_start();
 $sqlStatus = "";
 
@@ -13,7 +13,7 @@ if(isset($_SESSION['formSubmit'])) { // chk if submitted
 
 <head>
   <meta charset="utf-8">
-  <title>Educreate: New Qualification</title>
+  <title>Educreate: New Programme</title>
 
   <!-- mobile responsive meta -->
   <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -83,23 +83,13 @@ if(isset($_SESSION['formSubmit'])) { // chk if submitted
             <li class="nav-item @@home">
               <a class="nav-link" href="index.php">Home</a>
             </li>
-            <li class="nav-item @@home">
-              <a class="nav-link" href="masterDashboard.php">MASTER DASHBOARD</a>
+            <li class="nav-item @@contact">
+              <a class="nav-link" href="unihome.php">UNIVERSITY DASHBOARD</a>
             </li>
-            <li class="nav-item dropdown view active">
-              <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown"
-              aria-haspopup="true" aria-expanded="false">
-              Qualifications
-            </a>
-            <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-              <a class="dropdown-item" href="newQualification.php">New Qualification</a>
-              <a class="dropdown-item" href="editQualification.php">Edit Qualification</a>
-            </div>
-          </li>
-          <li class="nav-item @@contact">
-            <a class="nav-link" href="registerUni.php">REGISTER UNIVERSITY</a>
-          </li>
-        </ul>
+            <li class="nav-item active">
+              <a class="nav-link" href="newProgramme.php">ADD PROGRAMME</a>
+            </li>
+          </ul>
       </div>
     </nav>
   </div>
@@ -176,32 +166,38 @@ if(isset($_SESSION['formSubmit'])) { // chk if submitted
     <div class="row">
       <div class="col-md-8">
         <ul class="list-inline custom-breadcrumb">
-          <li class="list-inline-item"><span class="h2 text-primary font-secondary">New Qualification</span></li>
+          <li class="list-inline-item"><span class="h2 text-primary font-secondary">New Programme</span></li>
           <li class="list-inline-item text-white h3 font-secondary @@nasted"></li>
         </ul>
-        <p class="text-lighten">Create a new Qualification by entering the details below.</p>
+        <p class="text-lighten">Create a new Programme by entering the details below.</p>
       </div>
     </div>
   </div>
 </section>
 <!-- /page title -->
 
-<!-- Qualification Form -->
+<!-- Programme Form -->
 <section class="section bg-gray">
   <div class="container">
     <div class="row">
       <div class="col-lg-12">
-        <h2 class="section-title">New Qualification</h2>
+        <h2 class="section-title">New Programme</h2>
       </div>
     </div>
     <div class="row">
       <div class="col-lg-6 mb-4 mb-lg-0">
-        <form action="newQualification_formsubmit.php" method="post">
-          <input required type="text" class="form-control mb-3" id="qualificationName" name="qualificationName" placeholder="Qualification Name">
-          <input required type="number" min="0" class="form-control mb-3" id="qualificationMinScore" name="qualificationMinScore" placeholder="Minimum Score">
-          <input required type="number" min="0" class="form-control mb-3" id="qualificationMaxScore" name="qualificationMaxScore" placeholder="Maximum Score">
+        <form action="newProgramme_formsubmit.php" method="post">
+          <input required type="text" class="form-control mb-3" id="programmeName" name="programmeName" placeholder="Programme Name">
+          <textarea class="form-control mb-3 noresize" id="programmeDesc" name="programmeDesc" placeholder="Programme Description"></textarea>
+          <input required type="number" min="0" class="form-control mb-3" id="programmeEntryScore" name="programmeEntryScore" placeholder="Entry Score">
+          <p>Closing Date:
+            <input type="date" class="form-control mb-3" id="programmeClosingDate" name="programmeClosingDate">
+          </p>
+
+          <!--What kind of prerequisites to put?-->
+
           <p>Score Calculation:
-            <select class="nav-link" id="qualificationResultCalc" name="qualificationResultCalc">
+            <select class="nav-link" id="programmeResultCalc" name="programmeResultCalc">
               <option value="avg_highest">Average of Highest Scores</option>
               <option value="avg_lowest">Average of Lowest Scores</option>
               <option value="sum_highest">Total of Highest Scores</option>
@@ -290,11 +286,11 @@ if(isset($_SESSION['formSubmit'])) { // chk if submitted
 
     <!-- EX Script -->
     <script>
-    // function saveQualification() {
-    //   var qName = document.getElementById("qualificationName");
-    //   var qMinScore = document.getElementById("qualificationMinScore");
-    //   var qMaxScore = document.getElementById("qualificationMaxScore");
-    //   var qResultCalc = document.getElementById("qualificationResultCalc");
+    // function saveProgramme() {
+    //   var qName = document.getElementById("programmeName");
+    //   var qMinScore = document.getElementById("programmeMinScore");
+    //   var qMaxScore = document.getElementById("programmeMaxScore");
+    //   var qResultCalc = document.getElementById("programmeResultCalc");
     //   var qSubjectCount = document.getElementById("subjectCount");
     //
     //

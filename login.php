@@ -1,362 +1,91 @@
-<!DOCTYPE html>
-<html lang="zxx">
-
-<head>
-  <meta charset="utf-8">
-  <title>Educreate: Home</title>
-
-  <!-- mobile responsive meta -->
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-
-  <!-- ** Plugins Needed for the Project ** -->
-  <!-- Bootstrap -->
-  <link rel="stylesheet" href="plugins/bootstrap/bootstrap.min.css">
-  <!-- slick slider -->
-  <link rel="stylesheet" href="plugins/slick/slick.css">
-  <!-- themefy-icon -->
-  <link rel="stylesheet" href="plugins/themify-icons/themify-icons.css">
-  <!-- animation css -->
-  <link rel="stylesheet" href="plugins/animate/animate.css">
-  <!-- aos -->
-  <link rel="stylesheet" href="plugins/aos/aos.css">
-  <!-- venobox popup -->
-  <link rel="stylesheet" href="plugins/venobox/venobox.css">
-
-  <!-- Main Stylesheet -->
-  <link href="css/style.css" rel="stylesheet">
-
-  <!--Favicon-->
-  <link rel="shortcut icon" href="images/favicon.ico" type="image/x-icon">
-  <link rel="icon" href="images/favicon.ico" type="image/x-icon">
-
-</head>
-
-<body>
-  <?php
-session_start();
-  ?>
-<!-- header -->
-<header class="fixed-top header">
-  <!-- top header -->
-  <div class="top-header py-2 bg-white">
-    <div class="container">
-      <div class="row no-gutters">
-        <div class="col-lg-4 text-center text-lg-left">
-          <a class="text-color mr-3" href="callto:+443003030266"><strong>CALL</strong> +44 300 303 0266</a>
-          <ul class="list-inline d-inline">
-            <li class="list-inline-item mx-0"><a class="d-inline-block p-2 text-color" href="#"><i class="ti-facebook"></i></a></li>
-            <li class="list-inline-item mx-0"><a class="d-inline-block p-2 text-color" href="#"><i class="ti-twitter-alt"></i></a></li>
-            <li class="list-inline-item mx-0"><a class="d-inline-block p-2 text-color" href="#"><i class="ti-linkedin"></i></a></li>
-            <li class="list-inline-item mx-0"><a class="d-inline-block p-2 text-color" href="#"><i class="ti-instagram"></i></a></li>
-          </ul>
-        </div>
-        <div class="col-lg-8 text-center text-lg-right">
-          <ul class="list-inline">
-            <li class="list-inline-item"><a class="text-uppercase text-color p-sm-2 py-2 px-0 d-inline-block" href="notice.html">notice</a></li>
-            <li class="list-inline-item"><a class="text-uppercase text-color p-sm-2 py-2 px-0 d-inline-block" href="research.html">research</a></li>
-            <li class="list-inline-item"><a class="text-uppercase text-color p-sm-2 py-2 px-0 d-inline-block" href="scholarship.html">SCHOLARSHIP</a></li>
-            <li class="list-inline-item"><a class="text-uppercase text-color p-sm-2 py-2 px-0 d-inline-block" href="#" data-toggle="modal" data-target="#loginModal">login</a></li>
-
-          </ul>
-        </div>
-      </div>
-    </div>
-  </div>
-  <!-- navbar -->
-  <div class="navigation w-100">
-    <div class="container">
-      <nav class="navbar navbar-expand-lg navbar-light p-0">
-        <a class="navbar-brand" href="index.html"><img src="images/logo.png" alt="logo"></a>
-        <button class="navbar-toggler rounded-0" type="button" data-toggle="collapse" data-target="#navigation"
-          aria-controls="navigation" aria-expanded="false" aria-label="Toggle navigation">
-          <span class="navbar-toggler-icon"></span>
-        </button>
-
-        <div class="collapse navbar-collapse" id="navigation">
-          <ul class="navbar-nav ml-auto text-center">
-            <li class="nav-item active">
-              <a class="nav-link" href="index.html">Home</a>
-            </li>
-            <li class="nav-item @@about">
-              <a class="nav-link" href="about.html">About</a>
-            </li>
-            <li class="nav-item @@courses">
-              <a class="nav-link" href="courses.html">COURSES</a>
-            </li>
-            <li class="nav-item @@events">
-              <a class="nav-link" href="events.html">EVENTS</a>
-            </li>
-            <li class="nav-item @@blog">
-              <a class="nav-link" href="blog.html">BLOG</a>
-            </li>
-            <li class="nav-item dropdown view">
-              <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown"
-                aria-haspopup="true" aria-expanded="false">
-                Pages
-              </a>
-              <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                <a class="dropdown-item" href="teacher.html">Teacher</a>
-                <a class="dropdown-item" href="teacher-single.html">Teacher Single</a>
-                <a class="dropdown-item" href="notice.html">Notice</a>
-                <a class="dropdown-item" href="notice-single.html">Notice Details</a>
-                <a class="dropdown-item" href="research.html">Research</a>
-                <a class="dropdown-item" href="scholarship.html">Scholarship</a>
-                <a class="dropdown-item" href="course-single.html">Course Details</a>
-                <a class="dropdown-item" href="event-single.html">Event Details</a>
-                <a class="dropdown-item" href="blog-single.html">Blog Details</a>
-              </div>
-            </li>
-            <li class="nav-item @@contact">
-              <a class="nav-link" href="contact.html">CONTACT</a>
-            </li>
-          </ul>
-        </div>
-      </nav>
-    </div>
-  </div>
-</header>
-<!-- /header -->
-<!-- Modal -->
-<div class="modal fade" id="signupModal" tabindex="-1" role="dialog" aria-hidden="true">
-    <div class="modal-dialog modal-lg" role="document">
-        <div class="modal-content rounded-0 border-0 p-4">
-            <div class="modal-header border-0">
-                <h3>Register</h3>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <div class="modal-body">
-                <div class="login">
-
-                    <form name="login" class="form-horizontal" role="form"
-    method="post" action="">
-                        <div class="col-12">
-                            <input type="text" class="form-control mb-3" id="username" name="username" placeholder="Username">
-                        </div>
-                        <div class="col-12">
-                            <input type="password" class="form-control mb-3" id="password" name="password" placeholder="Password">
-                        </div>
-                        <div class="col-12">
-                            <button type="submit" class="btn btn-primary">SIGN UP</button>
-                        </div>
-                    </form>
-
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-<!-- Modal -->
 <?php
-require('Connections/Myconnection.php');
-// If form submitted, insert values into the database.
-if (isset($_POST['username'])){
-        // removes backslashes
-    $username = stripslashes($_REQUEST['username']);
-        //escapes special characters in a string
-    $username = mysqli_real_escape_string($con,$username);
-    $password = stripslashes($_REQUEST['password']);
-    $password = mysqli_real_escape_string($con,$password);
-    //Checking is user existing in the database or not
-    $query = "SELECT * FROM user,applicant WHERE user.Username='$username'
-and Password='".md5($password)."' and applicant.Username = '$username'";
-    $result = mysqli_query($con,$query);
-    $rows = mysqli_num_rows($result);
-        if($rows==1){
-        $_SESSION['username'] = $username; ?>
-            // Redirect user to helpinghandproviderprofile.php
-            <script type="text/javascript">
-    window.location="apphome.php";
-    </script> <?php
-         }else{
-?> <div class='container'>
-<h3>Login failed. Invalid User or incorrect password</h3>
-<br/>Click here to <a href='login.php'>Retry</as></div>
-<?php  }
-    }else{
+session_start(); // init store session var
+
+$loginStatus = "";
+
+// get form fields
+$username = $_POST['Username'];
+$password = $_POST['Password'];
+$name = "NO_NAME";
+
+// var_dump($username);
+// var_dump($password);
+
+// init db
+$conn = new mysqli('localhost', 'root', '', 'educreate');
+if ($conn->connect_error) {
+  die("Connection failed: " . $conn->connect_error);
+}
+
+// process form fields
+$decodedPassword = md5($password);
+// var_dump($decodedPassword);
+
+$loginStatus = "fail";
+$url = 'index.php';
+
+$isApplicant = chkApplicant();
+if($isApplicant == true) {
+  $_SESSION['username'] = $username;
+  $_SESSION['name'] = $name;
+  // Redirect user to apphome.php
+  $url = 'apphome.php';
+  $loginStatus = "pass";
+} else {
+  $isUniAdmin = chkUniAdmin();
+  if($isUniAdmin == true) {
+    $_SESSION['username'] = $username;
+    $_SESSION['name'] = $name;
+    // Redirect user to unihome.php
+    $url = 'unihome.php';
+    $loginStatus = "pass";
+  }
+}
+
+$conn->close(); // close db
+$_SESSION['loginStatus'] = $loginStatus;
+header('Location: ' . $url);
+die();
+
+function chkApplicant() { // chk for Applicant
+  // get vars
+  global $conn, $username, $decodedPassword, $name;
+
+  // gen load query
+  $sql = "SELECT * FROM user,applicant WHERE user.Username='$username'
+  and Password='$decodedPassword' and applicant.Username = '$username'";
+
+  // execute query
+  $result = $conn->query($sql);
+
+  if ($result->num_rows > 0) {
+    while($row = $result->fetch_assoc()) {
+      $name = $row['Name'];
+    }
+    return true; // found
+  } else {
+    return false; // not found
+  }
+}
+
+function chkUniAdmin() { // chk for UniAdmin
+  // get vars
+  global $conn, $username, $decodedPassword, $name;
+
+  // gen load query
+  $sql = "SELECT * FROM user,university WHERE user.Username='$username'
+  and Password='$decodedPassword' and university.UniversityAdmin = '$username'";
+
+  // execute query
+  $result = $conn->query($sql);
+
+  if ($result->num_rows > 0) {
+    while($row = $result->fetch_assoc()) {
+      $name = $row['Name'];
+    }
+    return true; // found
+  } else {
+    return false; // not found
+  }
+}
 ?>
-<!-- Modal -->
-<div class="modal fade" id="loginModal" tabindex="-1" role="dialog" aria-hidden="true">
-    <div class="modal-dialog modal-lg" role="document">
-        <div class="modal-content rounded-0 border-0 p-4">
-            <div class="modal-header border-0">
-                <h3>Login</h3>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <div class="modal-body">
-              <form name="login" class="form-horizontal" role="form"
-    method="post" action="">
-                    <div class="col-12">
-                        <input type="text" class="form-control mb-3" name="username" placeholder="Username">
-                    </div>
-                    <div class="col-12">
-                        <input type="password" class="form-control mb-3" name="password" placeholder="Password">
-                    </div>
-                    <div class="col-12">
-                        <button type="submit" class="btn btn-primary">LOGIN</button>
-                    </div>
-                </form>
-                <?php } ?>
-
-            </div>
-        </div>
-    </div>
-</div>
-
-
-<!-- hero slider -->
-<section class="hero-section overlay bg-cover" data-background="images/banner/banner-1.jpg">
-  <div class="container">
-    <div class="hero-slider">
-      <!-- slider item -->
-      <div class="hero-slider-item">
-        <div class="row">
-          <div class="col-md-8">
-            <h1 class="text-white" data-animation-out="fadeOutRight" data-delay-out="5" data-duration-in=".3" data-animation-in="fadeInLeft" data-delay-in=".1">
-              Your bright future is our mission</h1>
-            <p class="text-muted mb-4" data-animation-out="fadeOutRight" data-delay-out="5" data-duration-in=".3" data-animation-in="fadeInLeft" data-delay-in=".4">Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
-
-              </p>
-            <a href="contact.html" class="btn btn-primary" data-animation-out="fadeOutRight" data-delay-out="5" data-duration-in=".3" data-animation-in="fadeInLeft" data-delay-in=".7">Apply now</a>
-          </div>
-        </div>
-      </div>
-      <!-- slider item -->
-
-      <!-- slider item -->
-
-</section>
-<!-- /hero slider -->
-
-<!-- banner-feature -->
-
-<!-- /banner-feature -->
-
-<!-- about us -->
-
-<!-- /about us -->
-
-<!-- courses -->
-
-    <!-- course list -->
-
-  <!-- course item -->
-
-<!-- /cta -->
-
-<!-- success story -->
-
-<!-- /success story -->
-
-<!-- events -->
-
-        <!-- location -->
-
-  <!-- event -->
-
-        <!-- location -->
-
-  <!-- event -->
-
-        <!-- location -->
-
-    <!-- mobile see all button -->
-
-<!-- /events -->
-
-<!-- teachers -->
-
-      <!-- teacher -->
-
-      <!-- teacher -->
-
-
-      <!-- teacher -->
-
-<!-- /teachers -->
-
-<!-- blog -->
-
-  <!-- blog post -->
-
-        <!-- post meta -->
-
-          <!-- post date -->
-
-          <!-- author -->
-
-  <!-- blog post -->
-
-  <!-- blog post -->
-
-<!-- /blog -->
-
-<!-- footer -->
-<footer>
-  <!-- newsletter -->
-
-  <!-- footer content -->
-  <div class="footer bg-footer section border-bottom">
-    <div class="container">
-      <div class="row">
-        <div class="col-lg-4 col-sm-8 mb-5 mb-lg-0">
-          <!-- logo -->
-          <a class="logo-footer" href="index.php"><img class="img-fluid mb-4" src="images/logo.png" alt="logo"></a>
-          <ul class="list-unstyled">
-            <li class="mb-2">No. 15, Jalan Sri Semantan 1, Off Jalan Semantan, Bukit Damansara 50490 Kuala Lumpur</li>
-            <li class="mb-2">Ridge Hon Fay (B1600595) <a href="mailto:rayuzicrow@gmail.com">rayuzicrow@gmail.com</a></li>
-            <li class="mb-2">Muhamad Muqriz (B1800732) <a href="mailto:muqrizx@gmail.com">muqrizx@gmail.com<a/></li>
-            </ul>
-          </div>
-
-        </div>
-      </div>
-  </div>
-  <!-- copyright -->
-  <div class="copyright py-4 bg-footer">
-    <div class="container">
-      <div class="row">
-        <div class="col-sm-7 text-sm-left text-center">
-          <p class="mb-0">Copyright
-            <script>
-              var CurrentYear = new Date().getFullYear()
-              document.write(CurrentYear)
-            </script>
-            © Theme By <a href="https://themefisher.com">themefisher.com</a></p> . All Rights Reserved.
-        </div>
-        <div class="col-sm-5 text-sm-right text-center">
-          <ul class="list-inline">
-            <li class="list-inline-item"><a class="d-inline-block p-2" href="https://www.facebook.com/themefisher"><i class="ti-facebook text-primary"></i></a></li>
-            <li class="list-inline-item"><a class="d-inline-block p-2" href="https://www.twitter.com/themefisher"><i class="ti-twitter-alt text-primary"></i></a></li>
-            <li class="list-inline-item"><a class="d-inline-block p-2" href="#"><i class="ti-instagram text-primary"></i></a></li>
-            <li class="list-inline-item"><a class="d-inline-block p-2" href="https://dribbble.com/themefisher"><i class="ti-dribbble text-primary"></i></a></li>
-          </ul>
-        </div>
-      </div>
-    </div>
-  </div>
-</footer>
-<!-- /footer -->
-
-<!-- jQuery -->
-<script src="plugins/jQuery/jquery.min.js"></script>
-<!-- Bootstrap JS -->
-<script src="plugins/bootstrap/bootstrap.min.js"></script>
-<!-- slick slider -->
-<script src="plugins/slick/slick.min.js"></script>
-<!-- aos -->
-<script src="plugins/aos/aos.js"></script>
-<!-- venobox popup -->
-<script src="plugins/venobox/venobox.min.js"></script>
-<!-- mixitup filter -->
-<script src="plugins/mixitup/mixitup.min.js"></script>
-
-<!-- Main Script -->
-<script src="js/script.js"></script>
-
-</body>
-</html>

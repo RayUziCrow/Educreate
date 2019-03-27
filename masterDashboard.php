@@ -241,7 +241,7 @@ if(isset($_SESSION['formSubmit'])) { // chk if submitted
           <h4 class="card-title">Manage Qualifications</h4>
         </a>
         <p class="card-text mb-4"> Record a new Qualification into the System, or edit an existing one.</p>
-        <a data-toggle="modal" data-target="#qualificationModal" class="btn btn-primary btn-sm">Manage</a>
+        <a href="#" data-toggle="modal" data-target="#qualificationModal" class="btn btn-primary btn-sm">Manage</a>
       </div>
     </div>
   </div>
@@ -332,7 +332,7 @@ if(isset($_SESSION['formSubmit'])) { // chk if submitted
 
 <!-- EX Script -->
 <script>
-  var sqlStatus = <?php echo $sqlStatus ?>;
+  var sqlStatus = "<?php echo $sqlStatus ?>";
   if(sqlStatus != "") {
     alert(sqlStatus);
   }
