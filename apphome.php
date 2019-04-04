@@ -1,7 +1,5 @@
 <?php require_once('Connections/Myconnection.php');
 
-session_start();
-
 //include auth.php file on all secure pages
 include("auth.php");
 
@@ -15,15 +13,28 @@ if (mysqli_connect_errno())
 }
 
 //To retrieve user attributes
-$sql = "SELECT * FROM user WHERE Username = '$username'";
+$query = "SELECT * FROM user WHERE Username = '$username'";
 
-$result = $con->query($sql); // execute query
+$result = $con->query($query); // execute query
 
 // if ($result->num_rows > 0) {
 //   while($row = $result->fetch_assoc()) {
 //     $name = $row['Name'];
 //   }
 // }
+
+if ($result->num_rows > 0) {
+
+	$query = "SELECT * FROM obtQualification WHERE Username = '$username'";
+	$result = $con->query($query);
+	if ($result->num_rows > 0) {
+		$obtQ = "yes";
+	}
+	else {
+		$obtQ = "no";
+	}
+
+
 
 $con->close();
 ?>
@@ -100,7 +111,11 @@ $con->close();
         <div class="collapse navbar-collapse" id="navigation">
           <ul class="navbar-nav ml-auto text-center">
             <li class="nav-item">
-              <a class="nav-link" href="">Set Up Obtained Qualifications</a>
+            	<?php if($obtQ != "yes") { ?>
+              <a class="nav-link" href="uploadqualification.php">Set Up Obtained Qualifications</a>
+          <?php }
+          else {  ?> <a class="nav-link" href="uploadqualification.php">Preview Your Qualification</a>
+          <?php }} ?>
             </li>
             <li class="nav-item @@about">
               <a class="nav-link" href="about.html">About</a>
