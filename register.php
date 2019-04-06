@@ -211,8 +211,8 @@ if (isset($_REQUEST['Username'])){
           '$mobileno' , '$dateofbirth')";
         $result = mysqli_query($con,$query1);
 
-        $_SESSION['Username'] = $username;
-        $_SESSION['Name'] = $name;
+        $_SESSION['username'] = $username;
+        $_SESSION['name'] = $name;
 
         ?>
         <script type="text/javascript">

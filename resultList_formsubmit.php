@@ -58,6 +58,7 @@
 
     // execute save query
     if ($conn->query($sql) === TRUE) {
+      
 
     } else {
         $sqlStatus = "Error: " . $sql . "<br>" . $conn->error;
@@ -65,15 +66,31 @@
         $selectedQ = $qID;
         $_SESSION['selectedQ'] = $selectedQ;
     }
+  
+
+
+    $sql = "SELECT * FROM obtQualification WHERE username = '$username'";
+
+    $result = $conn->query($sql);
+
+    if ($result->num_rows > 0) {
+
+      while($row = $result->fetch_assoc()) {
+        $obtQ = $row["obtQualificationID"];
+      }
+  }
+        else { echo "Query error";
+    }
+      
 
 
     $sql = "INSERT INTO result (`subjectID`, `obtainedQualificationID`, `score`) VALUES ";
     for($i = 0; $i < sizeof($results); $i++) {
       if($i == sizeof($results) - 1) {
-        $sql = $sql . "('$rIDs[$i]', '$qID', '$rScores[$i]')";
+        $sql = $sql . "('$rIDs[$i]', '$obtQ', '$rScores[$i]')";
       }
       else {
-        $sql = $sql . "('$rIDs[$i]', '$qID', '$rScores[$i]'), ";
+        $sql = $sql . "('$rIDs[$i]', '$obtQ', '$rScores[$i]'), ";
       }
     }
 
@@ -102,7 +119,10 @@
     }
     header('Location: ' . $url);
     die();
-  }
+}
+
+
+
 
   // function deleteOldGrades() {
   //   // gen delete query
