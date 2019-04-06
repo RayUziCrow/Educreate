@@ -1,22 +1,17 @@
-<?php //Load Qualification Data
- $sqlStatus = "";
+<?php // Load Qualification Data
+$sqlStatus = "";
 
- session_start();
- $selectedQ = -1;
- if(isset($_SESSION['selectedQ'])) { // chk if submitted
-   $selectedQ = $_SESSION['selectedQ'];
-   unset($_SESSION['selectedQ']);
-   if(isset($_SESSION['formSubmit'])) {
-     $sqlStatus = $_SESSION['sqlStatus'];
-     unset($_SESSION['sqlStatus']);
-     unset($_SESSION['formSubmit']);
-   }
+session_start();
+$selectedA = -1;
+if(isset($_SESSION['selectedA'])) { // chk if submitted
+  $selectedA = $_SESSION['selectedA'];
+  unset($_SESSION['selectedA']);
+  if(isset($_SESSION['formSubmit'])) {
+    $sqlStatus = $_SESSION['sqlStatus'];
+    unset($_SESSION['sqlStatus']);
+    unset($_SESSION['formSubmit']);
+  }
 }
-
-
-$username = $_SESSION['username'];
-$obtQ = $_POST['obtainedQ'];
-
 
 // init db
 $conn = new mysqli('localhost', 'root', '', 'educreate');
@@ -25,35 +20,54 @@ if ($conn->connect_error) {
 }
 
 // dummy data (online)
-// $selectedQ = 1;
+// $selectedA = 1;
 
-$sql = "SELECT * FROM qualification WHERE qualificationID = '$obtQ' LIMIT 1"; // gen load q query
+$sql = "SELECT obtQualificationID, qualificationID FROM obtQualification WHERE username = '$selectedA' LIMIT 1"; // gen load a query
 
 // execute query
 $result = $conn->query($sql);
 
 if ($result->num_rows > 0) {
   // output data to var
-  $foundQ = $result->fetch_assoc();
-  // load existing Grades
-  $sql = "SELECT * FROM subject"; // gen load grades query
+  $foundOQ = [];
+  while($result->fetch_assoc()) {
+    $foundOQ[] = $row;
+  }
+
+  // load matching Applicant
+  $sql = "SELECT * FROM applicant WHERE username = '$selectedA' LIMIT 1"; // gen load a query
+
+  // load matching Qualification
+  $sql = "SELECT * FROM qualification WHERE qualificationID = '$foundOQ[1]' LIMIT 1"; // gen load Qualification query
+
   // execute query
   $result = $conn->query($sql);
   if ($result->num_rows > 0) {
-    $foundSubjects = [];
+    $foundQ = [];
     while($row = $result->fetch_assoc()) {
-      $foundSubjects[] = $row;
+      $foundQ[] = $row;
+    }
+  }
+
+  // load existing Results
+  $sql = "SELECT subjectName, score FROM subject, result, obtQualification WHERE obtQualification.obtQualificationID = '$foundOQ[0]' AND result.obtainedQualificationID = obtQualification.obtQualificationID AND result.subjectID = subject.subjectID"; // gen load Results query
+  // execute query
+  $result = $conn->query($sql);
+  if ($result->num_rows > 0) {
+    $foundResults = [];
+    while($row = $result->fetch_assoc()) {
+      $foundResults[] = $row;
     }
   }
   else {
-    $foundSubjects = "";
+    $foundResults = "";
   }
 } else {
 
 }
 
 // dummy data (offline)
-// $foundQ = array("qualificationID" => 1, "qualificationName" => "DummyQ", "minimumScore" => 0, "maximumScore" => 100, "resultCalcDescription" => "avg_highest", "resultCalcSubjectCount" => 3);
+// $foundA = array("qualificationID" => 1, "qualificationName" => "DummyQ", "minimumScore" => 0, "maximumScore" => 100, "resultCalcDescription" => "avg_highest", "resultCalcSubjectCount" => 3);
 
 $conn->close(); // close db
 ?>
@@ -109,7 +123,7 @@ $conn->close(); // close db
       <div class="container">
         <div class="row no-gutters">
           <div class="col-lg-4 text-center text-lg-left">
-            <span class="text-color mr-3"><strong><?php echo $username  ?></strong></span>
+            <span class="text-color mr-3"><strong>MASTER ADMIN</strong></span>
 
           </div>
           <div class="col-lg-8 text-center text-lg-right">
@@ -226,10 +240,10 @@ $conn->close(); // close db
     <div class="row">
       <div class="col-md-8">
         <ul class="list-inline custom-breadcrumb">
-          <li class="list-inline-item"><span class="h2 text-primary font-secondary">Subject List</span></li>
+          <li class="list-inline-item"><span class="h2 text-primary font-secondary">Grade List</span></li>
           <li class="list-inline-item text-white h3 font-secondary @@nasted"></li>
         </ul>
-        <p class="text-lighten">Add Results to your qualification by entering the details below.</p>
+        <p class="text-lighten">Add Grades to a Qualification by entering the details below.</p>
       </div>
     </div>
   </div>
@@ -241,7 +255,7 @@ $conn->close(); // close db
   <div class="container">
     <div class="row">
       <div class="col-lg-12">
-        <h2 class="section-title">Subject List<span id="qualificationTitle"></span></h2>
+        <h2 class="section-title">Grade List<span id="qualificationTitle"></span></h2>
       </div>
     </div>
     <div class="row">
@@ -256,10 +270,10 @@ $conn->close(); // close db
         <div class="col-lg-7">
           <div class="row">
             <div class="col-lg-6 mb-3">
-              <p class="h2">Add Subject</p>
+              <p class="h2">Add Grade</p>
               <div id="gradeAddForm">
-                <p>Subject Name: <select class="form-control mb-3" id="subjectList"></select></p>
-                <p>Score: <input required type="number" class="form-control mb-3" id="gradeUpperLimit" placeholder="eg: 100, 90.5, 43"></p>
+                <p>Grade Name: <input required type="text" class="form-control mb-3" id="gradeName" placeholder="eg: A, A+, B"></p>
+                <p>Upper Limit: <input required type="number" class="form-control mb-3" id="gradeUpperLimit" placeholder="eg: 100, 90.5, 43"></p>
                 <p id="formStatus"><?php echo $sqlStatus ?></p>
                 <div>
                   <button id="btn_addGrade" onclick="addGrade()" class="btn btn-primary">ADD</button>
@@ -268,7 +282,7 @@ $conn->close(); // close db
               </div>
             </div>
             <div class="col-lg-6 mb-3">
-              <p class="h2">Subjects:</p>
+              <p class="h2">Grades:</p>
               <div>
                 <p></p>
                 <!--added Grades go here-->
@@ -280,11 +294,9 @@ $conn->close(); // close db
                 <button id="btn_removeGrade" onclick="removeGrade()" class="btn btn-primary">REMOVE</button>
               </div>
               <div>
-                <form id="gradeListForm" action="subjectList_formsubmit.php" method="post">
+                <form id="gradeListForm" action="gradeList_formsubmit.php" method="post">
                   <input type="hidden" id="qualificationID" name="qualificationID">
                   <input type="hidden" id="qualificationGrades" name="qualificationGrades">
-                  <input type="hidden" id="username" name="username" value="<?php echo $username ?>">
-
                 </form>
               </div>
             </div>
@@ -361,8 +373,8 @@ $conn->close(); // close db
 
       <!-- EX Script -->
       <script>
-      var foundQ = <?php echo json_encode($foundQ) ?>;
-      var foundSubjects = <?php echo json_encode($foundSubjects) ?>;
+      var foundQ = <?php echo json_encode($foundA) ?>;
+      var foundGrades = <?php echo json_encode($foundResults) ?>;
       window.onload = loadQualification();
 
       function loadQualification() {
@@ -373,24 +385,12 @@ $conn->close(); // close db
         var qMaxScore = document.getElementById("qualificationMaxScore");
         var qResultCalc = document.getElementById("qualificationResultCalc");
         var qSubjectCount = document.getElementById("subjectCount");
-        var subjectList = document.getElementById("subjectList");
 
         // fill Qualification Info
         qTitle.innerHTML = ": " + foundQ.qualificationName;
         qName.innerHTML = foundQ.qualificationName;
         qMinScore.innerHTML = foundQ.minimumScore;
         qMaxScore.innerHTML = foundQ.maximumScore;
-
-        if (foundSubjects.length > 0) {
-          for (var i = 0; i < foundSubjects.length; i++) {
-
-        var testSubject = document.createElement("option");
-        var subText = document.createTextNode(foundSubjects[i].subjectName);
-        testSubject.appendChild(subText);
-        subjectList.appendChild(testSubject);
-      }
-        }
-
         // get resultCalcDescription
         var resultCalcDescVal = foundQ.resultCalcDescription;
         var resultCalcDescText;
@@ -414,20 +414,20 @@ $conn->close(); // close db
 
         // fill existing Grades
         var insertedGrades = document.getElementById("insertedGrades");
-        // for(var i = 0; i < foundGrades.length; i++) {
-        //   // create Grade
-        //   var newGrade = document.createElement("option");
-        //   var newGradeText = document.createTextNode(foundGrades[i].grade + ": " + foundGrades[i].scoreUpperLimit);
-        //   newGrade.appendChild(newGradeText);
-        //   newGrade.value = foundGrades[i].grade + ":" + foundGrades[i].scoreUpperLimit;
-        //   // insert Grade
-        //   insertedGrades.appendChild(newGrade);
-        // }
+        for(var i = 0; i < foundGrades.length; i++) {
+          // create Grade
+          var newGrade = document.createElement("option");
+          var newGradeText = document.createTextNode(foundGrades[i].grade + ": " + foundGrades[i].scoreUpperLimit);
+          newGrade.appendChild(newGradeText);
+          newGrade.value = foundGrades[i].grade + ":" + foundGrades[i].scoreUpperLimit;
+          // insert Grade
+          insertedGrades.appendChild(newGrade);
+        }
       }
 
       function addGrade() {
         // get gradeForm values
-        var gName = document.getElementById("subjectList").value;
+        var gName = document.getElementById("gradeName").value;
         var gUpperLimit = document.getElementById("gradeUpperLimit").value;
 
         // chk for fill
@@ -453,7 +453,7 @@ $conn->close(); // close db
           formStatus.innerHTML = "ERROR: Grade Name cannot contain ',' or ':'";
         }
         else if(formValid == "duplicate") {
-          formStatus.innerHTML = "ERROR: Subject already exists";
+          formStatus.innerHTML = "ERROR: Grade already exists";
         }
         else if(formValid == "out_of_range") {
           var qMinScore = document.getElementById("qualificationMinScore").innerHTML;
@@ -497,7 +497,7 @@ $conn->close(); // close db
 
       function resetGradeForm() {
         // get gradeForm values
-        var gName = document.getElementById("subjectList");
+        var gName = document.getElementById("gradeName");
         var gUpperLimit = document.getElementById("gradeUpperLimit");
         // reset to blank
         gName.value = "";
@@ -516,9 +516,9 @@ $conn->close(); // close db
       function submitGrades() {
         // get Grades
         var insertedGrades = document.getElementById("insertedGrades");
+
         var qID = foundQ.qualificationID; // get QualificationID to save
         var grades = new Array();
-        var username = document.getElementById("username");
         // var gradeNames = new array();
         // var gradeUpperLimits = new array();
         for(var i = 0; i < insertedGrades.children.length; i++) { // extract gradeList
@@ -531,10 +531,10 @@ $conn->close(); // close db
         // get form
         var gradeListForm = document.getElementById("gradeListForm");
         var qID = document.getElementById("qualificationID");
-        var gradeList = document.getElementById("subjectList");
+        var gradeList = document.getElementById("qualificationGrades");
         // send gradeList to hidden form input
         qID.value = foundQ.qualificationID;
-        gradeList.value = grades; 
+        gradeList.value = grades;
 
         if(gradeList.value.length != 0) { // chk if valid
           gradeListForm.submit();
@@ -551,32 +551,32 @@ $conn->close(); // close db
         }
       }
 
-      // function testGrades() {
-      //   // get Grades
-      //   var insertedGrades = document.getElementById("insertedGrades");
+      function testGrades() {
+        // get Grades
+        var insertedGrades = document.getElementById("insertedGrades");
 
-      //   var qID = foundQ.qualificationID; // get QualificationID to save
-      //   var grades = new Array();
-      //   // var gradeNames = new array();
-      //   // var gradeUpperLimits = new array();
-      //   for(var i = 0; i < insertedGrades.children.length; i++) { // extract gradeList
-      //     var grade = insertedGrades.children[i].value;
-      //     grades.push(grade);
-      //     // gradeNames.push(grade.substring(0, existingGrade.indexOf(':')));
-      //     // gradeUpperLimits.push(parseInt(grade.substring(existingGrade.indexOf(':') + 1)));
-      //   }
+        var qID = foundQ.qualificationID; // get QualificationID to save
+        var grades = new Array();
+        // var gradeNames = new array();
+        // var gradeUpperLimits = new array();
+        for(var i = 0; i < insertedGrades.children.length; i++) { // extract gradeList
+          var grade = insertedGrades.children[i].value;
+          grades.push(grade);
+          // gradeNames.push(grade.substring(0, existingGrade.indexOf(':')));
+          // gradeUpperLimits.push(parseInt(grade.substring(existingGrade.indexOf(':') + 1)));
+        }
 
-      //   // get form
-      //   var gradeListForm = document.getElementById("gradeListForm");
-      //   var qID = document.getElementById("qualificationID");
-      //   var gradeList = document.getElementById("qualificationGrades");
-      //   // send gradeList to hidden form input
-      //   qID.value = foundQ.qualificationID;
-      //   gradeList.value = grades;
+        // get form
+        var gradeListForm = document.getElementById("gradeListForm");
+        var qID = document.getElementById("qualificationID");
+        var gradeList = document.getElementById("qualificationGrades");
+        // send gradeList to hidden form input
+        qID.value = foundQ.qualificationID;
+        gradeList.value = grades;
 
-      //   var formStatus = document.getElementById("formStatus");
-      //   formStatus.innerHTML = gradeList.value;
-      // }
+        var formStatus = document.getElementById("formStatus");
+        formStatus.innerHTML = gradeList.value;
+      }
       </script>
 
     </body>

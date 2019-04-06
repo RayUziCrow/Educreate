@@ -1,9 +1,75 @@
+<?php // Save Reviewed Application
+  // $sqlStatusSave = "";
+  //
+  // if(isset($_POST['formSubmit'])) { // chk if submitted
+  //   // get form fields
+  //   $qID = $_POST['qualificationID'];
+  //   $qName = $_POST['qualificationName'];
+  //   $qMinScore = $_POST['qualificationMinScore'];
+  //   $qMaxScore = $_POST['qualificationMaxScore'];
+  //   $qResultCalc = $_POST['qualificationResultCalc'];
+  //   $qSubjectCount = $_POST['subjectCount'];
+  //
+  //   // init db
+  //   $conn = new mysqli('localhost', 'root', '', 'educreate');
+  //   if ($conn->connect_error) {
+  //       die("Connection failed: " . $conn->connect_error);
+  //   }
+  //
+  //   // gen update query
+  //   $sql = "UPDATE qualification SET qualificationName = '$qName', minimumScore = '$qMinScore', maximumScore = '$qMaxScore', resultCalcDescription = '$qResultCalc', resultCalcSubjectCount = '$qSubjectCount', gradeList = '$qGrades' WHERE qualificationID = '$qID'";
+  //
+  //   // execute query
+  //   if ($conn->query($sql) === TRUE) {
+  //       $sqlStatusSave = "Application saved successfully";
+  //   } else {
+  //       $sqlStatusSave = "Error: " . $sql . "<br>" . $conn->error;
+  //   }
+  //
+  //   $conn->close(); // close db
+  //   unset($_POST['formSubmit']); // unset 'submitted'
+  // }
+?>
+
+<?php // Load Applications
+  $sqlStatusLoad = "";
+
+  // init db
+  $conn = new mysqli('localhost', 'root', '', 'educreate');
+  if ($conn->connect_error) {
+      die("Connection failed: " . $conn->connect_error);
+  }
+
+  // dummydata
+  $pID = 2;
+
+  $sql = "SELECT * FROM application WHERE programmeID = '$pID'"; // gen load query
+
+  // execute query
+  $result = $conn->query($sql);
+
+  $aArray = array();
+  $count = 0;
+  if ($result->num_rows > 0) {
+    // output data to array
+    while($row = $result->fetch_assoc()) {
+        $aArray[$count] = $row;
+        $count++;
+    }
+    $sqlStatusLoad = $count . " Application(s) found.";
+  } else {
+      $sqlStatusLoad = "No Applications found.";
+  }
+
+  $conn->close(); // close db
+?>
+
 <!DOCTYPE html>
 <html lang="zxx">
 
 <head>
   <meta charset="utf-8">
-  <title>Educreate: New Obtained Qualification</title>
+  <title>Educreate: Review Application</title>
 
   <!-- mobile responsive meta -->
   <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -40,28 +106,6 @@
 </head>
 
 <body>
-<?php
-require('Connections/Myconnection.php');
-include("auth.php");
-
-
-$username = $_SESSION['username'];
-// Check connection
-if (mysqli_connect_errno())
-  {
-  echo "Failed to connect to MySQL: " . mysqli_connect_error();
-  }
-
-$query = "SELECT * FROM obtQualification WHERE username = '$username'";
-
-$result = mysqli_query($con,$query);
-
-if ($result->num_rows == 0){
-
-$query = "SELECT * FROM qualification";
-$result = mysqli_query($con,$query);
-$con->close();
-?>
 
 
   <!-- header -->
@@ -71,7 +115,7 @@ $con->close();
       <div class="container">
         <div class="row no-gutters">
           <div class="col-lg-4 text-center text-lg-left">
-            <span class="text-color mr-3"><strong>edit Obtained qualification</strong></span>
+            <span class="text-color mr-3"><strong>MASTER ADMIN</strong></span>
 
           </div>
           <div class="col-lg-8 text-center text-lg-right">
@@ -84,7 +128,7 @@ $con->close();
     <div class="navigation w-100">
       <div class="container">
         <nav class="navbar navbar-expand-lg navbar-light p-0">
-          <a class="navbar-brand" href="apphome.php"><img src="images/logo.png" alt="logo"></a>
+          <a class="navbar-brand" href="index.php"><img src="images/logo.png" alt="logo"></a>
           <button class="navbar-toggler rounded-0" type="button" data-toggle="collapse" data-target="#navigation"
           aria-controls="navigation" aria-expanded="false" aria-label="Toggle navigation">
           <span class="navbar-toggler-icon"></span>
@@ -93,22 +137,23 @@ $con->close();
         <div class="collapse navbar-collapse" id="navigation">
           <ul class="navbar-nav ml-auto text-center">
             <li class="nav-item @@home">
-              <a class="nav-link" href="apphome.php">Home</a>
+              <a class="nav-link" href="index.php">Home</a>
             </li>
             <li class="nav-item @@home">
-              
+              <a class="nav-link" href="masterDashboard.php">MASTER DASHBOARD</a>
             </li>
             <li class="nav-item dropdown view active">
               <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown"
-              aria-haspopup="true" aria-expanded="false">Qualifications
+              aria-haspopup="true" aria-expanded="false">
+              Applications
             </a>
             <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-              <a class="dropdown-item" href="newQualification.php">New Qualificatio</a>
-              <a class="dropdown-item" href="editQualification.php">Edit Qualification</a>
+              <a class="dropdown-item" href="newApplication.php">New Application</a>
+              <a class="dropdown-item" href="reviewApplication.php">Review Application</a>
             </div>
           </li>
           <li class="nav-item @@contact">
-            
+            <a class="nav-link" href="registerUni.php">REGISTER UNIVERSITY</a>
           </li>
         </ul>
       </div>
@@ -187,61 +232,47 @@ $con->close();
     <div class="row">
       <div class="col-md-8">
         <ul class="list-inline custom-breadcrumb">
-          <li class="list-inline-item"><span class="h2 text-primary font-secondary">New Qualification</span></li>
+          <li class="list-inline-item"><span class="h2 text-primary font-secondary">Review Application</span></li>
           <li class="list-inline-item text-white h3 font-secondary @@nasted"></li>
         </ul>
-        <p class="text-lighten">Create a new Qualification by entering the details below.</p>
+        <p class="text-lighten">Review an existing Application by selecting one and modifying its details.</p>
       </div>
     </div>
   </div>
 </section>
 <!-- /page title -->
 
-<!-- Qualification Form -->
+<!-- Application Select -->
 <section class="section bg-gray">
   <div class="container">
     <div class="row">
       <div class="col-lg-12">
-        <h2 class="section-title" id="formtitle">Submit Obtained Qualification</h2>
+        <h2 class="section-title">Review Application</h2>
       </div>
     </div>
     <div class="row">
       <div class="col-lg-6 mb-4 mb-lg-0">
-        <form action="subjectList.php" method="post">
-          <p> Qualification Type </p>
-          <select class="nav-link" id="obtainedQ" name="obtainedQ">
-          <?php if ($result->num_rows > 0) {
+        <p class="mb-5">Review an exist Application by selecting one from the list below.</p>
+        <div class="dropdown view">
+          <button class="nav-link dropdown-toggle" href="#" id="selectDropdown" role="button" data-toggle="dropdown"
+          aria-haspopup="true" aria-expanded="false">
+          Select Application
+        </button>
+        <div class="dropdown-menu" aria-labelledby="selectDropdown" id="aSelectMenu">
 
-          while($row = $result->fetch_assoc()) { 
-            ?>
-            <option value="<?php echo $row['qualificationID'] ?>"><?php echo $row['qualificationName'] ?></option>
-
-          <?php }}}
-
-          else { 
-
-          $obtfound = 1;
-
-
-          }
-
-          ?>
-          </select>
-          <br>
-          <div>
-            <button type="submit" class="btn btn-primary">CREATE</button>
-            <button type="reset" class="btn btn-primary">RESET</button>
-          </div>
-        </form>
-      </div>
-      <div class="col-lg-6">
-        <div>
-          
         </div>
       </div>
     </div>
+    <div class="col-lg-6">
+      <form id="selectedAForm" action="reviewApplication_details.php" method="post">
+        <div>
+          <input type="hidden" id="selectedA" name="selectedA">
+        </div>
+      </form>
+      <p><?php echo $sqlStatusLoad ?></p>
+    </div>
   </div>
-
+</div>
 </section>
 <!-- /contact -->
 
@@ -309,60 +340,35 @@ $con->close();
 
     <!-- EX Script -->
     <script>
+    var aArray = <?php echo json_encode($aArray) ?>; // send php_array to js
+    window.onload = showLoadedApplications();
 
-    // var obtfound = <?php echo $obtfound ?>; // send php_array to js
-    // //window.onload = showLoadedQualifications
-    // window.onload = editExistingQ();
-    // function editExistingQ() {
+    function showLoadedApplications() {
 
-    //   if (obtfound == 1)
+      var aSelectMenu = document.getElementById("aSelectMenu");
 
+      if (aArray.length != 0) {
+        for(var i = 0; i < aArray.length; i++) {
+          // gen qualification list item
+          var aItem = document.createElement("a");
+          var textnode = document.createTextNode(aArray[i].applicant + " - " + aArray[i].date);
+          aItem.appendChild(textnode);
+          aItem.setAttribute("class", "dropdown-item");
+          aItem.setAttribute("onclick", "showCurrentReview(\"" + aArray[i].applicant + "\")");
 
-    //     var formtitle = document.getElementById("formtitle");
-    //     formtitle.innerHTML = "You have a qualification";
+          // attach qItem to list
+          aSelectMenu.appendChild(aItem);
+        }
+      }
+    }
 
-    // }
+    function showCurrentReview(aNum) {
+      var selectedAForm = document.getElementById("selectedAForm");
+      var selectedA = document.getElementById("selectedA");
 
-
-
-
-    // function showLoadedQualifications() {
-
-    //   var qSelectMenu = document.getElementById("qSelectMenu");
-
-    //   if (qArray.length != 0) {
-    //     for(var i = 0; i < qArray.length; i++) {
-    //       // gen qualification list item
-    //       var qItem = document.createElement("a");
-    //       var textnode = document.createTextNode(qArray[i].qualificationID + " - " + qArray[i].qualificationName);
-    //       qItem.appendChild(textnode);
-    //       qItem.setAttribute("class", "dropdown-item");
-    //       qItem.setAttribute("onclick", "showCurrentEdit(" + qArray[i].qualificationID + ")");
-
-    //       // attach qItem to list
-    //       qSelectMenu.appendChild(qItem);
-    //     }
-    //   }
-    // }
-
-    // function showCurrentEdit(qNum) {
-    //   var selectedQForm = document.getElementById("selectedQForm");
-    //   var selectedQ = document.getElementById("selectedQ");
-
-    //   selectedQ.value = qNum;
-    //   selectedQForm.submit(); // goto details
-    // }
-
-    // function saveQualification() {
-    //   var qName = document.getElementById("qualificationName");
-    //   var qMinScore = document.getElementById("qualificationMinScore");
-    //   var qMaxScore = document.getElementById("qualificationMaxScore");
-    //   var qResultCalc = document.getElementById("qualificationResultCalc");
-    //   var qSubjectCount = document.getElementById("subjectCount");
-    //
-    //
-    // }
-    </script>
-
-  </body>
-  </html>
+      selectedA.value = aNum;
+      selectedAForm.submit(); // goto details
+    }
+  </script>
+</body>
+</html>

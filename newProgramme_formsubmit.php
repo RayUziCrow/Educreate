@@ -1,10 +1,12 @@
-<?php 
-  // get form fields
-  include("auth.php");
-  $obtQ = $_POST['obtainedQ'];
-  $username = $_SESSION['username'];
-  
+<?php // Save New Programme
+  $sqlStatus = "";
 
+  // get form fields
+  $uID = $_POST['universityID'];
+  $pName = $_POST['programmeName'];
+  $pDesc = $_POST['programmeDesc'];
+  $pEntryScore = $_POST['programmeEntryScore'];
+  $pClosingDate = $_POST['programmeClosingDate'];
 
   // init db
   $conn = new mysqli('localhost', 'root', '', 'educreate');
@@ -13,12 +15,12 @@
   }
 
   // gen save query
-  $sql = "INSERT INTO obtQualification (`qualificationID`, `username`) VALUES ('$obtQ', '$username')";
+  $sql = "INSERT INTO programme (`universityID`, `name`, `description`, `entryScore`, `closingDate`) VALUES ('$uID', '$pName', '$pDesc', '$pEntryScore', '$pClosingDate')";
 
   session_start(); // init store session var
   // execute query
   if ($conn->query($sql) === TRUE) {
-      $sqlStatus = "New Qualification created successfully";
+      $sqlStatus = "New Programme created successfully";
       $_SESSION['formSubmit'] = 'success';
       $createdQ = $conn->insert_id;
       $_SESSION['selectedQ'] = $createdQ;
@@ -33,10 +35,10 @@
 
   if($_SESSION['formSubmit'] == 'success') {
     // redirect to form
-    $url = 'subjectList.php';
+    $url = 'newProgramme.php';
   }
   else {
-    $url = 'uploadqualification.php';
+    $url = 'newProgramme.php';
   }
   header('Location: ' . $url);
   die();

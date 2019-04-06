@@ -3,10 +3,10 @@
 
   // get form fields
   $qID = $_POST['qualificationID'];
-  $subjectBoxString = $_POST['qualificationGrades'];
+  $resultList = $_POST['resultList'];
   $username = $_POST['username'];
 
-  if(empty($subjectBoxString)) {
+  if(empty($resultList)) {
     $url = 'apphome.php';
     header('Location: ' . $url);
     die();
@@ -16,23 +16,17 @@
   }
 
   function processGrades() {
-    global $qID, $subjectBoxString, $username;
+    global $qID, $resultList, $username;
     // split Grades
-    $obResults = explode(',', $subjectBoxString);
+    $results = explode(',', $resultList);
 
     // split Names & Upper Limits
-    $gNames = [];
-    $gUpperLimits = [];
-    $subjectID = [];
-    for($i = 0; $i < sizeof($obResults); $i++) {
-      // $splitPos = strpos($obResults[$i], ':');
-      // $subjectID[] = substr($obResults[$i], ':');
-      // $gNames[] = substr($obResults[$i], 0, $splitPos);
-      // $gUpperLimits[] = substr($obResults[$i], $splitPos + 1);
-      $boom[] = explode($obResults[$i]);
-      $subjectID[] = $boom[0];
-      $gNames[] = $boom[1];
-      $gUpperLimits[] = $boom[2];
+    $rIDs = [];
+    $rScores = [];
+    for($i = 0; $i < sizeof($results); $i++) {
+      $splitPos = strpos($results[$i], ':');
+      $rIDs[] = substr($results[$i], 0, $splitPos);
+      $rScores[] = substr($results[$i], $splitPos + 1);
     }
 
     // init db
@@ -57,22 +51,35 @@
     //     $_SESSION['selectedQ'] = $selectedQ;
     // }
     // gen save query
-    
+
+    $_SESSION['formSubmit'] = 'success';
+
+    $sql = "INSERT INTO obtQualification (`qualificationID`, `username`) VALUES ('$qID', '$username')";
+
+    // execute save query
+    if ($conn->query($sql) === TRUE) {
+
+    } else {
+        $sqlStatus = "Error: " . $sql . "<br>" . $conn->error;
+        $_SESSION['formSubmit'] = 'fail';
+        $selectedQ = $qID;
+        $_SESSION['selectedQ'] = $selectedQ;
+    }
+
 
     $sql = "INSERT INTO result (`subjectID`, `obtainedQualificationID`, `score`) VALUES ";
-    for($i = 0; $i < sizeof($obResults); $i++) {
-      if($i == sizeof($obResults) - 1) {
-        $sql = $sql . "('$subjectID', '$gNames[$i]', '$gUpperLimits[$i]')";
+    for($i = 0; $i < sizeof($results); $i++) {
+      if($i == sizeof($results) - 1) {
+        $sql = $sql . "('$rIDs[$i]', '$qID', '$rScores[$i]')";
       }
       else {
-        $sql = $sql . "('$subjectID', '$gNames[$i]', '$gUpperLimits[$i]'), ";
+        $sql = $sql . "('$rIDs[$i]', '$qID', '$rScores[$i]'), ";
       }
     }
 
     // execute save query
     if ($conn->query($sql) === TRUE) {
-        $sqlStatus = "Grades created successfully";
-        $_SESSION['formSubmit'] = 'success';
+
     } else {
         $sqlStatus = "Error: " . $sql . "<br>" . $conn->error;
         $_SESSION['formSubmit'] = 'fail';
@@ -85,11 +92,13 @@
     $_SESSION['sqlStatus'] = $sqlStatus; // store msg
 
     if($_SESSION['formSubmit'] == 'success') {
+      $sqlStatus = "Obtained Qualification saved successfully";
+
       // redirect to form
       $url = 'apphome.php';
     }
     else {
-      $url = 'subjectList.php';
+      $url = 'resultList.php';
     }
     header('Location: ' . $url);
     die();
@@ -113,8 +122,8 @@
   // function saveGrades() {
   //   // gen save query
   //   $sql = "INSERT INTO gradelist (`qualificationID`, `grade`, `scoreUpperLimit`) VALUES ";
-  //   for($i = 0; $i < sizeof($obResults); $i++) {
-  //     if($i == sizeof($obResults) - 1) {
+  //   for($i = 0; $i < sizeof($results); $i++) {
+  //     if($i == sizeof($results) - 1) {
   //       $sql = $sql . "('$qID[$i]', '$gNames[$i]', '$gUpperLimits[$i]')";
   //     }
   //     else {

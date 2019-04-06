@@ -241,7 +241,7 @@ $conn->close(); // close db
     </div>
     <div class="row">
       <div class="col-lg-4 mb-4 mb-lg-0">
-        <p class="h2">Qualificiation Info</p>
+        <p class="h2">Qualification Info</p>
         <p>Name: <span id="qualificationName">N/A</span><br/>
           Minimum Score: <span id="qualificationMinScore">N/A</span><br/>
           Maximum Score: <span id="qualificationMaxScore">N/A</span><br/>

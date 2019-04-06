@@ -7,6 +7,7 @@ $loginStatus = "";
 $username = $_POST['Username'];
 $password = $_POST['Password'];
 $name = "NO_NAME";
+$uniID = "NO_UNI";
 
 // var_dump($username);
 // var_dump($password);
@@ -36,6 +37,7 @@ if($isApplicant == true) {
   if($isUniAdmin == true) {
     $_SESSION['username'] = $username;
     $_SESSION['name'] = $name;
+    $_SESSION['uniID'] = $uniID;
     // Redirect user to unihome.php
     $url = 'unihome.php';
     $loginStatus = "pass";
@@ -53,15 +55,14 @@ function chkApplicant() { // chk for Applicant
 
   // gen load query
   $sql = "SELECT * FROM user,applicant WHERE user.Username='$username'
-  and Password='$decodedPassword' and applicant.Username = '$username'";
+  and Password='$decodedPassword' and applicant.Username = '$username' LIMIT 1";
 
   // execute query
   $result = $conn->query($sql);
 
   if ($result->num_rows > 0) {
-    while($row = $result->fetch_assoc()) {
-      $name = $row['Name'];
-    }
+    $foundApplicant = $result->fetch_assoc();
+    $name = $foundApplicant['Name'];
     return true; // found
   } else {
     return false; // not found
@@ -70,19 +71,19 @@ function chkApplicant() { // chk for Applicant
 
 function chkUniAdmin() { // chk for UniAdmin
   // get vars
-  global $conn, $username, $decodedPassword, $name;
+  global $conn, $username, $decodedPassword, $name, $uniID;
 
   // gen load query
   $sql = "SELECT * FROM user,university WHERE user.Username='$username'
-  and Password='$decodedPassword' and university.UniversityAdmin = '$username'";
+  and Password='$decodedPassword' and university.UniversityAdmin = '$username' LIMIT 1";
 
   // execute query
   $result = $conn->query($sql);
 
   if ($result->num_rows > 0) {
-    while($row = $result->fetch_assoc()) {
-      $name = $row['Name'];
-    }
+    $foundUniAdmin = $result->fetch_assoc();
+    $name = $foundUniAdmin['Name'];
+    $uniID = $foundUniAdmin['UniversityID'];
     return true; // found
   } else {
     return false; // not found

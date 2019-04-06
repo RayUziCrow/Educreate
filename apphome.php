@@ -1,42 +1,46 @@
-<?php require_once('Connections/Myconnection.php');
-
+<?php
 //include auth.php file on all secure pages
-include("auth.php");
+// include("auth.php");
+session_start();
+
+$sqlStatus = "";
+if(isset($_SESSION['formSubmit'])) { // chk if submitted
+  $sqlStatus = $_SESSION['sqlStatus'];
+  unset($_SESSION['sqlStatus']);
+}
 
 $username = $_SESSION['username'];
 $name = $_SESSION['name'];
-// $name = "NO_NAME";
-// Check connection
-if (mysqli_connect_errno())
-{
-  echo "Failed to connect to MySQL: " . mysqli_connect_error();
+
+// init db
+$conn = new mysqli('localhost', 'root', '', 'educreate');
+if ($conn->connect_error) {
+  die("Connection failed: " . $conn->connect_error);
 }
 
-//To retrieve user attributes
-$query = "SELECT * FROM user WHERE Username = '$username'";
+// get User info
+$sql = "SELECT * FROM user WHERE Username = '$username' LIMIT 1";
 
-$result = $con->query($query); // execute query
-
-// if ($result->num_rows > 0) {
-//   while($row = $result->fetch_assoc()) {
-//     $name = $row['Name'];
-//   }
-// }
+$result = $conn->query($sql); // execute query
 
 if ($result->num_rows > 0) {
+  // gen getApplications query
+  $sql = "SELECT universityName, name, date, status FROM application, programme, university WHERE applicant = '$username' AND programme.programmeID = application.programmeID AND programme.universityID = university.UniversityID ";
 
-	$query = "SELECT * FROM obtQualification WHERE Username = '$username'";
-	$result = $con->query($query);
-	if ($result->num_rows > 0) {
-		$obtQ = "yes";
-	}
-	else {
-		$obtQ = "no";
-	}
+  $result = $conn->query($sql); // execute query
 
+  if ($result->num_rows > 0) {
+    $currentApplications = [];
+    while($row = $result->fetch_assoc()) {
+      $currentApplications[] = $row;
+    }
+  } else {
+    $currentApplications = "";
+  }
 
+}
 
-$con->close();
+$conn->close();
 ?>
 
 <!DOCTYPE html>
@@ -110,21 +114,14 @@ $con->close();
 
         <div class="collapse navbar-collapse" id="navigation">
           <ul class="navbar-nav ml-auto text-center">
+            <li class="nav-item active">
+              <a class="nav-link" href="apphome.php">APPLICANT DASHBOARD</a>
+            </li>
             <li class="nav-item">
-            	<?php if($obtQ != "yes") { ?>
-              <a class="nav-link" href="uploadqualification.php">Set Up Obtained Qualifications</a>
-          <?php }
-          else {  ?> <a class="nav-link" href="uploadqualification.php">Preview Your Qualification</a>
-          <?php }} ?>
+              <a class="nav-link" href="obtainedQualification.php" id="manageObtQLink">Obtained Qualification</a>
             </li>
-            <li class="nav-item @@about">
-              <a class="nav-link" href="about.html">About</a>
-            </li>
-            <li class="nav-item @@courses">
-              <a class="nav-link" href="courses.html">COURSES</a>
-            </li>
-            <li class="nav-item @@events">
-              <a class="nav-link" href="events.html">EVENTS</a>
+            <li class="nav-item">
+              <a class="nav-link" href="obtainedQualification.php">Apply for Programme</a>
             </li>
           </ul>
         </div>
@@ -133,183 +130,81 @@ $con->close();
   </div>
 </header>
 <!-- /header -->
-<!-- Modal -->
-<div class="modal fade" id="signupModal" tabindex="-1" role="dialog" aria-hidden="true">
-  <div class="modal-dialog modal-lg" role="document">
-    <div class="modal-content rounded-0 border-0 p-4">
-      <div class="modal-header border-0">
-        <h3>Register</h3>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
-      </div>
-      <div class="modal-body">
-        <div class="login">
 
-          <form name="login" class="form-horizontal" role="form"
-          method="post" action="">
-          <div class="col-12">
-            <input type="text" class="form-control mb-3" id="Username" name="Username" placeholder="Username">
-          </div>
-          <div class="col-12">
-            <input type="password" class="form-control mb-3" id="password" name="password" placeholder="Password">
-          </div>
-          <div class="col-12">
-            <button type="submit" class="btn btn-primary">SIGN UP</button>
-          </div>
-        </form>
-
-      </div>
-    </div>
-  </div>
-</div>
-</div>
-<!-- Modal -->
-<!-- Modal -->
-<div class="modal fade" id="loginModal" tabindex="-1" role="dialog" aria-hidden="true">
-  <div class="modal-dialog modal-lg" role="document">
-    <div class="modal-content rounded-0 border-0 p-4">
-      <div class="modal-header border-0">
-        <h3>Login</h3>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
-      </div>
-      <div class="modal-body">
-        <form name="login" class="form-horizontal" role="form"
-        method="post" action="">
-        <div class="col-12">
-          <input type="text" class="form-control mb-3" name="username" placeholder="Username">
-        </div>
-        <div class="col-12">
-          <input type="password" class="form-control mb-3" name="password" placeholder="Password">
-        </div>
-        <div class="col-12">
-          <input type="submit" class="btn btn-primary">LOGIN</button>
-        </div>
-      </form>
-    </div>
-  </div>
-</div>
-</div>
-
-
-<!-- hero slider -->
-<section class="hero-section overlay bg-cover" data-background="images/banner/banner-1.jpg">
+<!-- page title -->
+<section class="page-title-section overlay" data-background="images/backgrounds/page-title.jpg">
   <div class="container">
-    <div class="list-group">
-      <a href="#" class="list-group-item list-group-item-action flex-column align-items-start">
-        <div class="d-flex w-70 justify-content-between">
-          <h5 class="mb-1">Bachelor's Degree In Finance</h5>
-          <small>3 days ago</small>
-        </div>
-        <p class="mb-1">Donec id elit non mi porta gravida at eget metus. Maecenas sed diam eget risus varius blandit.</p>
-        <small>Donec id elit non mi porta.</small>
-      </a>
-      <a href="#" class="list-group-item list-group-item-action flex-column align-items-start">
-        <div class="d-flex w-70 justify-content-between">
-          <h5 class="mb-1">Diploma In Business Studies</h5>
-          <small class="mb-1">3 days ago</small>
-        </div>
-        <p class="mb-1">Donec id elit non mi porta gravida at eget metus. Maecenas sed diam eget risus varius blandit.</p>
-        <small class="mb-1">Donec id elit non mi porta.</small>
-      </a>
-      <a href="#" class="list-group-item list-group-item-action flex-column align-items-start">
-        <div class="d-flex w-70 justify-content-between">
-          <h5 class="mb-1">Degree In Psychology</h5>
-          <small class="mb-1">3 days ago</small>
-        </div>
-        <p class="mb-1">Donec id elit non mi porta gravida at eget metus. Maecenas sed diam eget risus varius blandit.</p>
-        <small class="mb-1">Donec id elit non mi porta.</small>
-      </a>
-      <a href="#" class="list-group-item list-group-item-action flex-column align-items-start">
-        <div class="d-flex w-70 justify-content-between">
-          <h5 class="mb-1">Degree In Psychology</h5>
-          <small class="mb-1">3 days ago</small>
-        </div>
-        <p class="mb-1">Donec id elit non mi porta gravida at eget metus. Maecenas sed diam eget risus varius blandit.</p>
-        <small class="mb-1">Donec id elit non mi porta.</small>
-      </a>
-      <a href="#" class="list-group-item list-group-item-action flex-column align-items-start">
-        <div class="d-flex w-70 justify-content-between">
-          <h5 class="mb-1">Degree In Psychology</h5>
-          <small class="mb-1">3 days ago</small>
-        </div>
-        <p class="mb-1">Donec id elit non mi porta gravida at eget metus. Maecenas sed diam eget risus varius blandit.</p>
-        <small class="mb-1">Donec id elit non mi porta.</small>
-      </a>
+    <div class="row">
+      <div class="col-md-8">
+        <ul class="list-inline custom-breadcrumb">
+          <li class="list-inline-item"><span class="h2 text-primary font-secondary">Applicant Dashboard</span></li>
+          <li class="list-inline-item text-white h3 font-secondary "></li>
+        </ul>
+        <p class="text-lighten">Submit your Obtained Qualification, or apply for a Programme.</p>
+      </div>
     </div>
-
   </div>
-  <!-- slider item -->
-
-  <!-- slider item -->
-
 </section>
-<!-- /hero slider -->
-
-<!-- banner-feature -->
-
-<!-- /banner-feature -->
-
-<!-- about us -->
-
-<!-- /about us -->
+<!-- /page title -->
 
 <!-- courses -->
+<section class="section">
+  <div class="container">
+    <!-- course list -->
+<div class="row justify-content-center">
+  <!-- course item -->
+  <div class="col-lg-4 col-sm-6 mb-5">
+    <div class="card p-0 border-primary rounded-0 hover-shadow">
 
-<!-- course list -->
+      <div class="card-body">
 
-<!-- course item -->
+        <a data-toggle="modal" data-target="#qualificationModal">
+          <h4 class="card-title">Submit Obtained Qualification</h4>
+        </a>
+        <p class="card-text mb-4"> Submit your Obtained Qualification.</p>
+        <a href="#" data-toggle="modal" data-target="#qualificationModal" class="btn btn-primary btn-sm">GO</a>
+      </div>
+    </div>
+  </div>
+  <!-- course item -->
+  <div class="col-lg-4 col-sm-6 mb-5">
+    <div class="card p-0 border-primary rounded-0 hover-shadow">
 
-<!-- /cta -->
+      <div class="card-body">
 
-<!-- success story -->
+        <a href="registerUni.php">
+          <h4 class="card-title">Apply for Programme</h4>
+        </a>
+        <p class="card-text mb-4"> Search and apply for a Programme.</p>
+        <a href="registerUni.php" class="btn btn-primary btn-sm">GO</a>
+      </div>
+    </div>
+  </div>
 
-<!-- /success story -->
+</div>
+<!-- /course list -->
+<div class="row justify-content-center">
+  <div>
+    <h2 class="section-title">Current Applications</h2>
+  </div>
+</div>
+<div class="row justify-content-center">
+  <div class="list-group" id="progListMenu">
+    <a class="list-group-item list-group-item-action flex-column align-items-start">
+      <div class="d-flex w-70 justify-content-between">
+        <h5 class="mb-1">Bachelor's Degree In Finance</h5>
+        <span>Date Applied: 12/7/2019</span>
+      </div>
+      <p class="mb-1">HELP University.</p>
+      <br/>
+      <span>Status: Pending</span>
+    </a>
+  </div>
+</div>
+    <!-- course list -->
 
-<!-- events -->
-
-<!-- location -->
-
-<!-- event -->
-
-<!-- location -->
-
-<!-- event -->
-
-<!-- location -->
-
-<!-- mobile see all button -->
-
-<!-- /events -->
-
-<!-- teachers -->
-
-<!-- teacher -->
-
-<!-- teacher -->
-
-
-<!-- teacher -->
-
-<!-- /teachers -->
-
-<!-- blog -->
-
-<!-- blog post -->
-
-<!-- post meta -->
-
-<!-- post date -->
-
-<!-- author -->
-
-<!-- blog post -->
-
-<!-- blog post -->
-
-<!-- /blog -->
+  </div>
+</section>
 
 <!-- footer -->
 <footer>
@@ -373,6 +268,61 @@ $con->close();
 
     <!-- Main Script -->
     <script src="js/script.js"></script>
+
+    <!-- EX Script -->
+    <script>
+    var sqlStatus = "<?php echo $sqlStatus ?>";
+    if(sqlStatus != "") {
+      alert(sqlStatus);
+    }
+
+    var progList = <?php echo json_encode($currentApplications) ?>;
+    window.onload = loadProgrammes();
+
+    function loadProgrammes() {
+      var progListMenu = document.getElementById("progListMenu");
+
+      if(progList.length != 0) {
+        for(var i = 0; i < progList.length; i++) {
+          // gen Programme list item
+          var progItem = document.createElement("a");
+
+          var progItemDiv = document.createElement("div");
+          var progItemH5 = document.createElement("h5");
+          var progItemSpanUpper = document.createElement("span");
+          var progItemP = document.createElement("p");
+          var progItemBr = document.createElement("br");
+          var progItemSpanLower = document.createElement("span");
+
+          var txtnodeProgName = document.createTextNode(progList[i].name);
+          var txtnodeUniName = document.createTextNode("University: " + progList[i].universityName);
+          var txtnodeStatus = document.createTextNode("Status: " + progList[i].status);
+          var txtnodeAppliedDate = document.createTextNode("Applied On: " + progList[i].date);
+
+          progItemH5.appendChild(txtnodeProgName);
+          progItemSpanUpper.appendChild(txtnodeAppliedDate);
+          progItemP.appendChild(txtnodeUniName);
+          progItemSpanLower.appendChild(txtnodeStatus);
+
+          progItem.setAttribute("class", "list-group-item list-group-item-action flex-column align-items-start");
+          progItemDiv.setAttribute("class", "d-flex w-70 justify-content-between");
+          progItemH5.setAttribute("class", "mb-1");
+          progItemP.setAttribute("class", "mb-1");
+
+          progItemDiv.appendChild(progItemH5);
+          progItemDiv.appendChild(progItemSpanUpper);
+
+          progItem.appendChild(progItemDiv);
+          progItem.appendChild(progItemP);
+          progItem.appendChild(progItemBr);
+          progItem.appendChild(progItemSpanLower);
+
+          // attach progItem to list
+          progListMenu.appendChild(progItem);
+        }
+      }
+    }
+    </script>
 
   </body>
   </html>
