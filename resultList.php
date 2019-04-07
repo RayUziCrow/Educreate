@@ -18,6 +18,7 @@ if(isset($_SESSION['selectedQ'])) { // chk if submitted
 $username = $_SESSION['username'];
 $name = $_SESSION['name'];
 
+
 // init db
 $conn = new mysqli('localhost', 'root', '', 'educreate');
 if ($conn->connect_error) {
@@ -293,6 +294,7 @@ $conn->close(); // close db
                   <input type="hidden" id="qualificationID" name="qualificationID" value="<?php echo $qID ?>">
                   <input type="hidden" id="resultList" name="resultList">
                   <input type="hidden" id="username" name="username" value="<?php echo $username ?>">
+                  <input type="hidden" name="hasObtQ" value="<?php echo $hasObtQ ?>">
                 </form>
               </div>
             </div>

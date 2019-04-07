@@ -5,6 +5,7 @@
   $qID = $_POST['qualificationID'];
   $resultList = $_POST['resultList'];
   $username = $_POST['username'];
+  $hasObtQ = $_POST['hasObtQ'];
 
   if(empty($resultList)) {
     $url = 'apphome.php';
@@ -16,7 +17,7 @@
   }
 
   function processGrades() {
-    global $qID, $resultList, $username;
+    global $qID, $resultList, $username, $hasObtQ;
     // split Grades
     $results = explode(',', $resultList);
 
@@ -53,6 +54,15 @@
     // gen save query
 
     $_SESSION['formSubmit'] = 'success';
+
+    if ($hasObtQ == 'yes') {
+
+    $sql = "DELETE FROM obtQualification WHERE username = '$username'";
+
+    if ($conn->query($sql) === TRUE) { }
+    else { }
+   }
+
 
     $sql = "INSERT INTO obtQualification (`qualificationID`, `username`) VALUES ('$qID', '$username')";
 
@@ -112,6 +122,7 @@
       $sqlStatus = "Obtained Qualification saved successfully";
 
       // redirect to form
+
       $url = 'apphome.php';
     }
     else {
