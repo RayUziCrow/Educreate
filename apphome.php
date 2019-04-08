@@ -38,7 +38,11 @@ if ($result->num_rows > 0) {
   // gen getApplications query
 
   $sql = "SELECT * FROM application, programme, university WHERE application.applicant = '$username' AND programme.programmeID = application.programmeID AND university.universityID = programme.universityID";
+<<<<<<< HEAD
 
+=======
+ 
+>>>>>>> da5dad0ae36053049388d7bd990089c9e04e79de
 
   $result = $conn->query($sql); // execute query
 
@@ -132,10 +136,14 @@ $conn->close();
               <a class="nav-link" href="apphome.php">APPLICANT DASHBOARD</a>
             </li>
             <li class="nav-item">
+<<<<<<< HEAD
               <a class="nav-link" onclick="checkexistobtQ('<?php echo $hasObtQ;?>')">Submit Obtained Qualification</a>
             </li>
             <li class="nav-item">
               <a class="nav-link" href="obtQpreview.php">View Obtained Qualification</a>
+=======
+              <a class="nav-link" id="manageObtQLink">Obtained Qualification</a>
+>>>>>>> da5dad0ae36053049388d7bd990089c9e04e79de
             </li>
             <li class="nav-item">
               <a class="nav-link" href="viewprogramme.php">Apply for Programme</a>
@@ -157,7 +165,11 @@ $conn->close();
           <li class="list-inline-item"><span class="h2 text-primary font-secondary">Applicant Dashboard</span></li>
           <li class="list-inline-item text-white h3 font-secondary "></li>
         </ul>
+<<<<<<< HEAD
         <p class="text-lighten">Submit an Obtained Qualification, or apply for a Programme.</p>
+=======
+        <p class="text-lighten"></p>
+>>>>>>> da5dad0ae36053049388d7bd990089c9e04e79de
       </div>
     </div>
   </div>
@@ -296,6 +308,17 @@ $conn->close();
     var hasObtQ = "<?php echo $hasObtQ ?>"; // get php value
     var manageObtQLink = document.getElementById("manageObtQLink");
 
+<<<<<<< HEAD
+=======
+    if (hasObtQ == "yes") {
+      manageObtQLink.innerHTML = "Preview Your Qualification";
+      
+      manageObtQLink.setAttribute("href", "obtQpreview.php");
+    } else {
+      manageObtQLink.innerHTML = "Set Up Obtained Qualifications";
+    }
+
+>>>>>>> da5dad0ae36053049388d7bd990089c9e04e79de
     var progList = <?php echo json_encode($currentApplications) ?>;
     window.onload = loadProgrammes();
 
@@ -305,18 +328,31 @@ $conn->close();
       if (hasObtQ == "yes")
       {
         var overwrite = confirm("Do you want to overwrite your existing qualification? ");
+<<<<<<< HEAD
         if (overwrite == true)
         {
         window.location = "obtainedQualification.php";
         }
         else
+=======
+        if (overwrite == true) 
+        {
+        window.location = "obtainedQualification.php";
+        }
+        else 
+>>>>>>> da5dad0ae36053049388d7bd990089c9e04e79de
         {
         return false;
         }
 
       }
+<<<<<<< HEAD
       else {
         window.location = "obtainedQualification.php";
+=======
+      else { 
+        alert("okay");
+>>>>>>> da5dad0ae36053049388d7bd990089c9e04e79de
               }
 
 
