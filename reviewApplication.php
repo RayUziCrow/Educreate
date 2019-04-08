@@ -1,67 +1,78 @@
-<?php // Save Reviewed Application
-  // $sqlStatusSave = "";
-  //
-  // if(isset($_POST['formSubmit'])) { // chk if submitted
-  //   // get form fields
-  //   $qID = $_POST['qualificationID'];
-  //   $qName = $_POST['qualificationName'];
-  //   $qMinScore = $_POST['qualificationMinScore'];
-  //   $qMaxScore = $_POST['qualificationMaxScore'];
-  //   $qResultCalc = $_POST['qualificationResultCalc'];
-  //   $qSubjectCount = $_POST['subjectCount'];
-  //
-  //   // init db
-  //   $conn = new mysqli('localhost', 'root', '', 'educreate');
-  //   if ($conn->connect_error) {
-  //       die("Connection failed: " . $conn->connect_error);
-  //   }
-  //
-  //   // gen update query
-  //   $sql = "UPDATE qualification SET qualificationName = '$qName', minimumScore = '$qMinScore', maximumScore = '$qMaxScore', resultCalcDescription = '$qResultCalc', resultCalcSubjectCount = '$qSubjectCount', gradeList = '$qGrades' WHERE qualificationID = '$qID'";
-  //
-  //   // execute query
-  //   if ($conn->query($sql) === TRUE) {
-  //       $sqlStatusSave = "Application saved successfully";
-  //   } else {
-  //       $sqlStatusSave = "Error: " . $sql . "<br>" . $conn->error;
-  //   }
-  //
-  //   $conn->close(); // close db
-  //   unset($_POST['formSubmit']); // unset 'submitted'
-  // }
-?>
+<?php // Load Applicant Data
+$sqlStatus = "";
 
-<?php // Load Applications
-  $sqlStatusLoad = "";
+session_start();
+$selectedA = -1;
+if(isset($_SESSION['sqlStatus'])) {
+  $sqlStatus = $_SESSION['sqlStatus'];
+  unset($_SESSION['sqlStatus']);
+}
 
-  // init db
-  $conn = new mysqli('localhost', 'root', '', 'educreate');
-  if ($conn->connect_error) {
-      die("Connection failed: " . $conn->connect_error);
+$username = $_SESSION['username'];
+$name = $_SESSION['name'];
+$uniID = $_SESSION['uniID'];
+
+$foundApplicant = $_POST['selectedApplicant'];
+$foundProgID = $_POST['selectedProg'];
+
+// init db
+$conn = new mysqli('localhost', 'root', '', 'educreate');
+if ($conn->connect_error) {
+  die("Connection failed: " . $conn->connect_error);
+}
+
+// dummy data (online)
+// $selectedA = 1;
+
+// gen load Application query
+$sql = "SELECT user.Name, email, applicant.*, programmeID, date, status FROM user, applicant, application WHERE application.applicant = '$foundApplicant' AND application.programmeID = '$foundProgID' AND application.applicant = applicant.Username AND applicant.Username = user.Username LIMIT 1";
+
+$result = $conn->query($sql); // execute query
+
+if ($result->num_rows > 0) {
+  $foundApplication = $result->fetch_assoc();
+}
+
+// load matching Qualification
+$sql = "SELECT qualification.* FROM qualification, obtQualification, applicant WHERE obtqualification.username = '$foundApplicant' AND obtqualification.username = applicant.Username AND obtqualification.qualificationID = qualification.qualificationID LIMIT 1";
+
+$result = $conn->query($sql); // execute query
+
+if ($result->num_rows > 0) {
+  $foundQ = $result->fetch_assoc();
+  $foundQID = $foundQ['qualificationID'];
+}
+
+// load possible Grades
+$sql = "SELECT grade, scoreUpperLimit FROM gradeList WHERE qualificationID = '$foundQID'";
+
+$result = $conn->query($sql); // execute query
+
+if ($result->num_rows > 0) {
+  $foundGrades = [];
+  while($row = $result->fetch_assoc()) {
+    $foundGrades[] = $row;
   }
+} else {
+  $foundGrades = "";
+}
 
-  // dummydata
-  $pID = 2;
+// load existing Results
+$sql = "SELECT subjectName, score FROM result, subject, obtqualification WHERE obtqualification.username = '$foundApplicant' AND result.obtainedQualificationID = obtqualification.obtQualificationID AND result.subjectID = subject.subjectID"; // gen load Results query
 
-  $sql = "SELECT * FROM application WHERE programmeID = '$pID'"; // gen load query
+$result = $conn->query($sql); // execute query
 
-  // execute query
-  $result = $conn->query($sql);
-
-  $aArray = array();
-  $count = 0;
-  if ($result->num_rows > 0) {
-    // output data to array
-    while($row = $result->fetch_assoc()) {
-        $aArray[$count] = $row;
-        $count++;
-    }
-    $sqlStatusLoad = $count . " Application(s) found.";
-  } else {
-      $sqlStatusLoad = "No Applications found.";
+if ($result->num_rows > 0) {
+  $foundResults = [];
+  while($row = $result->fetch_assoc()) {
+    $foundResults[] = $row;
   }
+}
+else {
+  $foundResults = "";
+}
 
-  $conn->close(); // close db
+$conn->close(); // close db
 ?>
 
 <!DOCTYPE html>
@@ -115,11 +126,18 @@
       <div class="container">
         <div class="row no-gutters">
           <div class="col-lg-4 text-center text-lg-left">
-            <span class="text-color mr-3"><strong>MASTER ADMIN</strong></span>
 
+            <ul class="list-inline d-inline">
+              <li class="list-inline-item"><a class="text-uppercase text-color p-sm-2 py-2 px-0 d-inline-block" href="#"><?php echo $username ?></a></li>
+              <li class="list-inline-item"><a class="text-uppercase text-color p-sm-2 py-2 px-0 d-inline-block" href="#"><?php echo $name ?></a></li>
+            </ul>
           </div>
           <div class="col-lg-8 text-center text-lg-right">
+            <ul class="list-inline">
 
+              <li class="list-inline-item"><a class="text-uppercase text-color p-sm-2 py-2 px-0 d-inline-block" href="logout.php">Logout</a></li>
+
+            </ul>
           </div>
         </div>
       </div>
@@ -136,25 +154,12 @@
 
         <div class="collapse navbar-collapse" id="navigation">
           <ul class="navbar-nav ml-auto text-center">
-            <li class="nav-item @@home">
-              <a class="nav-link" href="index.php">Home</a>
+            <li class="nav-item">
+              <a class="nav-link" href="unihome.php">UNIVERSITY DASHBOARD</a>
             </li>
-            <li class="nav-item @@home">
-              <a class="nav-link" href="masterDashboard.php">MASTER DASHBOARD</a>
+            <li class="nav-item">
+              <a class="nav-link" href="newProgramme.php">ADD PROGRAMME</a>
             </li>
-            <li class="nav-item dropdown view active">
-              <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown"
-              aria-haspopup="true" aria-expanded="false">
-              Applications
-            </a>
-            <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-              <a class="dropdown-item" href="newApplication.php">New Application</a>
-              <a class="dropdown-item" href="reviewApplication.php">Review Application</a>
-            </div>
-          </li>
-          <li class="nav-item @@contact">
-            <a class="nav-link" href="registerUni.php">REGISTER UNIVERSITY</a>
-          </li>
         </ul>
       </div>
     </nav>
@@ -232,143 +237,310 @@
     <div class="row">
       <div class="col-md-8">
         <ul class="list-inline custom-breadcrumb">
-          <li class="list-inline-item"><span class="h2 text-primary font-secondary">Review Application</span></li>
+          <li class="list-inline-item"><span class="h2 text-primary font-secondary">Subject List</span></li>
           <li class="list-inline-item text-white h3 font-secondary @@nasted"></li>
         </ul>
-        <p class="text-lighten">Review an existing Application by selecting one and modifying its details.</p>
+        <p class="text-lighten">Add Results to a Applicant by entering the details below.</p>
       </div>
     </div>
   </div>
 </section>
 <!-- /page title -->
 
-<!-- Application Select -->
+<!-- Subject Form -->
 <section class="section bg-gray">
   <div class="container">
     <div class="row">
       <div class="col-lg-12">
-        <h2 class="section-title">Review Application</h2>
+        <h2 class="section-title"><span id="applicantName">NO_NAME</span></h2>
       </div>
     </div>
     <div class="row">
-      <div class="col-lg-6 mb-4 mb-lg-0">
-        <p class="mb-5">Review an exist Application by selecting one from the list below.</p>
-        <div class="dropdown view">
-          <button class="nav-link dropdown-toggle" href="#" id="selectDropdown" role="button" data-toggle="dropdown"
-          aria-haspopup="true" aria-expanded="false">
-          Select Application
-        </button>
-        <div class="dropdown-menu" aria-labelledby="selectDropdown" id="aSelectMenu">
-
+      <div class="col-lg-4 mb-4 mb-lg-0">
+        <p class="h2">Applicant Info</p>
+        <p>
+          Username: <span id="applicantUsername">N/A</span><br/>
+          Email: <span id="applicantEmail">N/A</span><br/>
+          Mobile No.: <span id="applicantMobileNo">N/A</span><br/>
+          Date of Birth: <span id="applicantBirthDate">N/A</span><br/>
+        </p>
         </div>
-      </div>
-    </div>
-    <div class="col-lg-6">
-      <form id="selectedAForm" action="reviewApplication_details.php" method="post">
-        <div>
-          <input type="hidden" id="selectedA" name="selectedA">
-        </div>
-      </form>
-      <p><?php echo $sqlStatusLoad ?></p>
-    </div>
-  </div>
-</div>
-</section>
-<!-- /contact -->
-
-<!-- footer -->
-<footer>
-
-  <!-- footer content -->
-  <div class="footer bg-footer section border-bottom">
-    <div class="container">
-      <div class="row">
-        <div class="col-lg-4 col-sm-8 mb-5 mb-lg-0">
-          <!-- logo -->
-          <a class="logo-footer" href="index.php"><img class="img-fluid mb-4" src="images/logo.png" alt="logo"></a>
-          <ul class="list-unstyled">
-            <li class="mb-2">No. 15, Jalan Sri Semantan 1, Off Jalan Semantan, Bukit Damansara 50490 Kuala Lumpur</li>
-            <li class="mb-2">Ridge Hon Fay (B1600595) <a href="mailto:rayuzicrow@gmail.com">rayuzicrow@gmail.com</a></li>
-            <li class="mb-2">Muhamad Muqriz (B1800732) <a href="mailto:muqrizx@gmail.com">muqrizx@gmail.com<a/></li>
-            </ul>
+        <div class="col-lg-7">
+          <div class="row">
+            <div class="col-lg-6 mb-3">
+              <p class="h2">Application Info</p>
+              <div>
+                Date Applied: <span id="dateApplied">N/A</span><br/><br/>
+                <p>
+                  Status:
+                  <select id="applicationStatus">
+                    <option value="Pending">Pending</option>
+                    <option value="Accepted">Accepted</option>
+                    <option value="Rejected">Rejected</option>
+                  </select>
+                </p>
+                <p id="formStatus"><?php echo $sqlStatus ?></p>
+              </div>
+            </div>
+            <div class="col-lg-6 mb-3">
+              <p class="h2">Results:</p>
+              <p>
+                Qualification: <span id="selectedQ">N/A</span><br/>
+                Overall Score: <span id="overallScore">N/A</span><br/>
+                Grade: <span id="overallGrade">N/A</span><br/>
+              </p>
+              <div>
+                <h5>Subjects:</h5>
+                <!--added Results go here-->
+                <select id="loadedResults" class="w-100 mb-3" multiple size="10">
+                </select>
+              </div>
+              <div>
+                <button id="btn_finishReview" onclick="finishReview()" class="btn btn-primary">FINISH</button>
+              </div>
+              <div>
+                <form id="reviewApplicationForm" action="reviewApplication_formsubmit.php" method="post">
+                  <input type="hidden" id="rApplicant" name="rApplicant">
+                  <input type="hidden" id="rProgID" name="rProgID">
+                  <input type="hidden" id="newStatus" name="newStatus">
+                </form>
+              </div>
+            </div>
           </div>
-
         </div>
       </div>
     </div>
-    <!-- copyright -->
-    <div class="copyright py-4 bg-footer">
+
+  </section>
+  <!-- /contact -->
+
+  <!-- footer -->
+  <footer>
+
+    <!-- footer content -->
+    <div class="footer bg-footer section border-bottom">
       <div class="container">
         <div class="row">
-          <div class="col-sm-7 text-sm-left text-center">
-            <p class="mb-0">Copyright
-              <script>
-              var CurrentYear = new Date().getFullYear()
-              document.write(CurrentYear)
-              </script>
-              © Theme By <a href="https://themefisher.com">themefisher.com</a></p> . All Rights Reserved.
-            </div>
-            <div class="col-sm-5 text-sm-right text-center">
-              <ul class="list-inline">
-                <li class="list-inline-item"><a class="d-inline-block p-2" href="https://www.facebook.com/themefisher"><i class="ti-facebook text-primary"></i></a></li>
-                <li class="list-inline-item"><a class="d-inline-block p-2" href="https://www.twitter.com/themefisher"><i class="ti-twitter-alt text-primary"></i></a></li>
-                <li class="list-inline-item"><a class="d-inline-block p-2" href="#"><i class="ti-instagram text-primary"></i></a></li>
-                <li class="list-inline-item"><a class="d-inline-block p-2" href="https://dribbble.com/themefisher"><i class="ti-dribbble text-primary"></i></a></li>
+          <div class="col-lg-4 col-sm-8 mb-5 mb-lg-0">
+            <!-- logo -->
+            <a class="logo-footer" href="index.php"><img class="img-fluid mb-4" src="images/logo.png" alt="logo"></a>
+            <ul class="list-unstyled">
+              <li class="mb-2">No. 15, Jalan Sri Semantan 1, Off Jalan Semantan, Bukit Damansara 50490 Kuala Lumpur</li>
+              <li class="mb-2">Ridge Hon Fay (B1600595) <a href="mailto:rayuzicrow@gmail.com">rayuzicrow@gmail.com</a></li>
+              <li class="mb-2">Muhamad Muqriz (B1800732) <a href="mailto:muqrizx@gmail.com">muqrizx@gmail.com<a/></li>
               </ul>
             </div>
+
           </div>
         </div>
       </div>
-    </footer>
-    <!-- /footer -->
+      <!-- copyright -->
+      <div class="copyright py-4 bg-footer">
+        <div class="container">
+          <div class="row">
+            <div class="col-sm-7 text-sm-left text-center">
+              <p class="mb-0">Copyright
+                <script>
+                var CurrentYear = new Date().getFullYear()
+                document.write(CurrentYear)
+                </script>
+                © Theme By <a href="https://themefisher.com">themefisher.com</a></p> . All Rights Reserved.
+              </div>
+              <div class="col-sm-5 text-sm-right text-center">
+                <ul class="list-inline">
+                  <li class="list-inline-item"><a class="d-inline-block p-2" href="https://www.facebook.com/themefisher"><i class="ti-facebook text-primary"></i></a></li>
+                  <li class="list-inline-item"><a class="d-inline-block p-2" href="https://www.twitter.com/themefisher"><i class="ti-twitter-alt text-primary"></i></a></li>
+                  <li class="list-inline-item"><a class="d-inline-block p-2" href="#"><i class="ti-instagram text-primary"></i></a></li>
+                  <li class="list-inline-item"><a class="d-inline-block p-2" href="https://dribbble.com/themefisher"><i class="ti-dribbble text-primary"></i></a></li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+      </footer>
+      <!-- /footer -->
 
-    <!-- jQuery -->
-    <script src="plugins/jQuery/jquery.min.js"></script>
-    <!-- Bootstrap JS -->
-    <script src="plugins/bootstrap/bootstrap.min.js"></script>
-    <!-- slick slider -->
-    <script src="plugins/slick/slick.min.js"></script>
-    <!-- aos -->
-    <script src="plugins/aos/aos.js"></script>
-    <!-- venobox popup -->
-    <script src="plugins/venobox/venobox.min.js"></script>
-    <!-- mixitup filter -->
-    <script src="plugins/mixitup/mixitup.min.js"></script>
+      <!-- jQuery -->
+      <script src="plugins/jQuery/jquery.min.js"></script>
+      <!-- Bootstrap JS -->
+      <script src="plugins/bootstrap/bootstrap.min.js"></script>
+      <!-- slick slider -->
+      <script src="plugins/slick/slick.min.js"></script>
+      <!-- aos -->
+      <script src="plugins/aos/aos.js"></script>
+      <!-- venobox popup -->
+      <script src="plugins/venobox/venobox.min.js"></script>
+      <!-- mixitup filter -->
+      <script src="plugins/mixitup/mixitup.min.js"></script>
 
-    <!-- Main Script -->
-    <script src="js/script.js"></script>
 
-    <!-- EX Script -->
-    <script>
-    var aArray = <?php echo json_encode($aArray) ?>; // send php_array to js
-    window.onload = showLoadedApplications();
+      <!-- Main Script -->
+      <script src="js/script.js"></script>
 
-    function showLoadedApplications() {
+      <!-- EX Script -->
+      <script>
+      // get php value
+      var aInfo = <?php echo json_encode($foundApplication) ?>;
+      var foundQ = <?php echo json_encode($foundQ) ?>;
+      var foundGrades = <?php echo json_encode($foundGrades) ?>;
+      var foundResults = <?php echo json_encode($foundResults) ?>;
 
-      var aSelectMenu = document.getElementById("aSelectMenu");
+      window.onload = loadAllInfo();
 
-      if (aArray.length != 0) {
-        for(var i = 0; i < aArray.length; i++) {
-          // gen qualification list item
-          var aItem = document.createElement("a");
-          var textnode = document.createTextNode(aArray[i].applicant + " - " + aArray[i].date);
-          aItem.appendChild(textnode);
-          aItem.setAttribute("class", "dropdown-item");
-          aItem.setAttribute("onclick", "showCurrentReview(\"" + aArray[i].applicant + "\")");
+      function loadAllInfo() {
+         // send php_array to js
+        var aUsername = document.getElementById("applicantUsername");
+        var aName = document.getElementById("applicantName");
+        var aEmail = document.getElementById("applicantEmail");
+        var aMobileNo = document.getElementById("applicantMobileNo");
+        var aBirthDate = document.getElementById("applicantBirthDate");
+        var resultList = document.getElementById("resultList");
+        var rApplicant = document.getElementById("rApplicant");
+        var rProgID = document.getElementById("rProgID");
 
-          // attach qItem to list
-          aSelectMenu.appendChild(aItem);
+        // fill HiddenForm
+        rApplicant.value = aInfo.Username;
+        rProgID.value = aInfo.programmeID;
+
+        // fill Applicant Info
+        aUsername.innerHTML = aInfo.Username;
+        aName.innerHTML = aInfo.Name;
+        aEmail.innerHTML = aInfo.email;
+        aMobileNo.innerHTML = aInfo.MobileNo;
+        aBirthDate.innerHTML = aInfo.DateOfBirth;
+
+        // fill Application info
+        var dateApplied = document.getElementById("dateApplied");
+        var appStatusSelect = document.getElementById("applicationStatus");
+
+        dateApplied.innerHTML = aInfo.date;
+        appStatusSelect.value = aInfo.status;
+
+        var formStatus = document.getElementById("formStatus");
+
+        // fill Qualification info
+        var selectedQ = document.getElementById("selectedQ");
+        var overallScore = document.getElementById("overallScore");
+        var overallGrade = document.getElementById("overallGrade");
+
+        selectedQ.innerHTML = foundQ.qualificationName;
+
+        // calculate overallScore & overallGrade
+        resultScores = new Array();
+        for(var i = 0; i < foundResults.length; i++) {
+          resultScores.push(parseFloat(foundResults[i].score));
+        }
+
+        gradeNames = new Array();
+        gradeUpperLimits = new Array();
+        for(var i = 0; i < foundGrades.length; i++) {
+          gradeNames.push(foundGrades[i].grade);
+          gradeUpperLimits.push(parseFloat(foundGrades[i].scoreUpperLimit));
+        }
+
+        var resultCalcFormula = foundQ.resultCalcDescription;
+        var subjectCount = foundQ.resultCalcSubjectCount;
+
+        switch(resultCalcFormula) {
+          case "avg_highest": case "sum_highest":
+            // sort Scores (descending)
+            resultScores.sort(function(a, b){return b-a});
+            gradeUpperLimits.sort(function(a, b){return b-a});
+            break;
+          case "avg_lowest": case "sum_lowest":
+            // sort Scores (ascending)
+            resultScores.sort(function(a, b){return a-b});
+            gradeUpperLimits.sort(function(a, b){return a-b});
+            break;
+        }
+
+        // trim Scores
+        var parsedScores = resultScores.slice(0, subjectCount);
+        var calculatedScore;
+
+        switch(resultCalcFormula) {
+          case "avg_highest": case "avg_lowest":
+            // calc Average
+            calculatedScore = getAvg(parsedScores);
+            break;
+          case "sum_highest": case "sum_lowest":
+            // calc Sum
+            calculatedScore = getSum(parsedScores);
+            break;
+        }
+
+        formStatus.innerHTML = gradeUpperLimits;
+
+        // calculate Grade
+        var matchingUpperLimit;
+        switch(resultCalcFormula) {
+          case "avg_highest": case "sum_highest":
+            for(var i = 0; i < gradeUpperLimits.length; i++) {
+              if(calculatedScore >= gradeUpperLimits[i]) {
+                matchingUpperLimit = gradeUpperLimits[i];
+                break;
+              }
+            }
+            break;
+          case "avg_lowest": case "sum_lowest":
+            for(var i = 0; i < gradeUpperLimits.length; i++) {
+              if(calculatedScore <= gradeUpperLimits[i]) {
+                matchingUpperLimit = gradeUpperLimits[i];
+                break;
+              }
+            }
+            break;
+        }
+
+        var matchingGrade = "No Grade"
+        // find matching gradeName
+        for(var i = 0; i < foundGrades.length; i++) {
+          if(matchingUpperLimit == foundGrades[i].scoreUpperLimit) {
+            matchingGrade = foundGrades[i].grade;
+            break;
+          }
+        }
+
+        // display values
+        overallScore.innerHTML = calculatedScore;
+        overallGrade.innerHTML = matchingGrade;
+
+        // fill existing Results
+        var loadedResults = document.getElementById("loadedResults");
+        for(var i = 0; i < foundResults.length; i++) {
+          // create Result
+          var newResult = document.createElement("option");
+          var newResultText = document.createTextNode(foundResults[i].subjectName + ": " + foundResults[i].score);
+          newResult.appendChild(newResultText);
+          newResult.value = foundResults[i].resultID + ":" + foundResults[i].subjectName + ":" + foundResults[i].score;
+          // insert Result
+          loadedResults.appendChild(newResult);
         }
       }
-    }
 
-    function showCurrentReview(aNum) {
-      var selectedAForm = document.getElementById("selectedAForm");
-      var selectedA = document.getElementById("selectedA");
+      function getSum(numArray) {
+        var sum = 0;
+        for(var i = 0; i < numArray.length; i++) {
+          sum += numArray[i];
+        }
+        return sum;
+      }
 
-      selectedA.value = aNum;
-      selectedAForm.submit(); // goto details
-    }
-  </script>
-</body>
-</html>
+      function getAvg(numArray) {
+        var sum = getSum(numArray);
+        return sum / numArray.length;
+      }
+
+      function finishReview() {
+        var reviewApplicationForm = document.getElementById("reviewApplicationForm");
+        var applicationStatus = document.getElementById("applicationStatus");
+        var newStatus = document.getElementById("newStatus");
+
+        newStatus.value = applicationStatus.value;
+
+        reviewApplicationForm.submit();
+      }
+      </script>
+
+    </body>
+    </html>

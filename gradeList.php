@@ -128,7 +128,7 @@ $conn->close(); // close db
             <li class="nav-item @@home">
               <a class="nav-link" href="index.php">Home</a>
             </li>
-            <li class="nav-item @@home">
+            <li class="nav-item">
               <a class="nav-link" href="masterDashboard.php">MASTER DASHBOARD</a>
             </li>
             <li class="nav-item dropdown view active">
@@ -141,7 +141,7 @@ $conn->close(); // close db
               <a class="dropdown-item" href="editQualification.php">Edit Qualification</a>
             </div>
           </li>
-          <li class="nav-item @@contact">
+          <li class="nav-item">
             <a class="nav-link" href="registerUni.php">REGISTER UNIVERSITY</a>
           </li>
         </ul>

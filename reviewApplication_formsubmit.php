@@ -2,9 +2,9 @@
   $sqlStatus = "";
 
   // get form fields
-  $applicant = $_POST['applicant'];
-  $progID = $_POST['programmeID'];
-  $currentDate = $_POST['currentDate'];
+  $applicant = $_POST['rApplicant'];
+  $progID = $_POST['rProgID'];
+  $newStatus = $_POST['newStatus'];
 
   // init db
   $conn = new mysqli('localhost', 'root', '', 'educreate');
@@ -13,12 +13,12 @@
   }
 
   // gen save query
-  $sql = "INSERT INTO application VALUES ('$applicant', '$progID', '$currentDate', 'Pending')";
+  $sql = "UPDATE application SET status = '$newStatus' WHERE applicant = '$applicant' AND programmeID = '$progID'";
 
   session_start(); // init store session var
   // execute query
   if ($conn->query($sql) === TRUE) {
-      $sqlStatus = "Application successful";
+      $sqlStatus = "Application reviewed successfully";
       $_SESSION['formSubmit'] = 'success';
   } else {
       $sqlStatus = "Error: " . $sql . "<br>" . $conn->error;
@@ -31,10 +31,10 @@
 
   if($_SESSION['formSubmit'] == 'success') {
     // redirect to form
-    $url = 'apphome.php';
+    $url = 'unihome.php';
   }
   else {
-    $url = 'apphome.php';
+    $url = 'unihome.php';
   }
   header('Location: ' . $url);
   die();

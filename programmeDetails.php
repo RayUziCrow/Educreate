@@ -1,51 +1,42 @@
-<?php
-// include("auth.php");
-session_start();
+<?php // Load Applications
+  $sqlStatusLoad = "";
 
-// dummydata
-// $_SESSION['username'] = "eva_00";
-// $_SESSION['name'] = "Ayanami Rei";
+  session_start();
 
-$username = $_SESSION['username'];
-$name = $_SESSION['name'];
+  $username = $_SESSION['username'];
+  $name = $_SESSION['name'];
+  $uniID = $_SESSION['uniID'];
 
-$sqlStatusLoad = "";
-
-// init db
-$conn = new mysqli('localhost', 'root', '', 'educreate');
-if ($conn->connect_error) {
-  die("Connection failed: " . $conn->connect_error);
-}
-
-$sql = "SELECT * FROM obtQualification WHERE Username = '$username'"; // gen chkObtQ query
-
-$result = $conn->query($sql); // execute query
-if ($result->num_rows > 0) { // obtainedQ found
-  $hasObtQ = "yes";
-}
-else { // obtainedQ not found
-  $hasObtQ = "no";
-}
-
-$sql = "SELECT * FROM qualification"; // gen load query
-
-// execute query
-$result = $conn->query($sql);
-
-$qArray = array();
-$count = 0;
-if ($result->num_rows > 0) {
-  // output data to array
-  while($row = $result->fetch_assoc()) {
-    $qArray[$count] = $row;
-    $count++;
+  // init db
+  $conn = new mysqli('localhost', 'root', '', 'educreate');
+  if ($conn->connect_error) {
+      die("Connection failed: " . $conn->connect_error);
   }
-  $sqlStatusLoad = $count . " Qualification(s) available.";
-} else {
-  $sqlStatusLoad = "No Qualifications available. We're sorry for the inconvenience.";
-}
 
-$conn->close(); // close db
+  $pID = $_GET['progID'];
+
+  // dummydata
+  // $pID = 2;
+
+  $sql = "SELECT * FROM application WHERE programmeID = '$pID'"; // gen load query
+
+  // execute query
+  $result = $conn->query($sql);
+
+  $aArray = array();
+  $count = 0;
+  if ($result->num_rows > 0) {
+    // output data to array
+    while($row = $result->fetch_assoc()) {
+        $aArray[$count] = $row;
+        $count++;
+    }
+    $sqlStatusLoad = $count . " Application(s) found.";
+  } else {
+      $sqlStatusLoad = "No Applications found.";
+  }
+
+  $conn->close(); // close db
 ?>
 
 <!DOCTYPE html>
@@ -53,7 +44,7 @@ $conn->close(); // close db
 
 <head>
   <meta charset="utf-8">
-  <title>Educreate: New Obtained Qualification</title>
+  <title>Educreate: Review Application</title>
 
   <!-- mobile responsive meta -->
   <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -92,7 +83,6 @@ $conn->close(); // close db
 <body>
 
 
-
   <!-- header -->
   <header class="fixed-top header">
     <!-- top header -->
@@ -120,7 +110,7 @@ $conn->close(); // close db
     <div class="navigation w-100">
       <div class="container">
         <nav class="navbar navbar-expand-lg navbar-light p-0">
-          <a class="navbar-brand" href="apphome.php"><img src="images/logo.png" alt="logo"></a>
+          <a class="navbar-brand" href="index.php"><img src="images/logo.png" alt="logo"></a>
           <button class="navbar-toggler rounded-0" type="button" data-toggle="collapse" data-target="#navigation"
           aria-controls="navigation" aria-expanded="false" aria-label="Toggle navigation">
           <span class="navbar-toggler-icon"></span>
@@ -129,24 +119,81 @@ $conn->close(); // close db
         <div class="collapse navbar-collapse" id="navigation">
           <ul class="navbar-nav ml-auto text-center">
             <li class="nav-item">
-              <a class="nav-link" href="apphome.php">APPLICANT DASHBOARD</a>
+              <a class="nav-link" href="unihome.php">UNIVERSITY DASHBOARD</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link" onclick="checkexistobtQ('<?php echo $hasObtQ;?>')">Submit Obtained Qualification</a>
+              <a class="nav-link" href="newProgramme.php">ADD PROGRAMME</a>
             </li>
-            <li class="nav-item">
-              <a class="nav-link" href="obtQpreview.php">View Obtained Qualification</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="viewprogramme.php">Apply for Programme</a>
-            </li>
-          </ul>
-        </div>
-      </nav>
-    </div>
+        </ul>
+      </div>
+    </nav>
   </div>
+</div>
 </header>
 <!-- /header -->
+<!-- Modal -->
+<div class="modal fade" id="signupModal" tabindex="-1" role="dialog" aria-hidden="true">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content rounded-0 border-0 p-4">
+      <div class="modal-header border-0">
+        <h3>Register</h3>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="login">
+          <form action="#" class="row">
+            <div class="col-12">
+              <input type="text" class="form-control mb-3" id="signupPhone" name="signupPhone" placeholder="Phone">
+            </div>
+            <div class="col-12">
+              <input type="text" class="form-control mb-3" id="signupName" name="signupName" placeholder="Name">
+            </div>
+            <div class="col-12">
+              <input type="email" class="form-control mb-3" id="signupEmail" name="signupEmail" placeholder="Email">
+            </div>
+            <div class="col-12">
+              <input type="password" class="form-control mb-3" id="signupPassword" name="signupPassword" placeholder="Password">
+            </div>
+            <div class="col-12">
+              <button type="submit" class="btn btn-primary">SIGN UP</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- Modal -->
+<div class="modal fade" id="loginModal" tabindex="-1" role="dialog" aria-hidden="true">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content rounded-0 border-0 p-4">
+      <div class="modal-header border-0">
+        <h3>Login</h3>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form action="#" class="row">
+          <div class="col-12">
+            <input type="text" class="form-control mb-3" id="loginPhone" name="loginPhone" placeholder="Phone">
+          </div>
+          <div class="col-12">
+            <input type="text" class="form-control mb-3" id="loginName" name="loginName" placeholder="Name">
+          </div>
+          <div class="col-12">
+            <input type="password" class="form-control mb-3" id="loginPassword" name="loginPassword" placeholder="Password">
+          </div>
+          <div class="col-12">
+            <button type="submit" class="btn btn-primary">LOGIN</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
 
 <!-- page title -->
 <section class="page-title-section overlay" data-background="images/backgrounds/page-title.jpg">
@@ -154,46 +201,48 @@ $conn->close(); // close db
     <div class="row">
       <div class="col-md-8">
         <ul class="list-inline custom-breadcrumb">
-          <li class="list-inline-item"><span class="h2 text-primary font-secondary">New Qualification</span></li>
+          <li class="list-inline-item"><span class="h2 text-primary font-secondary">Review Application</span></li>
           <li class="list-inline-item text-white h3 font-secondary @@nasted"></li>
         </ul>
-        <p class="text-lighten">Create a new Qualification by entering the details below.</p>
+        <p class="text-lighten">Review an existing Application by selecting one and modifying its details.</p>
       </div>
     </div>
   </div>
 </section>
 <!-- /page title -->
 
-<!-- Qualification Form -->
+<!-- Application Select -->
 <section class="section bg-gray">
   <div class="container">
     <div class="row">
       <div class="col-lg-12">
-        <h2 class="section-title" id="formtitle">Submit Obtained Qualification</h2>
+        <h2 class="section-title">Review Application</h2>
       </div>
     </div>
     <div class="row">
       <div class="col-lg-6 mb-4 mb-lg-0">
-        <form action="resultList.php" method="post">
-          <p>
-            Qualification Type
-            <select class="nav-link" id="qSelectMenu" name="selectedQ">
-              <!--Qualifications Go Here-->
-            </select>
-          </p>
-          <div>
-            <button type="submit" class="btn btn-primary">CONFIRM</button>
-          </div>
-        </form>
-      </div>
-      <div class="col-lg-6">
-        <div>
-          <p><?php echo $sqlStatusLoad ?></p>
+        <p class="mb-5">Review an exist Application by selecting one from the list below.</p>
+        <div class="dropdown view">
+          <button class="nav-link dropdown-toggle" href="#" id="selectDropdown" role="button" data-toggle="dropdown"
+          aria-haspopup="true" aria-expanded="false">
+          Select Application
+        </button>
+        <div class="dropdown-menu" aria-labelledby="selectDropdown" id="aSelectMenu">
+
         </div>
       </div>
     </div>
+    <div class="col-lg-6">
+      <form id="selectedAForm" action="reviewApplication.php" method="post">
+        <div>
+          <input type="hidden" id="selectedApplicant" name="selectedApplicant">
+          <input type="hidden" id="selectedProg" name="selectedProg">
+        </div>
+      </form>
+      <p><?php echo $sqlStatusLoad ?></p>
+    </div>
   </div>
-
+</div>
 </section>
 <!-- /contact -->
 
@@ -261,53 +310,37 @@ $conn->close(); // close db
 
     <!-- EX Script -->
     <script>
-    var qArray = <?php echo json_encode($qArray) ?>; // send php_array to js
-    window.onload = showLoadedQualifications();
+    var aArray = <?php echo json_encode($aArray) ?>; // send php_array to js
+    window.onload = showLoadedApplications();
 
+    function showLoadedApplications() {
 
+      var aSelectMenu = document.getElementById("aSelectMenu");
 
-    function showLoadedQualifications() {
-
-      var qSelectMenu = document.getElementById("qSelectMenu");
-
-      if (qArray.length != 0) {
-        for(var i = 0; i < qArray.length; i++) {
+      if (aArray.length != 0) {
+        for(var i = 0; i < aArray.length; i++) {
           // gen qualification list item
-          var qItem = document.createElement("option");
-          var textnode = document.createTextNode(qArray[i].qualificationName);
-          qItem.appendChild(textnode);
-          qItem.setAttribute("class", "dropdown-item");
-          qItem.value = qArray[i].qualificationID;
-          // qItem.setAttribute("onclick", "showCurrentEdit(" + qArray[i].qualificationID + ")");
+          var aItem = document.createElement("a");
+          var textnode = document.createTextNode(aArray[i].applicant + " - " + aArray[i].date);
+          aItem.appendChild(textnode);
+          aItem.setAttribute("class", "dropdown-item");
+          aItem.setAttribute("onclick", "showCurrentReview(\"" + aArray[i].applicant + "\", " + aArray[i].programmeID + ")");
 
           // attach qItem to list
-          qSelectMenu.appendChild(qItem);
+          aSelectMenu.appendChild(aItem);
         }
       }
     }
 
-    function checkexistobtQ(hasObtQ) {
+    function showCurrentReview(applicant, progID) {
+      var selectedAForm = document.getElementById("selectedAForm");
+      var selectedApplicant = document.getElementById("selectedApplicant");
+      var selectedProg = document.getElementById("selectedProg");
 
-      if (hasObtQ == "yes")
-      {
-        var overwrite = confirm("Do you want to overwrite your existing qualification? ");
-        if (overwrite == true)
-        {
-        window.location = "obtainedQualification.php";
-        }
-        else
-        {
-        return false;
-        }
-
-      }
-      else {
-        window.location = "obtainedQualification.php";
-              }
-
-
+      selectedApplicant.value = applicant;
+      selectedProg.value = progID;
+      selectedAForm.submit(); // goto details
     }
-    </script>
-
-  </body>
-  </html>
+  </script>
+</body>
+</html>

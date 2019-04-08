@@ -122,7 +122,7 @@ $conn->close();
             <li class="nav-item active">
               <a class="nav-link" href="unihome.php">UNIVERSITY DASHBOARD</a>
             </li>
-            <li class="nav-item @@contact">
+            <li class="nav-item">
               <a class="nav-link" href="newProgramme.php">ADD PROGRAMME</a>
             </li>
           </ul>
@@ -217,7 +217,7 @@ $conn->close();
           </div>
         </div>
       </div>
-      <!-- course item -->
+      <!-- course item
       <div class="col-lg-4 col-sm-6 mb-5">
         <div class="card p-0 border-primary rounded-0 hover-shadow">
 
@@ -231,7 +231,7 @@ $conn->close();
           </div>
         </div>
       </div>
-
+      -->
     </div>
     <!-- /course list -->
     <div class="row justify-content-center">
@@ -250,6 +250,9 @@ $conn->close();
           <br/>
           <span>Entry Score: 50%</span>
         </a>
+      </div>
+      <div>
+        <!--potential spot for Form-->
       </div>
     </div>
   </div>
@@ -335,6 +338,7 @@ $conn->close();
         for(var i = 0; i < progList.length; i++) {
           // gen Programme list item
           var progItem = document.createElement("a");
+          progItem.href = "programmeDetails.php?progID=" + progList[i].programmeID;
 
           var progItemDiv = document.createElement("div");
           var progItemH5 = document.createElement("h5");
