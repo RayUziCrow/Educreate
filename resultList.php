@@ -18,7 +18,6 @@ if(isset($_SESSION['selectedQ'])) { // chk if submitted
 $username = $_SESSION['username'];
 $name = $_SESSION['name'];
 
-
 // init db
 $conn = new mysqli('localhost', 'root', '', 'educreate');
 if ($conn->connect_error) {
@@ -44,11 +43,10 @@ $sql = "SELECT * FROM obtQualification WHERE Username = '$username' LIMIT 1"; //
 
 $result = $conn->query($sql); // execute query
 if ($result->num_rows > 0) { // obtainedQ found
-  $obtQ = $result->fetch_assoc();
-  $obtQID = $obtQ['obtQualificationID'];
+  $hasObtQ = "yes";
 }
 else { // obtainedQ not found
-  $obtQID = -1;
+  $hasObtQ = "no";
 }
 
 // $sql = "SELECT result.subjectID, subjectName, score FROM result, subject WHERE obtainedQualificationID = '$obtQ'"; // gen load Results query
@@ -149,16 +147,16 @@ $conn->close(); // close db
         <div class="collapse navbar-collapse" id="navigation">
           <ul class="navbar-nav ml-auto text-center">
             <li class="nav-item">
-              <a class="nav-link" href="apphome.php">APPLICANT DASHBOARD</a>
+              <a class="nav-link" href="obtainedQualification.php" id="manageObtQLink">PENGUIN_ERROR</a>
             </li>
-            <li class="nav-item active">
-              <a class="nav-link" href="obtainedQualification.php" id="manageObtQLink">Obtained Qualification</a>
+            <li class="nav-item @@about">
+              <a class="nav-link" href="about.html">About</a>
             </li>
-            <li class="nav-item">
-              <a class="nav-link" href="obtQpreview.php">View Obtained Qualification</a>
+            <li class="nav-item @@courses">
+              <a class="nav-link" href="courses.html">COURSES</a>
             </li>
-            <li class="nav-item">
-              <a class="nav-link" href="viewprogramme.php">Apply for Programme</a>
+            <li class="nav-item @@events">
+              <a class="nav-link" href="events.html">EVENTS</a>
             </li>
           </ul>
       </div>
@@ -295,7 +293,6 @@ $conn->close(); // close db
                   <input type="hidden" id="qualificationID" name="qualificationID" value="<?php echo $qID ?>">
                   <input type="hidden" id="resultList" name="resultList">
                   <input type="hidden" id="username" name="username" value="<?php echo $username ?>">
-                  <input type="hidden" name="oldObtQ" value="<?php echo $obtQID ?>">
                 </form>
               </div>
             </div>
@@ -372,7 +369,7 @@ $conn->close(); // close db
 
       <!-- EX Script -->
       <script>
-      var hasObtQ = <?php echo $obtQID ?>; // get php value
+      var hasObtQ = "<?php echo $hasObtQ ?>"; // get php value
       var manageObtQLink = document.getElementById("manageObtQLink");
 
       if (hasObtQ == "yes") {
@@ -386,29 +383,41 @@ $conn->close(); // close db
 
       window.onload = loadObtQualification();
 
-      function checkexistobtQ(hasObtQ) {
-
-        if (hasObtQ != -1)
-        {
-          var overwrite = confirm("Do you want to overwrite your existing qualification? ");
-          if (overwrite == true)
-          {
-          window.location = "obtainedQualification.php";
-          }
-          else
-          {
-          return false;
-          }
-
-        }
-        else {
-          window.location = "obtainedQualification.php";
-                }
-
-
-      }
-
       function loadObtQualification() {
+         // send php_array to js
+        // var qTitle = document.getElementById("qualificationTitle");
+        // var qName = document.getElementById("qualificationName");
+        // var rMinScore = document.getElementById("qualificationMinScore");
+        // var rMaxScore = document.getElementById("qualificationMaxScore");
+        // var qResultCalc = document.getElementById("qualificationResultCalc");
+        // var qSubjectCount = document.getElementById("subjectCount");
+        // var resultList = document.getElementById("resultList");
+
+        // fill Qualification Info
+        // qTitle.innerHTML = ": " + foundQ.qualificationName;
+        // qName.innerHTML = foundQ.qualificationName;
+        // rMinScore.innerHTML = foundQ.minimumScore;
+        // rMaxScore.innerHTML = foundQ.maximumScore;
+
+        // get resultCalcDescription
+        // var resultCalcDescVal = foundQ.resultCalcDescription;
+        // var resultCalcDescText;
+        // switch (resultCalcDescVal) {
+        //   case "avg_highest":
+        //     resultCalcDescText = "Average of Highest Scores";
+        //     break;
+        //   case "avg_lowest":
+        //     resultCalcDescText = "Average of Lowest Scores";
+        //     break;
+        //   case "sum_highest":
+        //     resultCalcDescText = "Sum of Highest Scores";
+        //     break;
+        //   case "sum_lowest":
+        //     resultCalcDescText = "Sum of Lowest Scores";
+        //     break;
+        // }
+        // qResultCalc.innerHTML = resultCalcDescText;
+        // qSubjectCount.innerHTML = foundQ.resultCalcSubjectCount;
         var formStatus = document.getElementById("formStatus");
 
         // fill Subjects select
@@ -420,6 +429,18 @@ $conn->close(); // close db
           newSubject.value = foundSubjects[i].subjectID + ":" + foundSubjects[i].subjectName;
           subjectNameSelect.appendChild(newSubject);
         }
+
+        // fill existing Results
+      //   var insertedResults = document.getElementById("insertedResults");
+      //   for(var i = 0; i < foundResults.length; i++) {
+      //     // create Result
+      //     var newResult = document.createElement("option");
+      //     var newResultText = document.createTextNode(foundResults[i].subjectName + ": " + foundResults[i].score);
+      //     newResult.appendChild(newResultText);
+      //     newResult.value = foundResults[i].subjectID + ":" + foundResults[i].subjectName + ":" + foundResults[i].score;
+      //     // insert Result
+      //     insertedResults.appendChild(newResult);
+      //   }
       }
 
       function addResult() {
@@ -538,6 +559,33 @@ $conn->close(); // close db
           alert("ERROR: No Results in list");
         }
       }
+
+      // function testSubjects() {
+      //   // get Subjects
+      //   var insertedResults = document.getElementById("insertedResults");
+
+      //   var obtQID = foundQ.qualificationID; // get QualificationID to save
+      //   var subjects = new Array();
+      //   // var subjectNames = new array();
+      //   // var resultScores = new array();
+      //   for(var i = 0; i < insertedResults.children.length; i++) { // extract resultList
+      //     var subject = insertedResults.children[i].value;
+      //     subjects.push(subject);
+      //     // subjectNames.push(subject.substring(0, existingSubject.indexOf(':')));
+      //     // resultScores.push(parseInt(subject.substring(existingSubject.indexOf(':') + 1)));
+      //   }
+
+      //   // get form
+      //   var resultListForm = document.getElementById("resultListForm");
+      //   var obtQID = document.getElementById("qualificationID");
+      //   var resultList = document.getElementById("qualificationSubjects");
+      //   // send resultList to hidden form input
+      //   obtQID.value = foundQ.qualificationID;
+      //   resultList.value = subjects;
+
+      //   var formStatus = document.getElementById("formStatus");
+      //   formStatus.innerHTML = resultList.value;
+      // }
       </script>
 
     </body>

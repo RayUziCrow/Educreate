@@ -174,7 +174,7 @@ if(isset($_SESSION['loginStatus'])) { // chk if login attempted
               <p class="text-muted mb-4" data-animation-out="fadeOutRight" data-delay-out="5" data-duration-in=".3" data-animation-in="fadeInLeft" data-delay-in=".4">Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
 
               </p>
-              <a class="btn btn-primary" data-animation-out="fadeOutRight" data-delay-out="5" data-duration-in=".3" data-animation-in="fadeInLeft" data-delay-in=".7" data-toggle="modal" data-target="#loginModal">Apply now</a>
+              <a href="contact.html" class="btn btn-primary" data-animation-out="fadeOutRight" data-delay-out="5" data-duration-in=".3" data-animation-in="fadeInLeft" data-delay-in=".7" data-toggle="modal" data-target="#loginModal">Apply now</a>
             </div>
           </div>
         </div>
@@ -184,6 +184,69 @@ if(isset($_SESSION['loginStatus'])) { // chk if login attempted
 
       </section>
       <!-- /hero slider -->
+
+      <!-- banner-feature -->
+
+      <!-- /banner-feature -->
+
+      <!-- about us -->
+
+      <!-- /about us -->
+
+      <!-- courses -->
+
+      <!-- course list -->
+
+      <!-- course item -->
+
+      <!-- /cta -->
+
+      <!-- success story -->
+
+      <!-- /success story -->
+
+      <!-- events -->
+
+      <!-- location -->
+
+      <!-- event -->
+
+      <!-- location -->
+
+      <!-- event -->
+
+      <!-- location -->
+
+      <!-- mobile see all button -->
+
+      <!-- /events -->
+
+      <!-- teachers -->
+
+      <!-- teacher -->
+
+      <!-- teacher -->
+
+
+      <!-- teacher -->
+
+      <!-- /teachers -->
+
+      <!-- blog -->
+
+      <!-- blog post -->
+
+      <!-- post meta -->
+
+      <!-- post date -->
+
+      <!-- author -->
+
+      <!-- blog post -->
+
+      <!-- blog post -->
+
+      <!-- /blog -->
 
       <!-- footer -->
       <footer>

@@ -129,16 +129,16 @@ $conn->close(); // close db
         <div class="collapse navbar-collapse" id="navigation">
           <ul class="navbar-nav ml-auto text-center">
             <li class="nav-item">
-              <a class="nav-link" href="apphome.php">APPLICANT DASHBOARD</a>
+              <a class="nav-link" href="obtainedQualification.php" id="manageObtQLink">PENGUIN_ERROR</a>
             </li>
-            <li class="nav-item">
-              <a class="nav-link" onclick="checkexistobtQ('<?php echo $hasObtQ;?>')">Submit Obtained Qualification</a>
+            <li class="nav-item @@about">
+              <a class="nav-link" href="about.html">About</a>
             </li>
-            <li class="nav-item">
-              <a class="nav-link" href="obtQpreview.php">View Obtained Qualification</a>
+            <li class="nav-item @@courses">
+              <a class="nav-link" href="courses.html">COURSES</a>
             </li>
-            <li class="nav-item">
-              <a class="nav-link" href="viewprogramme.php">Apply for Programme</a>
+            <li class="nav-item @@events">
+              <a class="nav-link" href="events.html">EVENTS</a>
             </li>
           </ul>
         </div>
@@ -147,6 +147,69 @@ $conn->close(); // close db
   </div>
 </header>
 <!-- /header -->
+<!-- Modal -->
+<div class="modal fade" id="signupModal" tabindex="-1" role="dialog" aria-hidden="true">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content rounded-0 border-0 p-4">
+      <div class="modal-header border-0">
+        <h3>Register</h3>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="login">
+          <form action="#" class="row">
+            <div class="col-12">
+              <input type="text" class="form-control mb-3" id="signupPhone" name="signupPhone" placeholder="Phone">
+            </div>
+            <div class="col-12">
+              <input type="text" class="form-control mb-3" id="signupName" name="signupName" placeholder="Name">
+            </div>
+            <div class="col-12">
+              <input type="email" class="form-control mb-3" id="signupEmail" name="signupEmail" placeholder="Email">
+            </div>
+            <div class="col-12">
+              <input type="password" class="form-control mb-3" id="signupPassword" name="signupPassword" placeholder="Password">
+            </div>
+            <div class="col-12">
+              <button type="submit" class="btn btn-primary">SIGN UP</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- Modal -->
+<div class="modal fade" id="loginModal" tabindex="-1" role="dialog" aria-hidden="true">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content rounded-0 border-0 p-4">
+      <div class="modal-header border-0">
+        <h3>Login</h3>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form action="#" class="row">
+          <div class="col-12">
+            <input type="text" class="form-control mb-3" id="loginPhone" name="loginPhone" placeholder="Phone">
+          </div>
+          <div class="col-12">
+            <input type="text" class="form-control mb-3" id="loginName" name="loginName" placeholder="Name">
+          </div>
+          <div class="col-12">
+            <input type="password" class="form-control mb-3" id="loginPassword" name="loginPassword" placeholder="Password">
+          </div>
+          <div class="col-12">
+            <button type="submit" class="btn btn-primary">LOGIN</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
 
 <!-- page title -->
 <section class="page-title-section overlay" data-background="images/backgrounds/page-title.jpg">
@@ -261,8 +324,29 @@ $conn->close(); // close db
 
     <!-- EX Script -->
     <script>
+
+    var hasObtQ = "<?php echo $hasObtQ ?>"; // get php value
+    var manageObtQLink = document.getElementById("manageObtQLink");
+
+    if (hasObtQ == "yes") {
+      manageObtQLink.innerHTML = "Preview Your Qualification";
+    } else {
+      manageObtQLink.innerHTML = "Set Up Obtained Qualifications";
+    }
+
     var qArray = <?php echo json_encode($qArray) ?>; // send php_array to js
     window.onload = showLoadedQualifications();
+    // window.onload = editExistingQ();
+    // function editExistingQ() {
+
+    //   if (obtfound == 1)
+
+
+    //     var formtitle = document.getElementById("formtitle");
+    //     formtitle.innerHTML = "You have a qualification";
+
+    // }
+
 
 
 
@@ -286,27 +370,23 @@ $conn->close(); // close db
       }
     }
 
-    function checkexistobtQ(hasObtQ) {
+    // function showCurrentEdit(qNum) {
+    //   var selectedQForm = document.getElementById("selectedQForm");
+    //   var selectedQ = document.getElementById("selectedQ");
 
-      if (hasObtQ == "yes")
-      {
-        var overwrite = confirm("Do you want to overwrite your existing qualification? ");
-        if (overwrite == true)
-        {
-        window.location = "obtainedQualification.php";
-        }
-        else
-        {
-        return false;
-        }
+    //   selectedQ.value = qNum;
+    //   selectedQForm.submit(); // goto details
+    // }
 
-      }
-      else {
-        window.location = "obtainedQualification.php";
-              }
-
-
-    }
+    // function saveQualification() {
+    //   var qName = document.getElementById("qualificationName");
+    //   var qMinScore = document.getElementById("qualificationMinScore");
+    //   var qMaxScore = document.getElementById("qualificationMaxScore");
+    //   var qResultCalc = document.getElementById("qualificationResultCalc");
+    //   var qSubjectCount = document.getElementById("subjectCount");
+    //
+    //
+    // }
     </script>
 
   </body>

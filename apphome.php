@@ -12,21 +12,10 @@ if(isset($_SESSION['formSubmit'])) { // chk if submitted
 $username = $_SESSION['username'];
 $name = $_SESSION['name'];
 
-
 // init db
 $conn = new mysqli('localhost', 'root', '', 'educreate');
 if ($conn->connect_error) {
   die("Connection failed: " . $conn->connect_error);
-}
-
-$sql = "SELECT * FROM obtQualification WHERE Username = '$username'"; // gen chkObtQ query
-
-$result = $conn->query($sql); // execute query
-if ($result->num_rows > 0) { // obtainedQ found
-  $hasObtQ = "yes";
-}
-else { // obtainedQ not found
-  $hasObtQ = "no";
 }
 
 // get User info
@@ -36,16 +25,13 @@ $result = $conn->query($sql); // execute query
 
 if ($result->num_rows > 0) {
   // gen getApplications query
-
-  $sql = "SELECT * FROM application, programme, university WHERE application.applicant = '$username' AND programme.programmeID = application.programmeID AND university.universityID = programme.universityID";
-
+  $sql = "SELECT universityName, name, date, status FROM application, programme, university WHERE applicant = '$username' AND programme.programmeID = application.programmeID AND programme.universityID = university.UniversityID ";
 
   $result = $conn->query($sql); // execute query
 
   if ($result->num_rows > 0) {
     $currentApplications = [];
     while($row = $result->fetch_assoc()) {
-
       $currentApplications[] = $row;
     }
   } else {
@@ -132,13 +118,10 @@ $conn->close();
               <a class="nav-link" href="apphome.php">APPLICANT DASHBOARD</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link" onclick="checkexistobtQ('<?php echo $hasObtQ;?>')">Submit Obtained Qualification</a>
+              <a class="nav-link" href="obtainedQualification.php" id="manageObtQLink">Obtained Qualification</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="obtQpreview.php">View Obtained Qualification</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="viewprogramme.php">Apply for Programme</a>
+              <a class="nav-link" href="obtainedQualification.php">Apply for Programme</a>
             </li>
           </ul>
         </div>
@@ -157,7 +140,7 @@ $conn->close();
           <li class="list-inline-item"><span class="h2 text-primary font-secondary">Applicant Dashboard</span></li>
           <li class="list-inline-item text-white h3 font-secondary "></li>
         </ul>
-        <p class="text-lighten">Submit an Obtained Qualification, or apply for a Programme.</p>
+        <p class="text-lighten">Submit your Obtained Qualification, or apply for a Programme.</p>
       </div>
     </div>
   </div>
@@ -179,7 +162,7 @@ $conn->close();
           <h4 class="card-title">Submit Obtained Qualification</h4>
         </a>
         <p class="card-text mb-4"> Submit your Obtained Qualification.</p>
-        <a id="" onclick="checkexistobtQ('<?php echo $hasObtQ;?>')" class="btn btn-primary btn-sm">GO</a>
+        <a href="#" data-toggle="modal" data-target="#qualificationModal" class="btn btn-primary btn-sm">GO</a>
       </div>
     </div>
   </div>
@@ -193,7 +176,7 @@ $conn->close();
           <h4 class="card-title">Apply for Programme</h4>
         </a>
         <p class="card-text mb-4"> Search and apply for a Programme.</p>
-        <a href="viewprogramme.php" class="btn btn-primary btn-sm">GO</a>
+        <a href="registerUni.php" class="btn btn-primary btn-sm">GO</a>
       </div>
     </div>
   </div>
@@ -293,34 +276,8 @@ $conn->close();
       alert(sqlStatus);
     }
 
-    var hasObtQ = "<?php echo $hasObtQ ?>"; // get php value
-    var manageObtQLink = document.getElementById("manageObtQLink");
-
     var progList = <?php echo json_encode($currentApplications) ?>;
     window.onload = loadProgrammes();
-
-
-    function checkexistobtQ(hasObtQ) {
-
-      if (hasObtQ == "yes")
-      {
-        var overwrite = confirm("Do you want to overwrite your existing qualification? ");
-        if (overwrite == true)
-        {
-        window.location = "obtainedQualification.php";
-        }
-        else
-        {
-        return false;
-        }
-
-      }
-      else {
-        window.location = "obtainedQualification.php";
-              }
-
-
-    }
 
     function loadProgrammes() {
       var progListMenu = document.getElementById("progListMenu");
@@ -338,7 +295,7 @@ $conn->close();
           var progItemSpanLower = document.createElement("span");
 
           var txtnodeProgName = document.createTextNode(progList[i].name);
-          var txtnodeUniName = document.createTextNode("University: " + progList[i].UniversityName);
+          var txtnodeUniName = document.createTextNode("University: " + progList[i].universityName);
           var txtnodeStatus = document.createTextNode("Status: " + progList[i].status);
           var txtnodeAppliedDate = document.createTextNode("Applied On: " + progList[i].date);
 
