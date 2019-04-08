@@ -1,5 +1,4 @@
 <?php // Save New Qualification
-<<<<<<< HEAD
 $sqlStatus = "";
 
 // get form fields
@@ -17,15 +16,6 @@ if(empty($resultList)) {
 else {
   processGrades();
 }
-=======
-  $sqlStatus = "";
-
-  // get form fields
-  $qID = $_POST['qualificationID'];
-  $resultList = $_POST['resultList'];
-  $username = $_POST['username'];
-  $hasObtQ = $_POST['hasObtQ'];
->>>>>>> da5dad0ae36053049388d7bd990089c9e04e79de
 
 function processGrades() {
   global $qID, $resultList, $username, $oldObtQ, $obtQID;
@@ -47,14 +37,7 @@ function processGrades() {
     die("Connection failed: " . $conn->connect_error);
   }
 
-<<<<<<< HEAD
   session_start(); // init store session var
-=======
-  function processGrades() {
-    global $qID, $resultList, $username, $hasObtQ;
-    // split Grades
-    $results = explode(',', $resultList);
->>>>>>> da5dad0ae36053049388d7bd990089c9e04e79de
 
   $_SESSION['formSubmit'] = 'success';
 
@@ -73,20 +56,7 @@ function processGrades() {
       $_SESSION['selectedQ'] = $selectedQ;
     }
 
-<<<<<<< HEAD
     $sql = "DELETE FROM result WHERE obtainedQualificationID = '$obtQID'"; // delete old Results
-=======
-    if ($hasObtQ == 'yes') {
-
-    $sql = "DELETE FROM obtQualification WHERE username = '$username'";
-
-    if ($conn->query($sql) === TRUE) { }
-    else { }
-   }
-
-
-    $sql = "INSERT INTO obtQualification (`qualificationID`, `username`) VALUES ('$qID', '$username')";
->>>>>>> da5dad0ae36053049388d7bd990089c9e04e79de
 
     if ($conn->query($sql) === TRUE) {
 
@@ -146,26 +116,7 @@ function processGrades() {
     $_SESSION['selectedQ'] = $selectedQ;
   }
 
-<<<<<<< HEAD
 $conn->close(); // close db
-=======
-    $conn->close(); // close db
-
-    $_SESSION['sqlStatus'] = $sqlStatus; // store msg
-
-    if($_SESSION['formSubmit'] == 'success') {
-      $sqlStatus = "Obtained Qualification saved successfully";
-
-      // redirect to form
-
-      $url = 'apphome.php';
-    }
-    else {
-      $url = 'resultList.php';
-    }
-    header('Location: ' . $url);
-    die();
->>>>>>> da5dad0ae36053049388d7bd990089c9e04e79de
 }
 
 $_SESSION['sqlStatus'] = $sqlStatus; // store msg

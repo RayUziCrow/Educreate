@@ -3,11 +3,7 @@
 
 <head>
   <meta charset="utf-8">
-<<<<<<< HEAD
   <title>Educreate: View Obtained Qualification</title>
-=======
-  <title>Educreate: Home</title>
->>>>>>> da5dad0ae36053049388d7bd990089c9e04e79de
 
   <!-- mobile responsive meta -->
   <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -58,13 +54,6 @@ $sql = "SELECT * FROM obtQualification, result, qualification, subject WHERE obt
 
 $result = $conn->query($sql);
 
-<<<<<<< HEAD
-=======
-
-
-
-
->>>>>>> da5dad0ae36053049388d7bd990089c9e04e79de
 ?>
 <!-- header -->
 <header class="fixed-top header">
@@ -106,7 +95,6 @@ $result = $conn->query($sql);
         <div class="collapse navbar-collapse" id="navigation">
           <ul class="navbar-nav ml-auto text-center">
             <li class="nav-item">
-<<<<<<< HEAD
               <a class="nav-link" href="apphome.php">APPLICANT DASHBOARD</a>
             </li>
             <li class="nav-item">
@@ -117,18 +105,6 @@ $result = $conn->query($sql);
             </li>
             <li class="nav-item">
               <a class="nav-link" href="viewprogramme.php">Apply for Programme</a>
-=======
-              <a class="nav-link" href="">Set up your obtained qualification</a>
-            </li>
-            <li class="nav-item @@about">
-              <a class="nav-link" href="about.html">About</a>
-            </li>
-            <li class="nav-item @@courses">
-              <a class="nav-link" href="courses.html">COURSES</a>
-            </li>
-            <li class="nav-item @@events">
-              <a class="nav-link" href="events.html">EVENTS</a>
->>>>>>> da5dad0ae36053049388d7bd990089c9e04e79de
             </li>
           </ul>
         </div>
@@ -232,13 +208,7 @@ echo "<div class='form'>
     <div class="list-group"><a href="#" class="list-group-item list-group-item-action flex-column align-items-start"><div class="d-flex w-70 justify-content-between">
     	<h5>Qualification results : </h5></div></a>
 
-<<<<<<< HEAD
     	<?php if ($result->num_rows > 0) {
-=======
-    	<?php if ($result->num_rows > 0) {   
-
-
->>>>>>> da5dad0ae36053049388d7bd990089c9e04e79de
 
       while($row = $result->fetch_assoc()) {
 ?>
@@ -249,101 +219,18 @@ echo "<div class='form'>
         </div>
         <p class="mb-1"><?php echo $row['score']; ?></p>
         <small></small>
-<<<<<<< HEAD
       </a>
 
 <?php
 
-=======
-      </a> 
-      
-<?php
-      
->>>>>>> da5dad0ae36053049388d7bd990089c9e04e79de
       }
 }
 
 ?>
-<<<<<<< HEAD
-=======
-
-    
-
-     
-      <!-- slider item -->
-
-      <!-- slider item -->
->>>>>>> da5dad0ae36053049388d7bd990089c9e04e79de
 </div>
 </section>
 <!-- /hero slider -->
 
-<<<<<<< HEAD
-=======
-<!-- banner-feature -->
-
-<!-- /banner-feature -->
-
-<!-- about us -->
-
-<!-- /about us -->
-
-<!-- courses -->
-
-    <!-- course list -->
-
-  <!-- course item -->
-
-<!-- /cta -->
-
-<!-- success story -->
-
-<!-- /success story -->
-
-<!-- events -->
-
-        <!-- location -->
-
-  <!-- event -->
-
-        <!-- location -->
-
-  <!-- event -->
-
-        <!-- location -->
-
-    <!-- mobile see all button -->
-
-<!-- /events -->
-
-<!-- teachers -->
-
-      <!-- teacher -->
-
-      <!-- teacher -->
-
-
-      <!-- teacher -->
-
-<!-- /teachers -->
-
-<!-- blog -->
-
-  <!-- blog post -->
-
-        <!-- post meta -->
-
-          <!-- post date -->
-
-          <!-- author -->
-
-  <!-- blog post -->
-
-  <!-- blog post -->
-
-<!-- /blog -->
-
->>>>>>> da5dad0ae36053049388d7bd990089c9e04e79de
 <!-- footer -->
 <footer>
   <!-- newsletter -->
@@ -357,7 +244,6 @@ echo "<div class='form'>
           <a class="logo-footer" href="index.php"><img class="img-fluid mb-4" src="images/logo.png" alt="logo"></a>
           <ul class="list-unstyled">
             <li class="mb-2">No. 15, Jalan Sri Semantan 1, Off Jalan Semantan, Bukit Damansara 50490 Kuala Lumpur</li>
-<<<<<<< HEAD
             <li class="mb-2">Ridge Hon Fay (B1600595) <a href="mailto:rayuzicrow@gmail.com">rayuzicrow@gmail.com</a></li>
             <li class="mb-2">Muhamad Muqriz (B1800732) <a href="mailto:muqrizx@gmail.com">muqrizx@gmail.com<a/></li>
             </ul>
@@ -390,80 +276,6 @@ echo "<div class='form'>
         </div>
       </div>
     </footer>
-=======
-            <li class="mb-2">+1 (2) 345 6789</li>
-            <li class="mb-2">+1 (2) 345 6789</li>
-            <li class="mb-2">contact@yourdomain.com</li>
-          </ul>
-        </div>
-        <!-- company -->
-        <div class="col-lg-2 col-md-3 col-sm-4 col-6 mb-5 mb-md-0">
-          <h4 class="text-white mb-5">COMPANY</h4>
-          <ul class="list-unstyled">
-            <li class="mb-3"><a class="text-color" href="about.html">About Us</a></li>
-            <li class="mb-3"><a class="text-color" href="teacher.html">Our Teacher</a></li>
-            <li class="mb-3"><a class="text-color" href="contact.html">Contact</a></li>
-            <li class="mb-3"><a class="text-color" href="blog.html">Blog</a></li>
-          </ul>
-        </div>
-        <!-- links -->
-        <div class="col-lg-2 col-md-3 col-sm-4 col-6 mb-5 mb-md-0">
-          <h4 class="text-white mb-5">LINKS</h4>
-          <ul class="list-unstyled">
-            <li class="mb-3"><a class="text-color" href="courses.html">Courses</a></li>
-            <li class="mb-3"><a class="text-color" href="event.html">Events</a></li>
-            <li class="mb-3"><a class="text-color" href="gallary.html">Gallary</a></li>
-            <li class="mb-3"><a class="text-color" href="faqs.html">FAQs</a></li>
-          </ul>
-        </div>
-        <!-- support -->
-        <div class="col-lg-2 col-md-3 col-sm-4 col-6 mb-5 mb-md-0">
-          <h4 class="text-white mb-5">SUPPORT</h4>
-          <ul class="list-unstyled">
-            <li class="mb-3"><a class="text-color" href="#">Forums</a></li>
-            <li class="mb-3"><a class="text-color" href="#">Documentation</a></li>
-            <li class="mb-3"><a class="text-color" href="#">Language</a></li>
-            <li class="mb-3"><a class="text-color" href="#">Release Status</a></li>
-          </ul>
-        </div>
-        <!-- support -->
-        <div class="col-lg-2 col-md-3 col-sm-4 col-6 mb-5 mb-md-0">
-          <h4 class="text-white mb-5">RECOMMEND</h4>
-          <ul class="list-unstyled">
-            <li class="mb-3"><a class="text-color" href="#">WordPress</a></li>
-            <li class="mb-3"><a class="text-color" href="#">LearnPress</a></li>
-            <li class="mb-3"><a class="text-color" href="#">WooCommerce</a></li>
-            <li class="mb-3"><a class="text-color" href="#">bbPress</a></li>
-          </ul>
-        </div>
-      </div>
-    </div>
-  </div>
-  <!-- copyright -->
-  <div class="copyright py-4 bg-footer">
-    <div class="container">
-      <div class="row">
-        <div class="col-sm-7 text-sm-left text-center">
-          <p class="mb-0">Copyright
-            <script>
-              var CurrentYear = new Date().getFullYear()
-              document.write(CurrentYear)
-            </script>
-            © Theme By <a href="https://themefisher.com">themefisher.com</a></p> . All Rights Reserved.
-        </div>
-        <div class="col-sm-5 text-sm-right text-center">
-          <ul class="list-inline">
-            <li class="list-inline-item"><a class="d-inline-block p-2" href="https://www.facebook.com/themefisher"><i class="ti-facebook text-primary"></i></a></li>
-            <li class="list-inline-item"><a class="d-inline-block p-2" href="https://www.twitter.com/themefisher"><i class="ti-twitter-alt text-primary"></i></a></li>
-            <li class="list-inline-item"><a class="d-inline-block p-2" href="#"><i class="ti-instagram text-primary"></i></a></li>
-            <li class="list-inline-item"><a class="d-inline-block p-2" href="https://dribbble.com/themefisher"><i class="ti-dribbble text-primary"></i></a></li>
-          </ul>
-        </div>
-      </div>
-    </div>
-  </div>
-</footer>
->>>>>>> da5dad0ae36053049388d7bd990089c9e04e79de
 <!-- /footer -->
 
 <!-- jQuery -->
@@ -485,7 +297,6 @@ echo "<div class='form'>
 <!-- Main Script -->
 <script src="js/script.js"></script>
 
-<<<<<<< HEAD
 <script>
 
 function checkexistobtQ(hasObtQ) {
@@ -511,7 +322,5 @@ function checkexistobtQ(hasObtQ) {
 }
 </script>
 
-=======
->>>>>>> da5dad0ae36053049388d7bd990089c9e04e79de
 </body>
 </html>

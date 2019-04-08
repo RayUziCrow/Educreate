@@ -295,11 +295,7 @@ $conn->close(); // close db
                   <input type="hidden" id="qualificationID" name="qualificationID" value="<?php echo $qID ?>">
                   <input type="hidden" id="resultList" name="resultList">
                   <input type="hidden" id="username" name="username" value="<?php echo $username ?>">
-<<<<<<< HEAD
                   <input type="hidden" name="oldObtQ" value="<?php echo $obtQID ?>">
-=======
-                  <input type="hidden" name="hasObtQ" value="<?php echo $hasObtQ ?>">
->>>>>>> da5dad0ae36053049388d7bd990089c9e04e79de
                 </form>
               </div>
             </div>

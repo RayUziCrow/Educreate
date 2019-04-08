@@ -9,7 +9,6 @@ session_start();
 $username = $_SESSION['username'];
 $name = $_SESSION['name'];
 
-
 $sqlStatusLoad = "";
 
 // init db
